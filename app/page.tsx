@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Heath Underwriting â AI-Native MGA',
+  title: 'Heath Underwriting — AI-Native MGA',
   description:
-    'Heath is the leading AI underwriting platform â a modern MGA specialising in specialty reinsurance.',
+    'Heath is the leading AI underwriting platform — a modern MGA specialising in specialty reinsurance.',
 };
 
 const NAVY = '#0d2d4f';
@@ -28,7 +28,7 @@ function Background() {
         preserveAspectRatio="xMidYMid slice"
         xmlns="http://www.w3.org/2000/svg"
       >
-        {/* H #1 â upper right */}
+        {/* H #1 – upper right */}
         <g opacity="0.13" transform="translate(1060,-60) scale(2.2) rotate(8 55 70)">
           <rect x="0" y="0" width="16" height="70" fill={LIGHT_BLUE} />
           <rect x="40" y="0" width="16" height="70" fill={LIGHT_BLUE} />
@@ -36,7 +36,7 @@ function Background() {
           <rect x="56" y="0" width="5" height="70" fill={LIGHT_BLUE} opacity="0.5" />
         </g>
 
-        {/* H #2 â left mid */}
+        {/* H #2 – left mid */}
         <g opacity="0.10" transform="translate(-120,250) scale(3.5) rotate(-5 55 70)">
           <rect x="0" y="0" width="16" height="70" fill={LIGHT_BLUE} />
           <rect x="40" y="0" width="16" height="70" fill={LIGHT_BLUE} />
@@ -44,7 +44,7 @@ function Background() {
           <rect x="56" y="0" width="5" height="70" fill={LIGHT_BLUE} opacity="0.5" />
         </g>
 
-        {/* H #3 â lower right */}
+        {/* H #3 – lower right */}
         <g opacity="0.11" transform="translate(1150,560) scale(2.0) rotate(12 55 70)">
           <rect x="0" y="0" width="16" height="70" fill={LIGHT_BLUE} />
           <rect x="40" y="0" width="16" height="70" fill={LIGHT_BLUE} />
@@ -52,7 +52,7 @@ function Background() {
           <rect x="56" y="0" width="5" height="70" fill={LIGHT_BLUE} opacity="0.5" />
         </g>
 
-        {/* H #4 â centre-bottom */}
+        {/* H #4 – centre-bottom */}
         <g opacity="0.08" transform="translate(380,640) scale(4.2) rotate(-3 55 70)">
           <rect x="0" y="0" width="16" height="70" fill={LIGHT_BLUE} />
           <rect x="40" y="0" width="16" height="70" fill={LIGHT_BLUE} />
@@ -144,7 +144,7 @@ export default function Home() {
           zIndex: 5,
           maxWidth: '1160px',
           margin: '0 auto',
-          padding: '90px 40px 90px',
+          padding: '72px 40px 72px',
           display: 'grid',
           gridTemplateColumns: '1fr 1.2fr',
           gap: '56px',
@@ -153,7 +153,7 @@ export default function Home() {
       >
         {/* Left */}
         <div>
-          {/* AI-NATIVE MGA badge â visible */}
+          {/* AI-NATIVE MGA badge — visible */}
           <div
             style={{
               display: 'inline-flex',
@@ -184,7 +184,7 @@ export default function Home() {
           >
             Heath is the leading{' '}
             <span style={{ color: LIGHT_BLUE }}>AI underwriting platform</span>{' '}
-            â{' '}
+            —{' '}
             <span style={{ color: 'rgba(240,244,255,0.65)' }}>a modern MGA.</span>
           </h1>
 
@@ -235,7 +235,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Right â Underwriting Desk card (larger) */}
+        {/* Right – Underwriting Desk card (larger) */}
         <div
           style={{
             background: 'rgba(5,14,32,0.92)',
@@ -285,7 +285,7 @@ export default function Home() {
               { text: 'Specialty reinsurance underwriting across selected lines of business.', ai: false },
               { text: 'Portfolio discipline embedded at quotation and bind stages.', ai: false },
               { text: 'Capacity partnerships in active development with long-term orientation.', ai: false },
-              { text: 'Automated triage, analysis and response â powered by proprietary AI workflows.', ai: true },
+              { text: 'Automated triage, analysis and response — powered by proprietary AI workflows.', ai: true },
             ] as { text: string; ai: boolean }[]
           ).map((item, i, arr) => (
             <div
@@ -345,7 +345,7 @@ export default function Home() {
           justifyContent: 'center',
           gap: '12px',
           flexWrap: 'wrap',
-          padding: '0 40px 88px',
+          padding: '0 40px 44px',
         }}
       >
         {['SPECIALTY LINES', 'PORTFOLIO DISCIPLINE', 'ALIGNED CAPACITY', 'TECHNOLOGY-ENABLED EXECUTION'].map((pill) => (
@@ -428,13 +428,13 @@ export default function Home() {
             We are the leading{' '}
             <strong style={{ color: '#f0f4ff' }}>AI-native reinsurance underwriting</strong>{' '}
             business focused on specialty markets. We prioritize long-term value creation,
-            portfolio discipline, and alignment over short-term volume â powered by proprietary
+            portfolio discipline, and alignment over short-term volume — powered by proprietary
             AI technology.
           </p>
           <p style={{ color: 'rgba(240,244,255,0.55)', lineHeight: 1.75, fontSize: '16px' }}>
             Built from the ground up as an AI-native platform, Heath processes, analyses, and
             responds to submissions with a speed and consistency that traditional underwriting
-            cannot match â without compromising on judgment or discipline.
+            cannot match — without compromising on judgment or discipline.
           </p>
         </div>
       </section>
@@ -603,7 +603,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ââ CTA â CAPACITY PROVIDERS ââ */}
+      {/* ââ CTA — CAPACITY PROVIDERS ââ */}
       <section
         id="contact"
         style={{
@@ -632,7 +632,7 @@ export default function Home() {
             We partner with capacity providers and institutions seeking durable, disciplined reinsurance exposure.
           </h2>
           <p style={{ color: 'rgba(240,244,255,0.55)', fontSize: '17px', lineHeight: 1.7, marginBottom: '40px' }}>
-            Heath brings proprietary technology, rigorous underwriting, and deep specialty expertise â the infrastructure capacity partners need to deploy with confidence.
+            Heath brings proprietary technology, rigorous underwriting, and deep specialty expertise — the infrastructure capacity partners need to deploy with confidence.
           </p>
           <div style={{ display: 'flex', gap: '14px', justifyContent: 'center', flexWrap: 'wrap' }}>
             <a
@@ -685,7 +685,7 @@ export default function Home() {
         }}
       >
         <span style={{ color: 'rgba(240,244,255,0.3)', fontSize: '12px' }}>
-          Â© 2025 Heath Underwriting Â· Sabotage &amp; Terrorism Â· Facultative Reinsurance
+          © 2025 Heath Underwriting · Sabotage &amp; Terrorism · Facultative Reinsurance
         </span>
         <span style={{ color: 'rgba(240,244,255,0.3)', fontSize: '12px' }}>heathuw.com</span>
       </footer>
