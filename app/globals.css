@@ -3,17 +3,17 @@
 @tailwind utilities;
 
 :root {
-  --background: #070b17;
-  --background-secondary: #0d1224;
-  --card: #131930;
-  --primary: #f5f7ff;
-  --secondary: #a7b0c9;
-  --muted: #1a2342;
-  --accent: #f97316;
-  --intelligence: #7c3aed;
+  --background: #091929;
+  --background-secondary: #0d2236;
+  --card: #0d2540;
+  --primary: #f0f4ff;
+  --secondary: #8ba4c0;
+  --muted: #122040;
+  --accent: #2a7ac0;
+  --intelligence: #1a6aad;
   --positive: #10b981;
   --risk: #ef4444;
-  --border: #26304e;
+  --border: #1a3a5c;
 }
 
 body {
@@ -33,11 +33,11 @@ body {
   --border: #d9dde3;
 }
 
-/* Landing: rejilla (máscara radial) */
+/* Landing: hero grid (máscara radial) */
 .landing-hero-grid {
   background-image:
-    linear-gradient(to right, rgb(124 58 237 / 0.2) 1px, transparent 1px),
-    linear-gradient(to bottom, rgb(124 58 237 / 0.2) 1px, transparent 1px);
+    linear-gradient(to right, rgb(42 122 192 / 0.15) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(42 122 192 / 0.15) 1px, transparent 1px);
   background-size: 48px 48px;
   mask-image: radial-gradient(ellipse 80% 68% at 50% 40%, black 25%, transparent 74%);
   -webkit-mask-image: radial-gradient(
@@ -78,15 +78,17 @@ body {
   height: 100%;
   background: linear-gradient(
     90deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.65) 50%,
-    transparent 100%
+    transparent,
+    rgba(255, 255, 255, 0.25),
+    transparent
   );
-  animation: skeletonShimmer 1.15s ease-in-out infinite;
+  animation: skeletonShimmer 1.6s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .skeleton-shimmer::after {
+  *,
+  *::before,
+  *::after {
     animation: none;
   }
 }
