@@ -3,9 +3,9 @@
 import { useState } from 'react';
 import { useI18n } from '@/components/providers/LanguageProvider';
 
-const NAVY = '#0d2d4f';
+const NAVY = '#02091c';
 const LIGHT = '#4a9eff';
-const DARK = 'rgba(8,18,36,0.6)';
+const DARK = 'rgba(2,9,28,0.6)';
 
 interface SpecialtyLine {
   id: string;
@@ -26,7 +26,7 @@ const LINES: SpecialtyLine[] = [
     id: 'st',
     label: 'SABOTAGE & TERRORISM',
     headline: 'Sabotage & Terrorism',
-    summary: 'Facultative reinsurance capacity for deliberate acts of sabotage and terrorism — covering physical damage and business interruption on a risk-by-risk basis.',
+    summary: 'Facultative reinsurance capacity for deliberate acts of sabotage and terrorism â covering physical damage and business interruption on a risk-by-risk basis.',
     capacityType: 'Facultative Reinsurance',
     riskDescription: 'Sabotage & Terrorism (S&T) covers losses arising from deliberate acts intended to damage, destroy, or disrupt insured property and operations. This includes physical damage to buildings, machinery, and infrastructure, as well as business interruption resulting from an insured event. S&T exposure is typically excluded from standard property policies and requires standalone or wrap-around coverage structures negotiated on a per-risk basis.',
     coverScope: [
@@ -42,7 +42,7 @@ const LINES: SpecialtyLine[] = [
       'Stand-alone S&T facultative placement',
       'S&T wrap on top of existing property programs',
     ],
-    markets: 'Global. Particular focus on high-risk and emerging markets where S&T exposure is material — Middle East, Latin America, South and Southeast Asia, and strategic infrastructure assets worldwide.',
+    markets: 'Global. Particular focus on high-risk and emerging markets where S&T exposure is material â Middle East, Latin America, South and Southeast Asia, and strategic infrastructure assets worldwide.',
     image: 'https://images.unsplash.com/photo-1591588211599-04eeffe9acc7?w=1400&auto=format&fit=crop&q=80',
     imagePosition: 'center 40%',
   },
@@ -50,11 +50,11 @@ const LINES: SpecialtyLine[] = [
     id: 'property',
     label: 'PROPERTY',
     headline: 'Property',
-    summary: 'Reinsurance capacity for commercial and industrial property risks — covering physical damage and business interruption across a broad range of occupancies and perils.',
+    summary: 'Reinsurance capacity for commercial and industrial property risks â covering physical damage and business interruption across a broad range of occupancies and perils.',
     capacityType: 'Facultative & Treaty Reinsurance',
     riskDescription: 'Property reinsurance covers physical damage to buildings, contents, and business assets, plus the financial consequences of interruption to operations. Heath underwrites property reinsurance for cedants with large or complex risks that require bespoke facultative support, as well as treaty programs across commercial and industrial portfolios.',
     coverScope: [
-      'Material damage (MD) — buildings, plant, machinery, stock, and contents',
+      'Material damage (MD) â buildings, plant, machinery, stock, and contents',
       'Business interruption (BI) and extra expense',
       'Natural catastrophe perils: wind, flood, earthquake, hail',
       'Fire, explosion, machinery breakdown, and electronic equipment',
@@ -75,11 +75,11 @@ const LINES: SpecialtyLine[] = [
     id: 'financial',
     label: 'FINANCIAL LINES',
     headline: 'Financial Lines',
-    summary: 'Reinsurance capacity for directors & officers liability, professional indemnity, cyber, and crime — supporting cedants underwriting complex management and financial risk.',
+    summary: 'Reinsurance capacity for directors & officers liability, professional indemnity, cyber, and crime â supporting cedants underwriting complex management and financial risk.',
     capacityType: 'Facultative & Treaty Reinsurance',
     riskDescription: 'Financial Lines reinsurance covers liability exposures arising from management decisions, professional services, and financial crime. As regulatory scrutiny intensifies and cyber incidents multiply, cedants face growing frequency and severity in their financial lines portfolios. Heath provides reinsurance capacity to support these evolving risks with disciplined underwriting and data-driven pricing.',
     coverScope: [
-      'Directors & Officers (D&O) — corporate, institutional, and Side A coverage',
+      'Directors & Officers (D&O) â corporate, institutional, and Side A coverage',
       'Errors & Omissions / Professional Indemnity (E&O / PI)',
       'Cyber liability: first-party and third-party (incident response, data breach, ransomware)',
       'Commercial crime and financial institution bonds (FIB)',
@@ -100,7 +100,7 @@ const LINES: SpecialtyLine[] = [
     id: 'marine',
     label: 'MARINE',
     headline: 'Marine',
-    summary: 'Reinsurance capacity for marine cargo, hull, and offshore energy — supporting cedants across the full spectrum of maritime and logistical risk.',
+    summary: 'Reinsurance capacity for marine cargo, hull, and offshore energy â supporting cedants across the full spectrum of maritime and logistical risk.',
     capacityType: 'Facultative & Treaty Reinsurance',
     riskDescription: 'Marine reinsurance covers physical damage and liability arising from the movement of goods, the operation of vessels, and offshore energy activities. With global supply chains under increasing pressure from geopolitical disruption, climate events, and infrastructure congestion, marine reinsurance plays a critical role in stabilising cedant portfolios exposed to large individual risks and accumulation scenarios.',
     coverScope: [
@@ -117,7 +117,7 @@ const LINES: SpecialtyLine[] = [
       'Cargo treaty (per-risk XL and quota share)',
       'Hull treaty excess of loss',
     ],
-    markets: 'Global. Focused on cedants in key maritime hubs — London market, Singapore, Rotterdam, Miami — as well as growing marine books in Latin America and Southeast Asia.',
+    markets: 'Global. Focused on cedants in key maritime hubs â London market, Singapore, Rotterdam, Miami â as well as growing marine books in Latin America and Southeast Asia.',
     image: 'https://images.unsplash.com/photo-1699588999949-e25959a59550?w=1400&auto=format&fit=crop&q=80',
     imagePosition: 'center 50%',
   },
@@ -125,7 +125,7 @@ const LINES: SpecialtyLine[] = [
     id: 'aviation',
     label: 'AVIATION',
     headline: 'Aviation',
-    summary: 'Reinsurance capacity for aviation hull and liability — supporting cedants underwriting commercial airlines, business aviation, airports, and aerospace manufacturers.',
+    summary: 'Reinsurance capacity for aviation hull and liability â supporting cedants underwriting commercial airlines, business aviation, airports, and aerospace manufacturers.',
     capacityType: 'Facultative & Treaty Reinsurance',
     riskDescription: 'Aviation reinsurance covers physical damage to aircraft (hull) and third-party liability arising from aviation operations. The aviation market is highly technical, driven by fleet values, route exposure, and tail-risk liability. Heath underwrites aviation reinsurance with a focus on disciplined risk selection, supporting cedants managing complex and high-value aviation portfolios.',
     coverScope: [
@@ -153,7 +153,7 @@ function LineCard({ line }: { line: SpecialtyLine }) {
   return (
     <div style={{ position:'relative', overflow:'hidden', borderRadius:16, border:`1px solid ${open?'rgba(74,158,255,0.5)':'rgba(74,158,255,0.18)'}`, transition:'border-color 0.3s ease, box-shadow 0.3s ease', boxShadow: open ? '0 0 0 1px rgba(74,158,255,0.2), 0 24px 60px rgba(0,0,0,0.4)' : '0 8px 32px rgba(0,0,0,0.25)' }}>
       <div style={{ position:'absolute', inset:0, backgroundImage:`url(${line.image})`, backgroundSize:'cover', backgroundPosition:line.imagePosition, zIndex:0 }} />
-      <div style={{ position:'absolute', inset:0, background: open ? 'linear-gradient(135deg,rgba(13,45,79,0.97) 0%,rgba(13,45,79,0.93) 100%)' : 'linear-gradient(105deg,rgba(13,45,79,0.94) 0%,rgba(13,45,79,0.80) 55%,rgba(13,45,79,0.70) 100%)', transition:'background 0.4s ease', zIndex:1 }} />
+      <div style={{ position:'absolute', inset:0, background: open ? 'linear-gradient(135deg,rgba(2,9,28,0.97) 0%,rgba(2,9,28,0.93) 100%)' : 'linear-gradient(105deg,rgba(2,9,28,0.94) 0%,rgba(2,9,28,0.80) 55%,rgba(2,9,28,0.70) 100%)', transition:'background 0.4s ease', zIndex:1 }} />
       <div style={{ position:'relative', zIndex:2, padding:'36px 40px' }}>
         <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:20 }}>
           <div>
@@ -165,7 +165,7 @@ function LineCard({ line }: { line: SpecialtyLine }) {
         <p style={{ fontSize:15, color:'rgba(255,255,255,0.72)', marginTop:18, lineHeight:1.7, maxWidth:680 }}>{line.summary}</p>
         <button onClick={() => setOpen(!open)} style={{ marginTop:22, display:'inline-flex', alignItems:'center', gap:8, padding:'9px 20px', borderRadius:8, background: open?'rgba(74,158,255,0.2)':'rgba(74,158,255,0.1)', border:'1px solid rgba(74,158,255,0.4)', color:LIGHT, fontSize:12, fontWeight:700, cursor:'pointer', letterSpacing:'0.08em', backdropFilter:'blur(8px)', transition:'background 0.2s' }}>
           {open ? 'COLLAPSE' : 'VIEW DETAIL'}
-          <span style={{ display:'inline-block', transition:'transform 0.3s', transform: open?'rotate(180deg)':'rotate(0deg)' }}>↓</span>
+          <span style={{ display:'inline-block', transition:'transform 0.3s', transform: open?'rotate(180deg)':'rotate(0deg)' }}>â</span>
         </button>
         {open && (
           <div style={{ marginTop:32, paddingTop:32, borderTop:'1px solid rgba(74,158,255,0.18)', display:'grid', gridTemplateColumns:'1fr 1fr', gap:40 }}>
@@ -176,7 +176,7 @@ function LineCard({ line }: { line: SpecialtyLine }) {
               <ul style={{ margin:0, padding:0, listStyle:'none' }}>
                 {line.coverScope.map((item, i) => (
                   <li key={i} style={{ display:'flex', alignItems:'flex-start', gap:10, marginBottom:9, fontSize:14, color:'rgba(255,255,255,0.65)', lineHeight:1.55 }}>
-                    <span style={{ color:LIGHT, marginTop:4, flexShrink:0, fontSize:10 }}>●</span>{item}
+                    <span style={{ color:LIGHT, marginTop:4, flexShrink:0, fontSize:10 }}>â</span>{item}
                   </li>
                 ))}
               </ul>
@@ -186,7 +186,7 @@ function LineCard({ line }: { line: SpecialtyLine }) {
               <ul style={{ margin:0, padding:0, listStyle:'none', marginBottom:28 }}>
                 {line.structures.map((item, i) => (
                   <li key={i} style={{ display:'flex', alignItems:'flex-start', gap:10, marginBottom:9, fontSize:14, color:'rgba(255,255,255,0.65)', lineHeight:1.55 }}>
-                    <span style={{ color:LIGHT, flexShrink:0, fontWeight:700, marginTop:1 }}>—</span>{item}
+                    <span style={{ color:LIGHT, flexShrink:0, fontWeight:700, marginTop:1 }}>â</span>{item}
                   </li>
                 ))}
               </ul>
