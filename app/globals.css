@@ -3,17 +3,17 @@
 @tailwind utilities;
 
 :root {
-  --background: #091929;
-  --background-secondary: #0d2236;
-  --card: #0d2540;
+  --background: #143a63;
+  --background-secondary: #19456f;
+  --card: #1d4d80;
   --primary: #f0f4ff;
   --secondary: #8ba4c0;
-  --muted: #122040;
-  --accent: #1a3060;
+  --muted: #1f4576;
+  --accent: #2b5590;
   --intelligence: #134f86;
   --positive: #10b981;
   --risk: #ef4444;
-  --border: #1a3a5c;
+  --border: #305f93;
 }
 
 body {
