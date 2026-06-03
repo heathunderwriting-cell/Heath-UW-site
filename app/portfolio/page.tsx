@@ -153,46 +153,8 @@ function LineCard({ line }: { line: SpecialtyLine }) {
     <div style={{ position:'relative', overflow:'hidden', borderRadius:16, border:`1px solid ${open?'rgba(74,158,255,0.5)':'rgba(74,158,255,0.18)'}`, transition:'border-color 0.3s ease, box-shadow 0.3s ease', boxShadow: open ? '0 0 0 1px rgba(74,158,255,0.2), 0 24px 60px rgba(0,0,0,0.4)' : '0 8px 32px rgba(0,0,0,0.25)' }}>
       <div style={{ position:'absolute', inset:0, backgroundImage:`url(${line.image})`, backgroundSize:'cover', backgroundPosition:line.imagePosition, zIndex:0 }} />
       <div style={{ position:'absolute', inset:0, background: open ? 'linear-gradient(135deg,rgba(13,45,79,0.97) 0%,rgba(13,45,79,0.93) 100%)' : 'linear-gradient(105deg,rgba(13,45,79,0.94) 0%,rgba(13,45,79,0.80) 55%,rgba(13,45,79,0.70) 100%)', transition:'background 0.4s ease', zIndex:1 }} />
-      {/* H + Nodes neon decoration */}
-      <div style={{ position:'absolute', inset:0, zIndex:2, overflow:'hidden', pointerEvents:'none' }}>
-        <svg width="100%" height="100%" viewBox="0 0 1200 280" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-          <g opacity="0.13" transform="translate(960,-30) scale(3.5) rotate(8 55 70)">
-            <rect x="0" y="0" width="16" height="70" fill="#4a9eff" />
-            <rect x="40" y="0" width="16" height="70" fill="#4a9eff" />
-            <rect x="16" y="26" width="24" height="12" fill="#4a9eff" />
-          </g>
-          <g opacity="0.09" transform="translate(-50,130) scale(2.5) rotate(-5 55 70)">
-            <rect x="0" y="0" width="16" height="70" fill="#4a9eff" />
-            <rect x="40" y="0" width="16" height="70" fill="#4a9eff" />
-            <rect x="16" y="26" width="24" height="12" fill="#4a9eff" />
-          </g>
-          <g style={{ filter:'drop-shadow(0 0 7px #4a9eff) drop-shadow(0 0 3px #4a9eff)' }} stroke="#4a9eff" strokeWidth="1.5" fill="none">
-            <line x1="1060" y1="75" x2="1115" y2="38" />
-            <line x1="1060" y1="75" x2="1005" y2="120" />
-            <line x1="1060" y1="75" x2="1135" y2="105" />
-            <line x1="1115" y1="38" x2="1085" y2="10" />
-            <circle cx="1060" cy="75" r="8" fill="#4a9eff" />
-            <circle cx="1060" cy="75" r="3.5" fill="#e8f4ff" opacity="0.9" />
-            <circle cx="1115" cy="38" r="5" fill="#4a9eff" opacity="0.9" />
-            <circle cx="1005" cy="120" r="5" fill="#4a9eff" opacity="0.85" />
-            <circle cx="1135" cy="105" r="4" fill="#4a9eff" opacity="0.7" />
-            <circle cx="1085" cy="10" r="3.5" fill="#4a9eff" opacity="0.6" />
-          </g>
-          <g style={{ filter:'drop-shadow(0 0 7px #4a9eff) drop-shadow(0 0 3px #4a9eff)' }} stroke="#4a9eff" strokeWidth="1.5" fill="none">
-            <line x1="115" y1="195" x2="170" y2="158" />
-            <line x1="115" y1="195" x2="68" y2="238" />
-            <line x1="115" y1="195" x2="185" y2="225" />
-            <line x1="170" y1="158" x2="205" y2="125" />
-            <circle cx="115" cy="195" r="8" fill="#4a9eff" />
-            <circle cx="115" cy="195" r="3.5" fill="#e8f4ff" opacity="0.9" />
-            <circle cx="170" cy="158" r="5" fill="#4a9eff" opacity="0.9" />
-            <circle cx="68" cy="238" r="5" fill="#4a9eff" opacity="0.85" />
-            <circle cx="185" cy="225" r="4" fill="#4a9eff" opacity="0.7" />
-            <circle cx="205" cy="125" r="3.5" fill="#4a9eff" opacity="0.6" />
-          </g>
-        </svg>
-      </div>
-      <div style={{ position:'relative', zIndex:3, padding:'36px 40px' }}>
+      
+      <div style={{ position:'relative', zIndex:2, padding:'36px 40px' }}>
         <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:20 }}>
           <div>
             <div style={{ fontSize:11, fontWeight:700, letterSpacing:'0.14em', color:LIGHT, marginBottom:8 }}>{line.label}</div>
@@ -241,6 +203,62 @@ function LineCard({ line }: { line: SpecialtyLine }) {
 export default function PortfolioPage() {
   return (
     <main style={{ minHeight:'100vh', background:NAVY, fontFamily:"'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif", color:'#ffffff' }}>
+      {/* ── Page background: H letters + neon node clusters ── */}
+      <div style={{ position:'fixed', inset:0, zIndex:0, pointerEvents:'none', overflow:'hidden' }}>
+        <svg width="100%" height="100%" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+          <g opacity="0.13" transform="translate(1050,40) scale(5) rotate(8 55 70)">
+            <rect x="0" y="0" width="16" height="70" fill="#4a9eff" />
+            <rect x="40" y="0" width="16" height="70" fill="#4a9eff" />
+            <rect x="16" y="26" width="24" height="12" fill="#4a9eff" />
+          </g>
+          <g opacity="0.08" transform="translate(-80,480) scale(4) rotate(-5 55 70)">
+            <rect x="0" y="0" width="16" height="70" fill="#4a9eff" />
+            <rect x="40" y="0" width="16" height="70" fill="#4a9eff" />
+            <rect x="16" y="26" width="24" height="12" fill="#4a9eff" />
+          </g>
+          <g opacity="0.10" transform="translate(350,600) scale(3.5) rotate(-3 55 70)">
+            <rect x="0" y="0" width="16" height="70" fill="#4a9eff" />
+            <rect x="40" y="0" width="16" height="70" fill="#4a9eff" />
+            <rect x="16" y="26" width="24" height="12" fill="#4a9eff" />
+          </g>
+          <g style={{ filter:'drop-shadow(0 0 6px #4a9eff)' }} opacity="0.85" stroke="#4a9eff" strokeWidth="1.2" fill="none">
+            <line x1="155" y1="110" x2="215" y2="75" />
+            <line x1="155" y1="110" x2="105" y2="155" />
+            <line x1="155" y1="110" x2="240" y2="140" />
+            <line x1="215" y1="75" x2="175" y2="45" />
+            <line x1="105" y1="155" x2="110" y2="210" />
+            <circle cx="155" cy="110" r="7" fill="#4a9eff" />
+            <circle cx="155" cy="110" r="3" fill="#f0f4ff" opacity="0.5" />
+            <circle cx="215" cy="75" r="4" fill="#4a9eff" opacity="0.7" />
+            <circle cx="105" cy="155" r="4" fill="#4a9eff" opacity="0.7" />
+            <circle cx="240" cy="140" r="3.5" fill="#4a9eff" opacity="0.5" />
+            <circle cx="175" cy="45" r="3" fill="#4a9eff" opacity="0.45" />
+            <circle cx="110" cy="210" r="3" fill="#4a9eff" opacity="0.45" />
+          </g>
+          <g style={{ filter:'drop-shadow(0 0 6px #4a9eff)' }} opacity="0.80" stroke="#4a9eff" strokeWidth="1.2" fill="none">
+            <line x1="1290" y1="200" x2="1350" y2="160" />
+            <line x1="1290" y1="200" x2="1240" y2="250" />
+            <line x1="1290" y1="200" x2="1360" y2="235" />
+            <line x1="1350" y1="160" x2="1380" y2="120" />
+            <circle cx="1290" cy="200" r="7" fill="#4a9eff" />
+            <circle cx="1290" cy="200" r="3" fill="#f0f4ff" opacity="0.5" />
+            <circle cx="1350" cy="160" r="4" fill="#4a9eff" opacity="0.7" />
+            <circle cx="1240" cy="250" r="4" fill="#4a9eff" opacity="0.7" />
+            <circle cx="1360" cy="235" r="3.5" fill="#4a9eff" opacity="0.5" />
+            <circle cx="1380" cy="120" r="3" fill="#4a9eff" opacity="0.45" />
+          </g>
+          <g style={{ filter:'drop-shadow(0 0 6px #4a9eff)' }} opacity="0.75" stroke="#4a9eff" strokeWidth="1.2" fill="none">
+            <line x1="90" y1="700" x2="150" y2="660" />
+            <line x1="90" y1="700" x2="50" y2="750" />
+            <line x1="90" y1="700" x2="165" y2="730" />
+            <circle cx="90" cy="700" r="7" fill="#4a9eff" />
+            <circle cx="90" cy="700" r="3" fill="#f0f4ff" opacity="0.5" />
+            <circle cx="150" cy="660" r="4" fill="#4a9eff" opacity="0.7" />
+            <circle cx="50" cy="750" r="4" fill="#4a9eff" opacity="0.7" />
+            <circle cx="165" cy="730" r="3.5" fill="#4a9eff" opacity="0.5" />
+          </g>
+        </svg>
+      </div>
       <section style={{ padding:'96px 40px 64px', maxWidth:1160, margin:'0 auto' }}>
         <div style={{ display:'inline-flex', alignItems:'center', gap:8, padding:'6px 16px', borderRadius:20, border:'1px solid rgba(74,158,255,0.35)', background:'rgba(74,158,255,0.08)', fontSize:11, fontWeight:700, letterSpacing:'0.12em', color:LIGHT, marginBottom:28 }}>
           <span style={{ width:6, height:6, borderRadius:'50%', background:LIGHT, boxShadow:`0 0 8px ${LIGHT}` }} />
