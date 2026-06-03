@@ -6,10 +6,8 @@ import { Button } from "@/components/ui/Button";
 import { Heading } from "@/components/ui/Heading";
 import { Text } from "@/components/ui/Text";
 import { useI18n } from "@/components/providers/LanguageProvider";
+import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { createMockSession } from "@/lib/mockAuth";
-
-const ALLOWED_EMAIL = "pruebas@heathuw.com";
-const ALLOWED_PASSWORD = "pruebas2026";
 
 function deriveCompanyFromEmail(email: string) {
   const domain = email.split("@")[1] ?? "empresa";
@@ -35,7 +33,7 @@ export function LoginForm() {
   const [error, setError] = useState<string | null>(null);
   const { dict } = useI18n();
 
-  function onSubmit(e: FormEvent<HTMLFormElement>) {
+  async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
 
@@ -50,28 +48,42 @@ export function LoginForm() {
       setError(dict.forms.login.errors.password);
       return;
     }
-    if (trimmedEmail.toLowerCase() !== ALLOWED_EMAIL || trimmedPassword !== ALLOWED_PASSWORD) {
-      setError(dict.forms.login.errors.invalidCredentials);
-      return;
-    }
 
     setLoading(true);
 
-    const userEmail = ALLOWED_EMAIL;
-    const namePart = userEmail.split("@")[0]?.slice(0, 20) ?? "Cliente";
-    const userName = namePart
-      .replace(/[._-]+/g, " ")
-      .replace(/\b\w/g, (m) => m.toUpperCase());
+    try {
+      const supabase = createSupabaseBrowserClient();
+      const { data, error: signInError } = await supabase.auth.signInWithPassword({
+        email: trimmedEmail,
+        password: trimmedPassword,
+      });
 
-    createMockSession({
-      id: `mock_${Date.now()}`,
-      email: userEmail,
-      name: userName,
-      company: deriveCompanyFromEmail(userEmail),
-      role: "cliente",
-    });
+      if (signInError || !data.user) {
+        setError(dict.forms.login.errors.invalidCredentials);
+        setLoading(false);
+        return;
+      }
 
-    router.replace(redirect);
+      // Cosmetic local profile for the dashboard UI (display name only).
+      const userEmail = data.user.email ?? trimmedEmail;
+      const namePart = userEmail.split("@")[0]?.slice(0, 20) ?? "Usuario";
+      const userName = namePart
+        .replace(/[._-]+/g, " ")
+        .replace(/\b\w/g, (m) => m.toUpperCase());
+      createMockSession({
+        id: data.user.id,
+        email: userEmail,
+        name: userName,
+        company: deriveCompanyFromEmail(userEmail),
+        role: "cliente",
+      });
+
+      router.replace(redirect);
+      router.refresh();
+    } catch {
+      setError(dict.forms.login.errors.invalidCredentials);
+      setLoading(false);
+    }
   }
 
   return (
@@ -145,4 +157,3 @@ export function LoginForm() {
     </form>
   );
 }
-
