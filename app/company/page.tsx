@@ -1,6 +1,7 @@
 'use client';
 import React from 'react';
 import { useI18n } from '@/components/providers/LanguageProvider';
+import { companyCopy } from '@/locales/company-content';
 
 const NAVY = '#02091c';
 const NAVY_CARD = '#071223';
@@ -11,95 +12,6 @@ const BLUE_BORDER = 'rgba(74,158,255,0.25)';
 const WHITE = '#f0f4ff';
 const MUTED = 'rgba(240,244,255,0.55)';
 const GOLD = '#c9a84c';
-
-const techItems = [
-  {
-    icon: '⚡',
-    title: 'Automated Submission Engine',
-    desc: 'Incoming submissions are automatically ingested, classified, and routed through a structured AI workflow — reducing processing time and ensuring every risk receives a structured review.',
-    tag: 'AI Workflow',
-  },
-  {
-    icon: '🗄️',
-    title: 'Structured Risk Database',
-    desc: 'Every submission, decision, and commitment is stored in a relational database with full audit trail — enabling historical analysis, pattern recognition, and portfolio reporting.',
-    tag: 'Supabase / PostgreSQL',
-  },
-  {
-    icon: '📊',
-    title: 'Real-Time Portfolio Dashboard',
-    desc: 'Capacity partners and senior underwriters access a live dashboard showing commitment pipeline, geographic exposure, line-of-business mix, and decision velocity.',
-    tag: 'Live Analytics',
-  },
-  {
-    icon: '🔐',
-    title: 'Secure Cedant Portal',
-    desc: 'Cedants and brokers submit risks, track status, and receive structured feedback through an authenticated digital portal — eliminating email-based back-and-forth.',
-    tag: 'Authenticated Access',
-  },
-  {
-    icon: '🤖',
-    title: 'AI-Native Risk Screening',
-    desc: 'The core of Heath\'s AI-native MGA model — AI workflows pre-screen every submission, score risk profile alignment, flag accumulation concerns, and generate structured underwriter briefs automatically.',
-    tag: 'AI-Native MGA Core',
-    highlight: true,
-  },
-  {
-    icon: '🌐',
-    title: 'Global Deployment Architecture',
-    desc: 'The platform is deployed on edge infrastructure with redundancy across regions — ensuring consistent performance for cedants and partners across time zones and geographies.',
-    tag: 'Edge / Vercel',
-  },
-];
-
-const aiWorkflows = [
-  { title: 'AI Intake Workflow', desc: 'Submissions parsed, classified, and routed in seconds — no manual triage required.' },
-  { title: 'AI Underwriting Brief', desc: 'Structured risk summaries generated automatically for every inbound risk.' },
-  { title: 'AI Portfolio Monitor', desc: 'Continuous accumulation tracking and appetite alignment across all open commitments.' },
-  { title: 'AI Pricing Signals', desc: 'Market benchmarking and rate adequacy indicators integrated into the decision flow.' },
-  { title: 'AI Communication Layer', desc: 'Automated cedant updates, declination notices, and status notifications.' },
-  { title: 'AI Reporting Engine', desc: 'Partner bordereaux and management reports generated on demand, not at month-end.' },
-];
-
-const pipelineSteps = [
-  'Submission\nReceived',
-  'Automated\nIntake',
-  'AI\nScreening',
-  'Underwriter\nReview',
-  'Capacity\nAlignment',
-  'Decision &\nCommitment',
-  'Portfolio\nReporting',
-];
-
-const values = [
-  { num: '01', title: 'Technical Discipline', desc: 'Every risk is evaluated on fundamentals — exposure, accumulation, pricing adequacy, and correlation — not market momentum or volume targets.' },
-  { num: '02', title: 'Transparent Governance', desc: 'Our underwriting process is fully documented and auditable. Capacity partners see exactly how risks are selected, priced, and managed in portfolio.' },
-  { num: '03', title: 'Long-Term Alignment', desc: 'We structure relationships — with cedants, brokers, and capacity providers — around multi-year performance, not transactional premium exchange.' },
-  { num: '04', title: 'AI-Native by Design', desc: 'We are not adding AI to a legacy process — we are an AI-native MGA. Our AI workflows are the operating system: every submission, decision, and report flows through intelligent automation.', highlight: true },
-];
-
-const govItems = [
-  {
-    title: 'Underwriting Governance',
-    items: [
-      'Defined authority matrix by line of business and limit size',
-      'Mandatory peer review for risks above defined thresholds',
-      'Quarterly portfolio review with capacity partners',
-      'Full audit trail on every submission and decision',
-      'Appetite statements reviewed and updated annually',
-    ],
-  },
-  {
-    title: 'Capacity Partner Framework',
-    items: [
-      'Real-time dashboard access for authorized partners',
-      'Monthly bordereau and exposure reports',
-      'Defined premium flow and settlement protocols',
-      'Joint portfolio committees for strategic alignment',
-      'Transparent pricing rationale on all bound risks',
-    ],
-  },
-];
 
 function AIPill({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) {
   return (
@@ -119,8 +31,14 @@ function AIPill({ children, style }: { children: React.ReactNode; style?: React.
 }
 
 export default function CompanyPage() {
-  const { dict } = useI18n();
+  const { dict, locale } = useI18n();
   const d = dict.pagesV2.company;
+  const c = companyCopy[locale as 'en' | 'es' | 'zh'] ?? companyCopy.en;
+  const techItems = c.techItems;
+  const aiWorkflows = c.aiWorkflows;
+  const pipelineSteps = c.pipelineSteps;
+  const values = c.values;
+  const govItems = c.govItems;
   return (
     <main style={{ background: NAVY, color: WHITE, minHeight: '100vh', fontFamily: '-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif', position: 'relative' }}>
 
@@ -272,9 +190,9 @@ export default function CompanyPage() {
               textTransform: 'uppercase' as const, color: BLUE,
             }}>
               <span style={{ width: 6, height: 6, background: BLUE, borderRadius: '50%', display: 'inline-block' }} />
-              About Heath
+              {c.heroEyebrow}
             </span>
-            <AIPill>AI-Native MGA</AIPill>
+            <AIPill>{c.aiNativeMga}</AIPill>
           </div>
           <h1 style={{ fontSize: 'clamp(2.4rem,5vw,3.8rem)', fontWeight: 800, lineHeight: 1.1, marginBottom: 24 }}>
             {d.subtitle}
@@ -292,12 +210,7 @@ export default function CompanyPage() {
           padding: '18px 48px',
           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 40, flexWrap: 'wrap' as const,
         }}>
-          {[
-            ['AI-Native MGA', 'Fully digital underwriting operations'],
-            ['AI Workflows', 'Automated intake to decision pipeline'],
-            ['Real-Time Intelligence', 'Live portfolio analytics'],
-            ['Zero Paper', '100% structured digital submissions'],
-          ].map(([label, sub]) => (
+          {c.banner.map(([label, sub]) => (
             <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 8, color: MUTED, fontSize: '0.82rem' }}>
               <span style={{ color: BLUE, fontSize: '0.6rem' }}>✦</span>
               <strong style={{ color: BLUE }}>{label}</strong> — {sub}
@@ -307,20 +220,9 @@ export default function CompanyPage() {
 
         {/* ── MISSION & VISION ── */}
         <section style={{ padding: '80px 48px', maxWidth: 1100, margin: '0 auto', borderBottom: `1px solid ${BLUE_BORDER}` }}>
-          <div style={{ fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase' as const, color: BLUE, marginBottom: 12, fontWeight: 600 }}>Purpose</div>
+          <div style={{ fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase' as const, color: BLUE, marginBottom: 12, fontWeight: 600 }}>{c.purposeEyebrow}</div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32 }}>
-            {[
-              {
-                eyebrow: 'Mission', gold: false,
-                title: 'Expanding access to institutional reinsurance capacity',
-                body: 'We exist to bridge the gap between complex specialty risks and global reinsurance markets — operating as an AI-native MGA that delivers disciplined, intelligent underwriting creating long-term value for cedants, brokers, and capacity partners.',
-              },
-              {
-                eyebrow: 'Vision', gold: true,
-                title: 'The leading AI-native MGA for complex specialty risk',
-                body: 'To become the reference AI-native Managing General Agent for specialty reinsurance — where AI workflows, data-driven risk selection, and transparent governance define the new standard for institutional underwriting globally.',
-              },
-            ].map(({ eyebrow, gold, title, body }) => (
+            {[{ ...c.mission, gold: false }, { ...c.vision, gold: true }].map(({ eyebrow, gold, title, body }) => (
               <div key={eyebrow} style={{
                 background: NAVY_CARD, border: `1px solid ${BLUE_BORDER}`, borderRadius: 16, padding: '40px 36px',
                 position: 'relative', overflow: 'hidden',
@@ -336,22 +238,14 @@ export default function CompanyPage() {
 
         {/* ── WHO WE ARE ── */}
         <section style={{ padding: '80px 48px', maxWidth: 1100, margin: '0 auto', borderBottom: `1px solid ${BLUE_BORDER}` }}>
-          <div style={{ fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase' as const, color: BLUE, marginBottom: 12, fontWeight: 600 }}>Who We Are</div>
-          <h2 style={{ fontSize: 'clamp(1.6rem,3vw,2.4rem)', fontWeight: 700, marginBottom: 8 }}>Independent. Technical. <span style={{ color: BLUE }}>Aligned.</span></h2>
+          <div style={{ fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase' as const, color: BLUE, marginBottom: 12, fontWeight: 600 }}>{c.whoEyebrow}</div>
+          <h2 style={{ fontSize: 'clamp(1.6rem,3vw,2.4rem)', fontWeight: 700, marginBottom: 8 }}>{c.whoTitlePre}<span style={{ color: BLUE }}>{c.whoTitleHighlight}</span></h2>
           <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 48, alignItems: 'start', marginTop: 40 }}>
             <div>
-              {[
-                'Heath was founded on a straightforward belief: that specialty reinsurance deserves the same rigor, transparency, and technological sophistication that institutional investors apply to other asset classes.',
-                'We underwrite across five specialty lines — Sabotage & Terrorism, Property, Financial Lines, Marine, and Aviation — applying a consistent framework of technical analysis, data discipline, and portfolio management to each segment.',
-                'Our AI-native MGA model is built around long-term capacity partnerships. We do not chase premium volume. We build portfolios that perform across market cycles, supported by AI workflows and governance structures that make our underwriting process auditable, scalable, and repeatable.',
-              ].map((text, i) => <p key={i} style={{ color: MUTED, lineHeight: 1.8, fontSize: '0.95rem', marginBottom: 16 }}>{text}</p>)}
+              {c.whoParagraphs.map((text, i) => <p key={i} style={{ color: MUTED, lineHeight: 1.8, fontSize: '0.95rem', marginBottom: 16 }}>{text}</p>)}
             </div>
             <div style={{ display: 'flex', flexDirection: 'column' as const, gap: 20 }}>
-              {[
-                ['5', 'Specialty lines across property, liability, marine, aviation & political risk'],
-                ['3', 'Languages of operation: English, Spanish, Chinese'],
-                ['100%', 'AI-powered digital workflow — from intake to decision'],
-              ].map(([num, label]) => (
+              {c.whoStats.map(([num, label]) => (
                 <div key={num} style={{ background: NAVY_CARD, border: `1px solid ${BLUE_BORDER}`, borderRadius: 12, padding: '24px 28px' }}>
                   <div style={{ fontSize: '2rem', fontWeight: 800, color: BLUE, lineHeight: 1 }}>{num}</div>
                   <div style={{ color: MUTED, fontSize: '0.85rem', marginTop: 6 }}>{label}</div>
@@ -363,15 +257,15 @@ export default function CompanyPage() {
 
         {/* ── TECHNOLOGY ── */}
         <section style={{ padding: '80px 48px', maxWidth: 1100, margin: '0 auto', borderBottom: `1px solid ${BLUE_BORDER}` }}>
-          <div style={{ fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase' as const, color: BLUE, marginBottom: 12, fontWeight: 600 }}>Technology</div>
+          <div style={{ fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase' as const, color: BLUE, marginBottom: 12, fontWeight: 600 }}>{c.techEyebrow}</div>
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14, marginBottom: 16, flexWrap: 'wrap' as const }}>
             <h2 style={{ fontSize: 'clamp(1.6rem,3vw,2.4rem)', fontWeight: 700, margin: 0 }}>
-              AI-Native <span style={{ color: BLUE }}>infrastructure</span><br />for underwriting at scale
+              {c.techTitlePre}<span style={{ color: BLUE }}>{c.techTitleHighlight}</span><br />{c.techTitlePost}
             </h2>
-            <AIPill style={{ marginTop: 6 }}>AI Workflows</AIPill>
+            <AIPill style={{ marginTop: 6 }}>{c.techPillLabel}</AIPill>
           </div>
           <p style={{ color: MUTED, maxWidth: 640, lineHeight: 1.7, marginBottom: 48, fontSize: '0.95rem' }}>
-            Heath is built as an <strong style={{ color: WHITE }}>AI-native MGA</strong> — every step from submission intake to final decision is powered by intelligent AI workflows, structured data, and real-time analytics. No manual bottlenecks. No paper trails. Pure underwriting signal.
+            {c.techIntro}
           </p>
 
           {/* Tech cards grid */}
@@ -396,12 +290,12 @@ export default function CompanyPage() {
             border: `1.5px solid rgba(74,158,255,0.4)`,
             borderRadius: 16, padding: '40px 36px', marginTop: 48, position: 'relative',
           }}>
-            <div style={{ position: 'absolute', top: 18, right: 24, fontSize: '0.65rem', letterSpacing: '0.18em', color: 'rgba(74,158,255,0.4)', fontWeight: 800 }}>AI-NATIVE MGA</div>
+            <div style={{ position: 'absolute', top: 18, right: 24, fontSize: '0.65rem', letterSpacing: '0.18em', color: 'rgba(74,158,255,0.4)', fontWeight: 800 }}>{c.whyCardLabel}</div>
             <h3 style={{ fontSize: '1.3rem', fontWeight: 700, marginBottom: 12 }}>
-              Why <span style={{ color: BLUE }}>AI-Native MGA</span> changes everything
+              {c.whyTitlePre}<span style={{ color: BLUE }}>{c.whyTitleHighlight}</span>{c.whyTitlePost}
             </h3>
             <p style={{ color: MUTED, lineHeight: 1.75, fontSize: '0.92rem', marginBottom: 28 }}>
-              Traditional MGAs rely on manual processes, email-based workflows, and spreadsheet-driven decisions. Heath is different — every underwriting function is orchestrated through AI workflows, from first submission touch to final capacity placement.
+              {c.whyBody}
             </p>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16 }}>
               {aiWorkflows.map(({ title, desc }) => (
@@ -416,7 +310,7 @@ export default function CompanyPage() {
           {/* Pipeline */}
           <div style={{ background: NAVY_CARD, border: `1px solid ${BLUE_BORDER}`, borderRadius: 16, padding: '36px 40px', marginTop: 32 }}>
             <div style={{ fontSize: '0.75rem', letterSpacing: '0.05em', textTransform: 'uppercase' as const, color: BLUE, fontWeight: 700, marginBottom: 28 }}>
-              AI Workflow Pipeline — How a risk moves through Heath's AI-Native MGA
+              {c.pipelineLabel}
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 0, flexWrap: 'wrap' as const }}>
               {pipelineSteps.map((step, i) => (
@@ -434,8 +328,8 @@ export default function CompanyPage() {
 
         {/* ── VALUES ── */}
         <section style={{ padding: '80px 48px', maxWidth: 1100, margin: '0 auto', borderBottom: `1px solid ${BLUE_BORDER}` }}>
-          <div style={{ fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase' as const, color: BLUE, marginBottom: 12, fontWeight: 600 }}>Operating Principles</div>
-          <h2 style={{ fontSize: 'clamp(1.6rem,3vw,2.4rem)', fontWeight: 700, marginBottom: 40 }}>How we <span style={{ color: BLUE }}>work</span></h2>
+          <div style={{ fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase' as const, color: BLUE, marginBottom: 12, fontWeight: 600 }}>{c.valuesEyebrow}</div>
+          <h2 style={{ fontSize: 'clamp(1.6rem,3vw,2.4rem)', fontWeight: 700, marginBottom: 40 }}>{c.valuesTitlePre}<span style={{ color: BLUE }}>{c.valuesTitleHighlight}</span></h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 20 }}>
             {values.map(({ num, title, desc, highlight }) => (
               <div key={num} style={{ background: NAVY_CARD, border: `1px solid ${highlight ? 'rgba(74,158,255,0.4)' : BLUE_BORDER}`, borderRadius: 14, padding: '28px 24px' }}>
@@ -449,9 +343,9 @@ export default function CompanyPage() {
 
         {/* ── GOVERNANCE ── */}
         <section style={{ padding: '80px 48px', maxWidth: 1100, margin: '0 auto', borderBottom: `1px solid ${BLUE_BORDER}` }}>
-          <div style={{ fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase' as const, color: BLUE, marginBottom: 12, fontWeight: 600 }}>Governance & Partnerships</div>
-          <h2 style={{ fontSize: 'clamp(1.6rem,3vw,2.4rem)', fontWeight: 700, marginBottom: 12 }}>Institutional <span style={{ color: BLUE }}>standards</span>, built in from day one</h2>
-          <p style={{ color: MUTED, maxWidth: 600, marginTop: 12, lineHeight: 1.7, fontSize: '0.95rem', marginBottom: 40 }}>Heath operates with the governance structures and reporting frameworks expected by institutional capacity partners — ensuring alignment at every level of the value chain.</p>
+          <div style={{ fontSize: '0.7rem', letterSpacing: '0.15em', textTransform: 'uppercase' as const, color: BLUE, marginBottom: 12, fontWeight: 600 }}>{c.govEyebrow}</div>
+          <h2 style={{ fontSize: 'clamp(1.6rem,3vw,2.4rem)', fontWeight: 700, marginBottom: 12 }}>{c.govTitlePre}<span style={{ color: BLUE }}>{c.govTitleHighlight}</span>{c.govTitlePost}</h2>
+          <p style={{ color: MUTED, maxWidth: 600, marginTop: 12, lineHeight: 1.7, fontSize: '0.95rem', marginBottom: 40 }}>{c.govIntro}</p>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32 }}>
             {govItems.map(({ title, items }) => (
               <div key={title} style={{ background: NAVY_CARD, border: `1px solid ${BLUE_BORDER}`, borderRadius: 14, padding: '32px 28px' }}>
@@ -477,16 +371,16 @@ export default function CompanyPage() {
             padding: '60px 60px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 40,
           }}>
             <div>
-              <div style={{ marginBottom: 12 }}><AIPill>AI-Native MGA</AIPill></div>
-              <h2 style={{ fontSize: '1.8rem', fontWeight: 700, marginBottom: 10 }}>Ready to explore <span style={{ color: BLUE }}>partnership opportunities?</span></h2>
-              <p style={{ color: MUTED, maxWidth: 480, lineHeight: 1.65, fontSize: '0.95rem' }}>Whether you are a cedant seeking reinsurance capacity, a broker looking for a reliable technical underwriter, or an institutional investor exploring AI-native MGA partnerships — we would like to hear from you.</p>
+              <div style={{ marginBottom: 12 }}><AIPill>{c.aiNativeMga}</AIPill></div>
+              <h2 style={{ fontSize: '1.8rem', fontWeight: 700, marginBottom: 10 }}>{c.ctaTitlePre}<span style={{ color: BLUE }}>{c.ctaTitleHighlight}</span></h2>
+              <p style={{ color: MUTED, maxWidth: 480, lineHeight: 1.65, fontSize: '0.95rem' }}>{c.ctaBody}</p>
             </div>
             <a href="/contact" style={{
               flexShrink: 0, background: BLUE, color: NAVY,
               textDecoration: 'none', borderRadius: 10, padding: '14px 32px',
               fontWeight: 700, fontSize: '0.95rem', whiteSpace: 'nowrap' as const,
               display: 'inline-block',
-            }}>Contact Us →</a>
+            }}>{c.ctaButton} →</a>
           </div>
         </section>
 
