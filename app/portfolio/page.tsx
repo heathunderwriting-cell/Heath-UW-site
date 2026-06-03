@@ -42,7 +42,7 @@ const LINES: SpecialtyLine[] = [
       'S&T wrap on top of existing property programs',
     ],
     markets: 'Global. Particular focus on high-risk and emerging markets where S&T exposure is material — Middle East, Latin America, South and Southeast Asia, and strategic infrastructure assets worldwide.',
-    image: 'https://images.unsplash.com/photo-1591817414324-78965f740086?w=1400&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1591588211599-04eeffe9acc7?w=1400&auto=format&fit=crop&q=80',
     imagePosition: 'center 40%',
   },
   {
@@ -117,7 +117,7 @@ const LINES: SpecialtyLine[] = [
       'Hull treaty excess of loss',
     ],
     markets: 'Global. Focused on cedants in key maritime hubs — London market, Singapore, Rotterdam, Miami — as well as growing marine books in Latin America and Southeast Asia.',
-    image: 'https://images.unsplash.com/photo-1578575437130-527eed3abbec?w=1400&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1699588999949-e25959a59550?w=1400&auto=format&fit=crop&q=80',
     imagePosition: 'center 50%',
   },
   {
