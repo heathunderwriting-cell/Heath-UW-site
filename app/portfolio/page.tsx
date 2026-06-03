@@ -1,10 +1,11 @@
 'use client';
 
 import { useState } from 'react';
+import { useI18n } from '@/components/providers/LanguageProvider';
 
-const NAVY  = '#0d2d4f';
+const NAVY = '#0d2d4f';
 const LIGHT = '#4a9eff';
-const DARK  = 'rgba(8,18,36,0.6)';
+const DARK = 'rgba(8,18,36,0.6)';
 
 interface SpecialtyLine {
   id: string;
@@ -153,7 +154,6 @@ function LineCard({ line }: { line: SpecialtyLine }) {
     <div style={{ position:'relative', overflow:'hidden', borderRadius:16, border:`1px solid ${open?'rgba(74,158,255,0.5)':'rgba(74,158,255,0.18)'}`, transition:'border-color 0.3s ease, box-shadow 0.3s ease', boxShadow: open ? '0 0 0 1px rgba(74,158,255,0.2), 0 24px 60px rgba(0,0,0,0.4)' : '0 8px 32px rgba(0,0,0,0.25)' }}>
       <div style={{ position:'absolute', inset:0, backgroundImage:`url(${line.image})`, backgroundSize:'cover', backgroundPosition:line.imagePosition, zIndex:0 }} />
       <div style={{ position:'absolute', inset:0, background: open ? 'linear-gradient(135deg,rgba(13,45,79,0.97) 0%,rgba(13,45,79,0.93) 100%)' : 'linear-gradient(105deg,rgba(13,45,79,0.94) 0%,rgba(13,45,79,0.80) 55%,rgba(13,45,79,0.70) 100%)', transition:'background 0.4s ease', zIndex:1 }} />
-      
       <div style={{ position:'relative', zIndex:2, padding:'36px 40px' }}>
         <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:20 }}>
           <div>
@@ -201,9 +201,12 @@ function LineCard({ line }: { line: SpecialtyLine }) {
 }
 
 export default function PortfolioPage() {
+  const { dict } = useI18n();
+  const d = dict.pagesV2.portfolio;
+
   return (
     <main style={{ minHeight:'100vh', background:NAVY, fontFamily:"'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif", color:'#ffffff' }}>
-      {/* ── Page background: H letters + neon node clusters ── */}
+      {/* Background */}
       <div style={{ position:'fixed', inset:0, zIndex:0, pointerEvents:'none', overflow:'hidden' }}>
         <svg width="100%" height="100%" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
           <g opacity="0.13" transform="translate(1050,40) scale(5) rotate(8 55 70)">
@@ -222,53 +225,42 @@ export default function PortfolioPage() {
             <rect x="16" y="26" width="24" height="12" fill="#4a9eff" />
           </g>
           <g style={{ filter:'drop-shadow(0 0 6px #4a9eff)' }} opacity="0.85" stroke="#4a9eff" strokeWidth="1.2" fill="none">
-            <line x1="155" y1="110" x2="215" y2="75" />
-            <line x1="155" y1="110" x2="105" y2="155" />
-            <line x1="155" y1="110" x2="240" y2="140" />
-            <line x1="215" y1="75" x2="175" y2="45" />
+            <line x1="155" y1="110" x2="215" y2="75" /><line x1="155" y1="110" x2="105" y2="155" />
+            <line x1="155" y1="110" x2="240" y2="140" /><line x1="215" y1="75" x2="175" y2="45" />
             <line x1="105" y1="155" x2="110" y2="210" />
-            <circle cx="155" cy="110" r="7" fill="#4a9eff" />
-            <circle cx="155" cy="110" r="3" fill="#f0f4ff" opacity="0.5" />
-            <circle cx="215" cy="75" r="4" fill="#4a9eff" opacity="0.7" />
-            <circle cx="105" cy="155" r="4" fill="#4a9eff" opacity="0.7" />
-            <circle cx="240" cy="140" r="3.5" fill="#4a9eff" opacity="0.5" />
-            <circle cx="175" cy="45" r="3" fill="#4a9eff" opacity="0.45" />
+            <circle cx="155" cy="110" r="7" fill="#4a9eff" /><circle cx="155" cy="110" r="3" fill="#f0f4ff" opacity="0.5" />
+            <circle cx="215" cy="75" r="4" fill="#4a9eff" opacity="0.7" /><circle cx="105" cy="155" r="4" fill="#4a9eff" opacity="0.7" />
+            <circle cx="240" cy="140" r="3.5" fill="#4a9eff" opacity="0.5" /><circle cx="175" cy="45" r="3" fill="#4a9eff" opacity="0.45" />
             <circle cx="110" cy="210" r="3" fill="#4a9eff" opacity="0.45" />
           </g>
           <g style={{ filter:'drop-shadow(0 0 6px #4a9eff)' }} opacity="0.80" stroke="#4a9eff" strokeWidth="1.2" fill="none">
-            <line x1="1290" y1="200" x2="1350" y2="160" />
-            <line x1="1290" y1="200" x2="1240" y2="250" />
-            <line x1="1290" y1="200" x2="1360" y2="235" />
-            <line x1="1350" y1="160" x2="1380" y2="120" />
-            <circle cx="1290" cy="200" r="7" fill="#4a9eff" />
-            <circle cx="1290" cy="200" r="3" fill="#f0f4ff" opacity="0.5" />
-            <circle cx="1350" cy="160" r="4" fill="#4a9eff" opacity="0.7" />
-            <circle cx="1240" cy="250" r="4" fill="#4a9eff" opacity="0.7" />
-            <circle cx="1360" cy="235" r="3.5" fill="#4a9eff" opacity="0.5" />
-            <circle cx="1380" cy="120" r="3" fill="#4a9eff" opacity="0.45" />
+            <line x1="1290" y1="200" x2="1350" y2="160" /><line x1="1290" y1="200" x2="1240" y2="250" />
+            <line x1="1290" y1="200" x2="1360" y2="235" /><line x1="1350" y1="160" x2="1380" y2="120" />
+            <circle cx="1290" cy="200" r="7" fill="#4a9eff" /><circle cx="1290" cy="200" r="3" fill="#f0f4ff" opacity="0.5" />
+            <circle cx="1350" cy="160" r="4" fill="#4a9eff" opacity="0.7" /><circle cx="1240" cy="250" r="4" fill="#4a9eff" opacity="0.7" />
+            <circle cx="1360" cy="235" r="3.5" fill="#4a9eff" opacity="0.5" /><circle cx="1380" cy="120" r="3" fill="#4a9eff" opacity="0.45" />
           </g>
           <g style={{ filter:'drop-shadow(0 0 6px #4a9eff)' }} opacity="0.75" stroke="#4a9eff" strokeWidth="1.2" fill="none">
-            <line x1="90" y1="700" x2="150" y2="660" />
-            <line x1="90" y1="700" x2="50" y2="750" />
+            <line x1="90" y1="700" x2="150" y2="660" /><line x1="90" y1="700" x2="50" y2="750" />
             <line x1="90" y1="700" x2="165" y2="730" />
-            <circle cx="90" cy="700" r="7" fill="#4a9eff" />
-            <circle cx="90" cy="700" r="3" fill="#f0f4ff" opacity="0.5" />
-            <circle cx="150" cy="660" r="4" fill="#4a9eff" opacity="0.7" />
-            <circle cx="50" cy="750" r="4" fill="#4a9eff" opacity="0.7" />
+            <circle cx="90" cy="700" r="7" fill="#4a9eff" /><circle cx="90" cy="700" r="3" fill="#f0f4ff" opacity="0.5" />
+            <circle cx="150" cy="660" r="4" fill="#4a9eff" opacity="0.7" /><circle cx="50" cy="750" r="4" fill="#4a9eff" opacity="0.7" />
             <circle cx="165" cy="730" r="3.5" fill="#4a9eff" opacity="0.5" />
           </g>
         </svg>
       </div>
+
+      {/* Header section */}
       <section style={{ padding:'96px 40px 64px', maxWidth:1160, margin:'0 auto' }}>
         <div style={{ display:'inline-flex', alignItems:'center', gap:8, padding:'6px 16px', borderRadius:20, border:'1px solid rgba(74,158,255,0.35)', background:'rgba(74,158,255,0.08)', fontSize:11, fontWeight:700, letterSpacing:'0.12em', color:LIGHT, marginBottom:28 }}>
           <span style={{ width:6, height:6, borderRadius:'50%', background:LIGHT, boxShadow:`0 0 8px ${LIGHT}` }} />
           REINSURANCE PORTFOLIO
         </div>
         <h1 style={{ fontSize:'clamp(36px,5vw,58px)', fontWeight:800, lineHeight:1.1, maxWidth:700, margin:'0 0 24px' }}>
-          Specialty <span style={{ color:LIGHT }}>reinsurance capacity</span> built for complex risk.
+          {d.subtitle}
         </h1>
         <p style={{ fontSize:18, color:'rgba(255,255,255,0.6)', maxWidth:600, lineHeight:1.7, margin:0 }}>
-          Heath underwrites across five specialty lines — combining proprietary technology, deep market expertise, and disciplined risk selection to deliver capacity where it matters most.
+          {d.intro}
         </p>
         <div style={{ display:'flex', flexWrap:'wrap', gap:10, marginTop:40 }}>
           {LINES.map(l => (
@@ -276,9 +268,13 @@ export default function PortfolioPage() {
           ))}
         </div>
       </section>
+
+      {/* Line cards */}
       <section style={{ padding:'0 40px 96px', maxWidth:1160, margin:'0 auto', display:'flex', flexDirection:'column', gap:20 }}>
         {LINES.map(line => <LineCard key={line.id} line={line} />)}
       </section>
+
+      {/* CTA */}
       <section style={{ background:DARK, borderTop:'1px solid rgba(74,158,255,0.1)', borderBottom:'1px solid rgba(74,158,255,0.1)', padding:'80px 40px' }}>
         <div style={{ maxWidth:1160, margin:'0 auto', display:'flex', alignItems:'center', justifyContent:'space-between', gap:40, flexWrap:'wrap' }}>
           <div>
