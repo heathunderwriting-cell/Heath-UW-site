@@ -9,7 +9,7 @@
   --primary: #f0f4ff;
   --secondary: #8ba4c0;
   --muted: #122040;
-  --accent: #1a65a8;
+  --accent: #1a3060;
   --intelligence: #134f86;
   --positive: #10b981;
   --risk: #ef4444;
@@ -33,11 +33,11 @@ body {
   --border: #d9dde3;
 }
 
-/* Landing: hero grid (máscara radial) */
+/* Landing: hero grid (mÃ¡scara radial) */
 .landing-hero-grid {
   background-image:
-    linear-gradient(to right, rgb(42 122 192 / 0.15) 1px, transparent 1px),
-    linear-gradient(to bottom, rgb(42 122 192 / 0.15) 1px, transparent 1px);
+    linear-gradient(to right, rgb(26 48 96 / 0.15) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(26 48 96 / 0.15) 1px, transparent 1px);
   background-size: 48px 48px;
   mask-image: radial-gradient(ellipse 80% 68% at 50% 40%, black 25%, transparent 74%);
   -webkit-mask-image: radial-gradient(
