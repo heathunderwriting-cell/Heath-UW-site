@@ -129,26 +129,45 @@ export default function CompanyPage() {
         <svg width="100%" height="100%" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" opacity="0.22">
 
           <defs>
-            <filter id="chglow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-            <filter id="chglow2" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-            <filter id="chsglow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            <filter id="chglow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            <filter id="chglow2" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="10" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            <filter id="chsglow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
           </defs>
-          {/* H LETTERFORM */}
-          <line x1="78" y1="60" x2="78" y2="840" stroke="#00d4ff" strokeWidth="3" filter="url(#chglow)"/>
-          <line x1="192" y1="60" x2="192" y2="840" stroke="#00d4ff" strokeWidth="3" filter="url(#chglow)"/>
-          <line x1="78" y1="450" x2="192" y2="450" stroke="#00d4ff" strokeWidth="2.5" filter="url(#chglow)"/>
-          <circle cx="78" cy="60" r="4" fill="#00d4ff" filter="url(#chglow2)"/>
-          <circle cx="192" cy="60" r="4" fill="#00d4ff" filter="url(#chglow2)"/>
-          <circle cx="78" cy="840" r="4" fill="#00d4ff" filter="url(#chglow2)"/>
-          <circle cx="192" cy="840" r="4" fill="#00d4ff" filter="url(#chglow2)"/>
-          <circle cx="78" cy="450" r="5" fill="#00d4ff" filter="url(#chglow2)"/>
-          <circle cx="192" cy="450" r="5" fill="#00d4ff" filter="url(#chglow2)"/>
-          {/* H to chip trace */}
-          <path d="M192,360 L380,360 L380,430 L730,430" fill="none" stroke="#4a9eff" strokeWidth="1" opacity="0.5"/>
-          <path d="M192,540 L350,540 L350,500 L730,500" fill="none" stroke="#4a9eff" strokeWidth="1" opacity="0.4"/>
-          <circle cx="380" cy="360" r="3.5" fill="#4a9eff" filter="url(#chsglow)"/>
-          <circle cx="380" cy="430" r="3.5" fill="#4a9eff" filter="url(#chsglow)"/>
-          <circle cx="350" cy="540" r="3" fill="#4a9eff" filter="url(#chsglow)"/>
+          {/* ===== H #1 — LEFT ===== */}
+          <line x1="52" y1="80" x2="52" y2="820" stroke="#00d4ff" strokeWidth="5" filter="url(#chglow)"/>
+          <line x1="168" y1="80" x2="168" y2="820" stroke="#00d4ff" strokeWidth="5" filter="url(#chglow)"/>
+          <line x1="52" y1="450" x2="168" y2="450" stroke="#00d4ff" strokeWidth="4" filter="url(#chglow)"/>
+          <circle cx="52" cy="80" r="5" fill="#00d4ff" filter="url(#chglow2)"/>
+          <circle cx="168" cy="80" r="5" fill="#00d4ff" filter="url(#chglow2)"/>
+          <circle cx="52" cy="820" r="5" fill="#00d4ff" filter="url(#chglow2)"/>
+          <circle cx="168" cy="820" r="5" fill="#00d4ff" filter="url(#chglow2)"/>
+          <circle cx="52" cy="450" r="6" fill="#00d4ff" filter="url(#chglow2)"/>
+          <circle cx="168" cy="450" r="6" fill="#00d4ff" filter="url(#chglow2)"/>
+          {/* ===== H #2 — CENTER ===== */}
+          <line x1="636" y1="100" x2="636" y2="800" stroke="#00d4ff" strokeWidth="4.5" filter="url(#chglow)"/>
+          <line x1="748" y1="100" x2="748" y2="800" stroke="#00d4ff" strokeWidth="4.5" filter="url(#chglow)"/>
+          <line x1="636" y1="450" x2="748" y2="450" stroke="#00d4ff" strokeWidth="3.5" filter="url(#chglow)"/>
+          <circle cx="636" cy="100" r="5" fill="#00d4ff" filter="url(#chglow2)"/>
+          <circle cx="748" cy="100" r="5" fill="#00d4ff" filter="url(#chglow2)"/>
+          <circle cx="636" cy="800" r="5" fill="#00d4ff" filter="url(#chglow2)"/>
+          <circle cx="748" cy="800" r="5" fill="#00d4ff" filter="url(#chglow2)"/>
+          <circle cx="636" cy="450" r="6" fill="#00d4ff" filter="url(#chglow2)"/>
+          <circle cx="748" cy="450" r="6" fill="#00d4ff" filter="url(#chglow2)"/>
+          {/* ===== H #3 — RIGHT ===== */}
+          <line x1="1300" y1="80" x2="1300" y2="820" stroke="#00d4ff" strokeWidth="5" filter="url(#chglow)"/>
+          <line x1="1410" y1="80" x2="1410" y2="820" stroke="#00d4ff" strokeWidth="5" filter="url(#chglow)"/>
+          <line x1="1300" y1="450" x2="1410" y2="450" stroke="#00d4ff" strokeWidth="4" filter="url(#chglow)"/>
+          <circle cx="1300" cy="80" r="5" fill="#00d4ff" filter="url(#chglow2)"/>
+          <circle cx="1410" cy="80" r="5" fill="#00d4ff" filter="url(#chglow2)"/>
+          <circle cx="1300" cy="820" r="5" fill="#00d4ff" filter="url(#chglow2)"/>
+          <circle cx="1410" cy="820" r="5" fill="#00d4ff" filter="url(#chglow2)"/>
+          <circle cx="1300" cy="450" r="6" fill="#00d4ff" filter="url(#chglow2)"/>
+          <circle cx="1410" cy="450" r="6" fill="#00d4ff" filter="url(#chglow2)"/>
+          {/* H traces to chip */}
+          <path d="M168,380 L380,380 L380,430 L730,430" fill="none" stroke="#4a9eff" strokeWidth="1" opacity="0.5"/>
+          <path d="M168,520 L350,520 L350,500 L730,500" fill="none" stroke="#4a9eff" strokeWidth="1" opacity="0.4"/>
+          <circle cx="380" cy="380" r="3.5" fill="#4a9eff" filter="url(#chsglow)"/>
+          <circle cx="350" cy="520" r="3" fill="#4a9eff" filter="url(#chsglow)"/>
           {/* MAIN CHIP */}
           <rect x="790" y="295" width="360" height="250" rx="6" fill="none" stroke="#00d4ff" strokeWidth="2.5" filter="url(#chglow)"/>
           <rect x="808" y="313" width="324" height="214" rx="4" fill="none" stroke="#4a9eff" strokeWidth="1" opacity="0.45"/>
@@ -202,59 +221,43 @@ export default function CompanyPage() {
           <line x1="1150" y1="535" x2="1210" y2="535" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/><line x1="1210" y1="527" x2="1210" y2="543" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/>
           {/* CIRCUIT TRACES */}
           <path d="M826,240 L826,165 L680,165 L680,60" fill="none" stroke="#00d4ff" strokeWidth="1.2" opacity="0.5"/>
-          <path d="M898,240 L898,190 L1060,190 L1060,100" fill="none" stroke="#4a9eff" strokeWidth="1" opacity="0.45"/>
-          <path d="M970,240 L970,175 L820,175 L820,80" fill="none" stroke="#00d4ff" strokeWidth="1" opacity="0.4"/>
           <path d="M1042,240 L1042,185 L1220,185 L1220,110" fill="none" stroke="#4a9eff" strokeWidth="1.2" opacity="0.5"/>
-          <path d="M1114,240 L1114,200 L1330,200 L1330,50" fill="none" stroke="#00d4ff" strokeWidth="1" opacity="0.35"/>
           <path d="M862,600 L862,670 L700,670 L700,780" fill="none" stroke="#00d4ff" strokeWidth="1.2" opacity="0.5"/>
-          <path d="M934,600 L934,690 L1120,690 L1120,820" fill="none" stroke="#4a9eff" strokeWidth="1" opacity="0.45"/>
-          <path d="M1006,600 L1006,660 L840,660 L840,800" fill="none" stroke="#00d4ff" strokeWidth="1" opacity="0.4"/>
           <path d="M1078,600 L1078,710 L1280,710 L1280,850" fill="none" stroke="#4a9eff" strokeWidth="1" opacity="0.4"/>
           <path d="M730,360 L600,360 L600,240 L460,240" fill="none" stroke="#00d4ff" strokeWidth="1.2" opacity="0.5"/>
-          <path d="M730,500 L620,500 L620,640 L460,640" fill="none" stroke="#00d4ff" strokeWidth="1" opacity="0.4"/>
-          <path d="M1210,325 L1340,325 L1340,200 L1440,200" fill="none" stroke="#00d4ff" strokeWidth="1.2" opacity="0.5"/>
-          <path d="M1210,465 L1380,465 L1380,620 L1440,620" fill="none" stroke="#00d4ff" strokeWidth="1" opacity="0.4"/>
-          {/* TRACE NODES */}
+          <path d="M730,500 L560,500 L560,640 L420,640" fill="none" stroke="#4a9eff" strokeWidth="1" opacity="0.4"/>
+          <path d="M1210,325 L1270,325 L1270,200" fill="none" stroke="#00d4ff" strokeWidth="1.2" opacity="0.5"/>
+          <path d="M1210,465 L1260,465 L1260,600" fill="none" stroke="#4a9eff" strokeWidth="1" opacity="0.4"/>
           <circle cx="680" cy="165" r="5" fill="#00d4ff" filter="url(#chglow2)"/>
-          <circle cx="1060" cy="190" r="4" fill="#4a9eff" filter="url(#chglow)"/>
-          <circle cx="820" cy="175" r="5" fill="#00d4ff" filter="url(#chglow2)"/>
           <circle cx="1220" cy="185" r="5" fill="#4a9eff" filter="url(#chglow2)"/>
           <circle cx="700" cy="670" r="5" fill="#00d4ff" filter="url(#chglow2)"/>
-          <circle cx="1120" cy="690" r="5" fill="#4a9eff" filter="url(#chglow2)"/>
           <circle cx="600" cy="360" r="5" fill="#00d4ff" filter="url(#chglow2)"/>
-          <circle cx="1340" cy="325" r="5" fill="#00d4ff" filter="url(#chglow2)"/>
-          <circle cx="1380" cy="465" r="5" fill="#4a9eff" filter="url(#chglow2)"/>
+          <circle cx="560" cy="500" r="4" fill="#4a9eff" filter="url(#chsglow)"/>
+          <circle cx="1270" cy="325" r="4" fill="#00d4ff" filter="url(#chsglow)"/>
           {/* SECONDARY CHIP */}
-          <rect x="250" y="185" width="220" height="155" rx="5" fill="none" stroke="#4a9eff" strokeWidth="1.8" filter="url(#chsglow)" opacity="0.8"/>
-          <rect x="268" y="202" width="184" height="121" rx="3" fill="none" stroke="#4a9eff" strokeWidth="0.8" opacity="0.3"/>
-          <circle cx="360" cy="263" r="8" fill="none" stroke="#4a9eff" strokeWidth="1" opacity="0.4"/>
-          <circle cx="360" cy="263" r="2.5" fill="#4a9eff" filter="url(#chglow)" opacity="0.8"/>
-          <rect x="272" y="206" width="10" height="10" fill="none" stroke="#4a9eff" strokeWidth="1" opacity="0.7"/>
-          <rect x="458" y="206" width="10" height="10" fill="none" stroke="#4a9eff" strokeWidth="1" opacity="0.7"/>
-          <rect x="272" y="319" width="10" height="10" fill="none" stroke="#4a9eff" strokeWidth="1" opacity="0.7"/>
-          <rect x="458" y="319" width="10" height="10" fill="none" stroke="#4a9eff" strokeWidth="1" opacity="0.7"/>
-          <line x1="290" y1="185" x2="290" y2="150" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.7"/><line x1="283" y1="150" x2="297" y2="150" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.7"/>
-          <line x1="330" y1="185" x2="330" y2="150" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.7"/><line x1="323" y1="150" x2="337" y2="150" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.7"/>
-          <line x1="360" y1="185" x2="360" y2="150" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.7"/><line x1="353" y1="150" x2="367" y2="150" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.7"/>
-          <line x1="390" y1="185" x2="390" y2="150" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.7"/><line x1="383" y1="150" x2="397" y2="150" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.7"/>
-          <line x1="430" y1="185" x2="430" y2="150" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.7"/><line x1="423" y1="150" x2="437" y2="150" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.7"/>
-          <line x1="290" y1="340" x2="290" y2="375" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.65"/><line x1="283" y1="375" x2="297" y2="375" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.65"/>
-          <line x1="360" y1="340" x2="360" y2="375" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.65"/><line x1="353" y1="375" x2="367" y2="375" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.65"/>
-          <line x1="430" y1="340" x2="430" y2="375" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.65"/><line x1="423" y1="375" x2="437" y2="375" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.65"/>
-          <line x1="250" y1="220" x2="215" y2="220" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.65"/><line x1="215" y1="213" x2="215" y2="227" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.65"/>
-          <line x1="250" y1="263" x2="215" y2="263" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.65"/><line x1="215" y1="256" x2="215" y2="270" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.65"/>
-          <line x1="250" y1="306" x2="215" y2="306" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.65"/><line x1="215" y1="299" x2="215" y2="313" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.65"/>
-          <line x1="470" y1="220" x2="505" y2="220" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.65"/><line x1="505" y1="213" x2="505" y2="227" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.65"/>
-          <line x1="470" y1="263" x2="505" y2="263" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.65"/><line x1="505" y1="256" x2="505" y2="270" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.65"/>
-          <path d="M505,263 L620,263 L620,360 L730,360" fill="none" stroke="#4a9eff" strokeWidth="1" opacity="0.35"/>
-          <circle cx="505" cy="263" r="3" fill="#4a9eff" filter="url(#chsglow)" opacity="0.7"/>
-          <circle cx="620" cy="263" r="3" fill="#4a9eff" filter="url(#chsglow)" opacity="0.5"/>
-          {/* AMBIENT */}
-          <circle cx="50" cy="350" r="3" fill="#00d4ff" opacity="0.4" filter="url(#chsglow)"/>
-          <circle cx="480" cy="80" r="3" fill="#00d4ff" opacity="0.4" filter="url(#chsglow)"/>
-          <circle cx="540" cy="760" r="2.5" fill="#4a9eff" opacity="0.35"/>
-          <circle cx="1400" cy="380" r="3" fill="#00d4ff" opacity="0.4" filter="url(#chsglow)"/>
-        </svg>
+          <rect x="250" y="190" width="210" height="148" rx="5" fill="none" stroke="#4a9eff" strokeWidth="1.8" filter="url(#chsglow)" opacity="0.8"/>
+          <rect x="266" y="206" width="178" height="116" rx="3" fill="none" stroke="#4a9eff" strokeWidth="0.8" opacity="0.3"/>
+          <circle cx="355" cy="264" r="7" fill="none" stroke="#4a9eff" strokeWidth="1" opacity="0.4"/>
+          <circle cx="355" cy="264" r="2.5" fill="#4a9eff" filter="url(#chglow)" opacity="0.8"/>
+          <rect x="270" y="210" width="10" height="10" fill="none" stroke="#4a9eff" strokeWidth="1" opacity="0.7"/>
+          <rect x="450" y="210" width="10" height="10" fill="none" stroke="#4a9eff" strokeWidth="1" opacity="0.7"/>
+          <rect x="270" y="318" width="10" height="10" fill="none" stroke="#4a9eff" strokeWidth="1" opacity="0.7"/>
+          <rect x="450" y="318" width="10" height="10" fill="none" stroke="#4a9eff" strokeWidth="1" opacity="0.7"/>
+          <line x1="290" y1="190" x2="290" y2="156" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.7"/><line x1="283" y1="156" x2="297" y2="156" stroke="#4a9eff" strokeWidth="1.5" opacity="0.7"/>
+          <line x1="340" y1="190" x2="340" y2="156" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.7"/><line x1="333" y1="156" x2="347" y2="156" stroke="#4a9eff" strokeWidth="1.5" opacity="0.7"/>
+          <line x1="390" y1="190" x2="390" y2="156" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.7"/><line x1="383" y1="156" x2="397" y2="156" stroke="#4a9eff" strokeWidth="1.5" opacity="0.7"/>
+          <line x1="440" y1="190" x2="440" y2="156" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.7"/><line x1="433" y1="156" x2="447" y2="156" stroke="#4a9eff" strokeWidth="1.5" opacity="0.7"/>
+          <line x1="290" y1="338" x2="290" y2="372" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.65"/><line x1="283" y1="372" x2="297" y2="372" stroke="#4a9eff" strokeWidth="1.5" opacity="0.65"/>
+          <line x1="390" y1="338" x2="390" y2="372" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.65"/><line x1="383" y1="372" x2="397" y2="372" stroke="#4a9eff" strokeWidth="1.5" opacity="0.65"/>
+          <line x1="250" y1="225" x2="218" y2="225" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.65"/><line x1="218" y1="218" x2="218" y2="232" stroke="#4a9eff" strokeWidth="1.5" opacity="0.65"/>
+          <line x1="250" y1="264" x2="218" y2="264" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.65"/><line x1="218" y1="257" x2="218" y2="271" stroke="#4a9eff" strokeWidth="1.5" opacity="0.65"/>
+          <line x1="250" y1="303" x2="218" y2="303" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.65"/><line x1="218" y1="296" x2="218" y2="310" stroke="#4a9eff" strokeWidth="1.5" opacity="0.65"/>
+          <line x1="460" y1="225" x2="492" y2="225" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.65"/><line x1="492" y1="218" x2="492" y2="232" stroke="#4a9eff" strokeWidth="1.5" opacity="0.65"/>
+          <line x1="460" y1="264" x2="492" y2="264" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.65"/><line x1="492" y1="257" x2="492" y2="271" stroke="#4a9eff" strokeWidth="1.5" opacity="0.65"/>
+          <path d="M492,264 L600,264 L600,360 L730,360" fill="none" stroke="#4a9eff" strokeWidth="1" opacity="0.35"/>
+          <circle cx="492" cy="264" r="3" fill="#4a9eff" filter="url(#chsglow)" opacity="0.7"/>
+          <circle cx="600" cy="264" r="3" fill="#4a9eff" filter="url(#chsglow)" opacity="0.5"/>
+          </svg>
       </div>
 
       <div style={{ position: 'relative', zIndex: 1 }}>
