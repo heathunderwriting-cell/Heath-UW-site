@@ -8,29 +8,134 @@ const LIGHT_BLUE = '#4a9eff';
 
 function Background() {
   return (
-    <svg style={{ position: 'fixed', inset: 0, width: '100%', height: '100%', opacity: 0.12, pointerEvents: 'none', zIndex: 1 }} viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="stemG" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0" stopColor="#4a9eff"/>
-          <stop offset="1" stopColor="#1a70f7"/>
-        </linearGradient>
-      </defs>
-      {/* H-letter structure */}
-      <line x1="140" y1="80" x2="140" y2="820" stroke="url(#stemG)" strokeWidth="3"/>
-      <line x1="260" y1="80" x2="260" y2="820" stroke="url(#stemG)" strokeWidth="3"/>
-      <line x1="140" y1="450" x2="260" y2="450" stroke="url(#stemG)" strokeWidth="2"/>
-      {/* node cluster */}
-      <line x1="1000" y1="220" x2="1150" y2="350" stroke="#4a9eff" strokeWidth="1.5"/>
-      <line x1="1000" y1="220" x2="900" y2="370" stroke="#4a9eff" strokeWidth="1.5"/>
-      <line x1="1000" y1="220" x2="1100" y2="180" stroke="#4a9eff" strokeWidth="1.5"/>
-      <line x1="1000" y1="220" x2="1050" y2="400" stroke="#4a9eff" strokeWidth="1.5"/>
-      <line x1="1000" y1="220" x2="850" y2="200" stroke="#4a9eff" strokeWidth="1.5"/>
-      <circle cx="1000" cy="220" r="7" fill="#4a9eff"/>
-      <circle cx="1150" cy="350" r="4" fill="#4a9eff"/>
-      <circle cx="900" cy="370" r="4" fill="#4a9eff"/>
-      <circle cx="1100" cy="180" r="4" fill="#4a9eff"/>
-      <circle cx="1050" cy="400" r="4" fill="#4a9eff"/>
-      <circle cx="850" cy="200" r="4" fill="#4a9eff"/>
+    <svg style={{ position: 'fixed', inset: 0, width: '100%', height: '100%', opacity: 0.22, pointerEvents: 'none', zIndex: 1 }} viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+
+          <defs>
+            <filter id="chglow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            <filter id="chglow2" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            <filter id="chsglow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          </defs>
+          {/* H LETTERFORM */}
+          <line x1="78" y1="60" x2="78" y2="840" stroke="#00d4ff" strokeWidth="3" filter="url(#chglow)"/>
+          <line x1="192" y1="60" x2="192" y2="840" stroke="#00d4ff" strokeWidth="3" filter="url(#chglow)"/>
+          <line x1="78" y1="450" x2="192" y2="450" stroke="#00d4ff" strokeWidth="2.5" filter="url(#chglow)"/>
+          <circle cx="78" cy="60" r="4" fill="#00d4ff" filter="url(#chglow2)"/>
+          <circle cx="192" cy="60" r="4" fill="#00d4ff" filter="url(#chglow2)"/>
+          <circle cx="78" cy="840" r="4" fill="#00d4ff" filter="url(#chglow2)"/>
+          <circle cx="192" cy="840" r="4" fill="#00d4ff" filter="url(#chglow2)"/>
+          <circle cx="78" cy="450" r="5" fill="#00d4ff" filter="url(#chglow2)"/>
+          <circle cx="192" cy="450" r="5" fill="#00d4ff" filter="url(#chglow2)"/>
+          {/* H to chip trace */}
+          <path d="M192,360 L380,360 L380,430 L730,430" fill="none" stroke="#4a9eff" strokeWidth="1" opacity="0.5"/>
+          <path d="M192,540 L350,540 L350,500 L730,500" fill="none" stroke="#4a9eff" strokeWidth="1" opacity="0.4"/>
+          <circle cx="380" cy="360" r="3.5" fill="#4a9eff" filter="url(#chsglow)"/>
+          <circle cx="380" cy="430" r="3.5" fill="#4a9eff" filter="url(#chsglow)"/>
+          <circle cx="350" cy="540" r="3" fill="#4a9eff" filter="url(#chsglow)"/>
+          {/* MAIN CHIP */}
+          <rect x="790" y="295" width="360" height="250" rx="6" fill="none" stroke="#00d4ff" strokeWidth="2.5" filter="url(#chglow)"/>
+          <rect x="808" y="313" width="324" height="214" rx="4" fill="none" stroke="#4a9eff" strokeWidth="1" opacity="0.45"/>
+          <rect x="836" y="338" width="268" height="164" rx="3" fill="none" stroke="#4a9eff" strokeWidth="0.7" opacity="0.2"/>
+          <line x1="836" y1="390" x2="1104" y2="390" stroke="#4a9eff" strokeWidth="0.5" opacity="0.2"/>
+          <line x1="836" y1="440" x2="1104" y2="440" stroke="#4a9eff" strokeWidth="0.5" opacity="0.2"/>
+          <line x1="920" y1="338" x2="920" y2="502" stroke="#4a9eff" strokeWidth="0.5" opacity="0.2"/>
+          <line x1="1020" y1="338" x2="1020" y2="502" stroke="#4a9eff" strokeWidth="0.5" opacity="0.2"/>
+          <rect x="812" y="317" width="14" height="14" fill="none" stroke="#00d4ff" strokeWidth="1.5" filter="url(#chsglow)"/>
+          <rect x="1114" y="317" width="14" height="14" fill="none" stroke="#00d4ff" strokeWidth="1.5" filter="url(#chsglow)"/>
+          <rect x="812" y="509" width="14" height="14" fill="none" stroke="#00d4ff" strokeWidth="1.5" filter="url(#chsglow)"/>
+          <rect x="1114" y="509" width="14" height="14" fill="none" stroke="#00d4ff" strokeWidth="1.5" filter="url(#chsglow)"/>
+          <circle cx="970" cy="420" r="18" fill="none" stroke="#00d4ff" strokeWidth="1" opacity="0.25" filter="url(#chglow2)"/>
+          <circle cx="970" cy="420" r="9" fill="none" stroke="#00d4ff" strokeWidth="1.5" opacity="0.5" filter="url(#chglow)"/>
+          <circle cx="970" cy="420" r="3" fill="#00d4ff" filter="url(#chglow2)"/>
+          {/* TOP PINS */}
+          <line x1="826" y1="295" x2="826" y2="240" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/><line x1="818" y1="240" x2="834" y2="240" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/>
+          <line x1="862" y1="295" x2="862" y2="240" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/><line x1="854" y1="240" x2="870" y2="240" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/>
+          <line x1="898" y1="295" x2="898" y2="240" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/><line x1="890" y1="240" x2="906" y2="240" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/>
+          <line x1="934" y1="295" x2="934" y2="240" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/><line x1="926" y1="240" x2="942" y2="240" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/>
+          <line x1="970" y1="295" x2="970" y2="240" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/><line x1="962" y1="240" x2="978" y2="240" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/>
+          <line x1="1006" y1="295" x2="1006" y2="240" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/><line x1="998" y1="240" x2="1014" y2="240" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/>
+          <line x1="1042" y1="295" x2="1042" y2="240" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/><line x1="1034" y1="240" x2="1050" y2="240" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/>
+          <line x1="1078" y1="295" x2="1078" y2="240" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/><line x1="1070" y1="240" x2="1086" y2="240" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/>
+          <line x1="1114" y1="295" x2="1114" y2="240" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/><line x1="1106" y1="240" x2="1122" y2="240" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/>
+          {/* BOTTOM PINS */}
+          <line x1="826" y1="545" x2="826" y2="600" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/><line x1="818" y1="600" x2="834" y2="600" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/>
+          <line x1="862" y1="545" x2="862" y2="600" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/><line x1="854" y1="600" x2="870" y2="600" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/>
+          <line x1="898" y1="545" x2="898" y2="600" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/><line x1="890" y1="600" x2="906" y2="600" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/>
+          <line x1="934" y1="545" x2="934" y2="600" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/><line x1="926" y1="600" x2="942" y2="600" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/>
+          <line x1="970" y1="545" x2="970" y2="600" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/><line x1="962" y1="600" x2="978" y2="600" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/>
+          <line x1="1006" y1="545" x2="1006" y2="600" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/><line x1="998" y1="600" x2="1014" y2="600" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/>
+          <line x1="1042" y1="545" x2="1042" y2="600" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/><line x1="1034" y1="600" x2="1050" y2="600" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/>
+          <line x1="1078" y1="545" x2="1078" y2="600" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/><line x1="1070" y1="600" x2="1086" y2="600" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/>
+          <line x1="1114" y1="545" x2="1114" y2="600" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/><line x1="1106" y1="600" x2="1122" y2="600" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/>
+          {/* LEFT PINS */}
+          <line x1="790" y1="325" x2="730" y2="325" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/><line x1="730" y1="317" x2="730" y2="333" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/>
+          <line x1="790" y1="360" x2="730" y2="360" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/><line x1="730" y1="352" x2="730" y2="368" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/>
+          <line x1="790" y1="395" x2="730" y2="395" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/><line x1="730" y1="387" x2="730" y2="403" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/>
+          <line x1="790" y1="430" x2="730" y2="430" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/><line x1="730" y1="422" x2="730" y2="438" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/>
+          <line x1="790" y1="465" x2="730" y2="465" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/><line x1="730" y1="457" x2="730" y2="473" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/>
+          <line x1="790" y1="500" x2="730" y2="500" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/><line x1="730" y1="492" x2="730" y2="508" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/>
+          <line x1="790" y1="535" x2="730" y2="535" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/><line x1="730" y1="527" x2="730" y2="543" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/>
+          {/* RIGHT PINS */}
+          <line x1="1150" y1="325" x2="1210" y2="325" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/><line x1="1210" y1="317" x2="1210" y2="333" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/>
+          <line x1="1150" y1="360" x2="1210" y2="360" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/><line x1="1210" y1="352" x2="1210" y2="368" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/>
+          <line x1="1150" y1="395" x2="1210" y2="395" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/><line x1="1210" y1="387" x2="1210" y2="403" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/>
+          <line x1="1150" y1="430" x2="1210" y2="430" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/><line x1="1210" y1="422" x2="1210" y2="438" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/>
+          <line x1="1150" y1="465" x2="1210" y2="465" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/><line x1="1210" y1="457" x2="1210" y2="473" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/>
+          <line x1="1150" y1="500" x2="1210" y2="500" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/><line x1="1210" y1="492" x2="1210" y2="508" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/>
+          <line x1="1150" y1="535" x2="1210" y2="535" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/><line x1="1210" y1="527" x2="1210" y2="543" stroke="#00d4ff" strokeWidth="2" filter="url(#chsglow)"/>
+          {/* CIRCUIT TRACES */}
+          <path d="M826,240 L826,165 L680,165 L680,60" fill="none" stroke="#00d4ff" strokeWidth="1.2" opacity="0.5"/>
+          <path d="M898,240 L898,190 L1060,190 L1060,100" fill="none" stroke="#4a9eff" strokeWidth="1" opacity="0.45"/>
+          <path d="M970,240 L970,175 L820,175 L820,80" fill="none" stroke="#00d4ff" strokeWidth="1" opacity="0.4"/>
+          <path d="M1042,240 L1042,185 L1220,185 L1220,110" fill="none" stroke="#4a9eff" strokeWidth="1.2" opacity="0.5"/>
+          <path d="M1114,240 L1114,200 L1330,200 L1330,50" fill="none" stroke="#00d4ff" strokeWidth="1" opacity="0.35"/>
+          <path d="M862,600 L862,670 L700,670 L700,780" fill="none" stroke="#00d4ff" strokeWidth="1.2" opacity="0.5"/>
+          <path d="M934,600 L934,690 L1120,690 L1120,820" fill="none" stroke="#4a9eff" strokeWidth="1" opacity="0.45"/>
+          <path d="M1006,600 L1006,660 L840,660 L840,800" fill="none" stroke="#00d4ff" strokeWidth="1" opacity="0.4"/>
+          <path d="M1078,600 L1078,710 L1280,710 L1280,850" fill="none" stroke="#4a9eff" strokeWidth="1" opacity="0.4"/>
+          <path d="M730,360 L600,360 L600,240 L460,240" fill="none" stroke="#00d4ff" strokeWidth="1.2" opacity="0.5"/>
+          <path d="M730,500 L620,500 L620,640 L460,640" fill="none" stroke="#00d4ff" strokeWidth="1" opacity="0.4"/>
+          <path d="M1210,325 L1340,325 L1340,200 L1440,200" fill="none" stroke="#00d4ff" strokeWidth="1.2" opacity="0.5"/>
+          <path d="M1210,465 L1380,465 L1380,620 L1440,620" fill="none" stroke="#00d4ff" strokeWidth="1" opacity="0.4"/>
+          {/* TRACE NODES */}
+          <circle cx="680" cy="165" r="5" fill="#00d4ff" filter="url(#chglow2)"/>
+          <circle cx="1060" cy="190" r="4" fill="#4a9eff" filter="url(#chglow)"/>
+          <circle cx="820" cy="175" r="5" fill="#00d4ff" filter="url(#chglow2)"/>
+          <circle cx="1220" cy="185" r="5" fill="#4a9eff" filter="url(#chglow2)"/>
+          <circle cx="700" cy="670" r="5" fill="#00d4ff" filter="url(#chglow2)"/>
+          <circle cx="1120" cy="690" r="5" fill="#4a9eff" filter="url(#chglow2)"/>
+          <circle cx="600" cy="360" r="5" fill="#00d4ff" filter="url(#chglow2)"/>
+          <circle cx="1340" cy="325" r="5" fill="#00d4ff" filter="url(#chglow2)"/>
+          <circle cx="1380" cy="465" r="5" fill="#4a9eff" filter="url(#chglow2)"/>
+          {/* SECONDARY CHIP */}
+          <rect x="250" y="185" width="220" height="155" rx="5" fill="none" stroke="#4a9eff" strokeWidth="1.8" filter="url(#chsglow)" opacity="0.8"/>
+          <rect x="268" y="202" width="184" height="121" rx="3" fill="none" stroke="#4a9eff" strokeWidth="0.8" opacity="0.3"/>
+          <circle cx="360" cy="263" r="8" fill="none" stroke="#4a9eff" strokeWidth="1" opacity="0.4"/>
+          <circle cx="360" cy="263" r="2.5" fill="#4a9eff" filter="url(#chglow)" opacity="0.8"/>
+          <rect x="272" y="206" width="10" height="10" fill="none" stroke="#4a9eff" strokeWidth="1" opacity="0.7"/>
+          <rect x="458" y="206" width="10" height="10" fill="none" stroke="#4a9eff" strokeWidth="1" opacity="0.7"/>
+          <rect x="272" y="319" width="10" height="10" fill="none" stroke="#4a9eff" strokeWidth="1" opacity="0.7"/>
+          <rect x="458" y="319" width="10" height="10" fill="none" stroke="#4a9eff" strokeWidth="1" opacity="0.7"/>
+          <line x1="290" y1="185" x2="290" y2="150" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.7"/><line x1="283" y1="150" x2="297" y2="150" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.7"/>
+          <line x1="330" y1="185" x2="330" y2="150" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.7"/><line x1="323" y1="150" x2="337" y2="150" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.7"/>
+          <line x1="360" y1="185" x2="360" y2="150" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.7"/><line x1="353" y1="150" x2="367" y2="150" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.7"/>
+          <line x1="390" y1="185" x2="390" y2="150" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.7"/><line x1="383" y1="150" x2="397" y2="150" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.7"/>
+          <line x1="430" y1="185" x2="430" y2="150" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.7"/><line x1="423" y1="150" x2="437" y2="150" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.7"/>
+          <line x1="290" y1="340" x2="290" y2="375" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.65"/><line x1="283" y1="375" x2="297" y2="375" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.65"/>
+          <line x1="360" y1="340" x2="360" y2="375" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.65"/><line x1="353" y1="375" x2="367" y2="375" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.65"/>
+          <line x1="430" y1="340" x2="430" y2="375" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.65"/><line x1="423" y1="375" x2="437" y2="375" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.65"/>
+          <line x1="250" y1="220" x2="215" y2="220" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.65"/><line x1="215" y1="213" x2="215" y2="227" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.65"/>
+          <line x1="250" y1="263" x2="215" y2="263" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.65"/><line x1="215" y1="256" x2="215" y2="270" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.65"/>
+          <line x1="250" y1="306" x2="215" y2="306" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.65"/><line x1="215" y1="299" x2="215" y2="313" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.65"/>
+          <line x1="470" y1="220" x2="505" y2="220" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.65"/><line x1="505" y1="213" x2="505" y2="227" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.65"/>
+          <line x1="470" y1="263" x2="505" y2="263" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.65"/><line x1="505" y1="256" x2="505" y2="270" stroke="#4a9eff" strokeWidth="1.5" filter="url(#chsglow)" opacity="0.65"/>
+          <path d="M505,263 L620,263 L620,360 L730,360" fill="none" stroke="#4a9eff" strokeWidth="1" opacity="0.35"/>
+          <circle cx="505" cy="263" r="3" fill="#4a9eff" filter="url(#chsglow)" opacity="0.7"/>
+          <circle cx="620" cy="263" r="3" fill="#4a9eff" filter="url(#chsglow)" opacity="0.5"/>
+          {/* AMBIENT */}
+          <circle cx="50" cy="350" r="3" fill="#00d4ff" opacity="0.4" filter="url(#chsglow)"/>
+          <circle cx="480" cy="80" r="3" fill="#00d4ff" opacity="0.4" filter="url(#chsglow)"/>
+          <circle cx="540" cy="760" r="2.5" fill="#4a9eff" opacity="0.35"/>
+          <circle cx="1400" cy="380" r="3" fill="#00d4ff" opacity="0.4" filter="url(#chsglow)"/>
     </svg>
   );
 }
@@ -48,7 +153,7 @@ export default function HomeClient() {
     <div style={{ background: NAVY, color: '#f0f4ff', minHeight: '100vh', fontFamily: 'Inter, system-ui, -apple-system, sans-serif', position: 'relative' }}>
       <Background />
 
-      {/* ââ HERO ââ */}
+      {/* Ã¢ÂÂÃ¢ÂÂ HERO Ã¢ÂÂÃ¢ÂÂ */}
       <section style={{ position: 'relative', zIndex: 5, maxWidth: '1160px', margin: '0 auto', padding: '72px 40px 72px', display: 'grid', gridTemplateColumns: '1fr 1.2fr', gap: '56px', alignItems: 'center' }}>
         {/* Left */}
         <div>
@@ -72,7 +177,7 @@ export default function HomeClient() {
           </div>
         </div>
 
-        {/* Right â Underwriting Desk card */}
+        {/* Right Ã¢ÂÂ Underwriting Desk card */}
         <div style={{ background: 'rgba(5,14,32,0.92)', border: '1px solid rgba(74,158,255,0.22)', borderRadius: '14px', overflow: 'hidden', boxShadow: '0 8px 40px rgba(0,0,0,0.35)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '18px 26px', borderBottom: '1px solid rgba(74,158,255,0.15)' }}>
             <span style={{ color: 'rgba(240,244,255,0.55)', fontSize: '11px', fontWeight: 700, letterSpacing: '2.5px' }}>UNDERWRITING DESK</span>
@@ -94,7 +199,7 @@ export default function HomeClient() {
         </div>
       </section>
 
-      {/* ââ PILLS ââ */}
+      {/* Ã¢ÂÂÃ¢ÂÂ PILLS Ã¢ÂÂÃ¢ÂÂ */}
       <section style={{ position: 'relative', zIndex: 5, display: 'flex', justifyContent: 'center', gap: '12px', flexWrap: 'wrap', padding: '0 40px 44px' }}>
         {(d.quickTags as readonly string[]).map((pill) => (
           <div key={pill} style={{ border: '1px solid rgba(74,158,255,0.2)', borderRadius: '4px', padding: '6px 18px', fontSize: '11px', fontWeight: 700, letterSpacing: '1.5px', color: 'rgba(240,244,255,0.38)' }}>
@@ -103,7 +208,7 @@ export default function HomeClient() {
         ))}
       </section>
 
-      {/* ââ WHO WE ARE ââ */}
+      {/* Ã¢ÂÂÃ¢ÂÂ WHO WE ARE Ã¢ÂÂÃ¢ÂÂ */}
       <section id="about" style={{ position: 'relative', zIndex: 5, maxWidth: '1160px', margin: '0 auto', padding: '80px 40px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '64px', alignItems: 'center' }}>
         <div>
           <div style={{ color: 'rgba(240,244,255,0.4)', fontSize: '11px', fontWeight: 700, letterSpacing: '2px', marginBottom: '16px' }}>ABOUT</div>
@@ -122,7 +227,7 @@ export default function HomeClient() {
         </div>
       </section>
 
-      {/* ââ THE HEATH MODEL ââ */}
+      {/* Ã¢ÂÂÃ¢ÂÂ THE HEATH MODEL Ã¢ÂÂÃ¢ÂÂ */}
       <section id="model" style={{ position: 'relative', zIndex: 5, background: 'rgba(8,18,36,0.6)', borderTop: '1px solid rgba(74,158,255,0.12)', borderBottom: '1px solid rgba(74,158,255,0.12)', padding: '80px 40px' }}>
         <div style={{ maxWidth: '1160px', margin: '0 auto' }}>
           <div style={{ color: 'rgba(240,244,255,0.4)', fontSize: '11px', fontWeight: 700, letterSpacing: '2px', marginBottom: '12px' }}>FRAMEWORK</div>
@@ -145,7 +250,7 @@ export default function HomeClient() {
         </div>
       </section>
 
-      {/* ââ THE HEATH EDGE ââ */}
+      {/* Ã¢ÂÂÃ¢ÂÂ THE HEATH EDGE Ã¢ÂÂÃ¢ÂÂ */}
       <section id="edge" style={{ position: 'relative', zIndex: 5, maxWidth: '1160px', margin: '0 auto', padding: '80px 40px' }}>
         <div style={{ color: 'rgba(240,244,255,0.4)', fontSize: '11px', fontWeight: 700, letterSpacing: '2px', marginBottom: '12px' }}>DIFFERENTIATION</div>
         <h2 style={{ fontSize: 'clamp(24px, 3vw, 38px)', fontWeight: 800, letterSpacing: '-0.8px', color: '#f0f4ff', marginBottom: '48px' }}>
@@ -161,7 +266,7 @@ export default function HomeClient() {
         </div>
       </section>
 
-      {/* ââ CTA ââ */}
+      {/* Ã¢ÂÂÃ¢ÂÂ CTA Ã¢ÂÂÃ¢ÂÂ */}
       <section id="contact" style={{ position: 'relative', zIndex: 5, background: 'rgba(8,18,36,0.7)', borderTop: '1px solid rgba(74,158,255,0.12)', padding: '100px 40px', textAlign: 'center' }}>
         <div style={{ maxWidth: '760px', margin: '0 auto' }}>
           <div style={{ color: 'rgba(240,244,255,0.4)', fontSize: '11px', fontWeight: 700, letterSpacing: '2px', marginBottom: '24px' }}>CAPACITY PROVIDERS</div>
@@ -182,7 +287,7 @@ export default function HomeClient() {
         </div>
       </section>
 
-      {/* ââ FOOTER ââ */}
+      {/* Ã¢ÂÂÃ¢ÂÂ FOOTER Ã¢ÂÂÃ¢ÂÂ */}
       <footer style={{ position: 'relative', zIndex: 5, borderTop: '1px solid rgba(74,158,255,0.12)', padding: '32px 48px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
         <span style={{ color: 'rgba(240,244,255,0.3)', fontSize: '12px' }}>{dict.footer.copyright}</span>
         <span style={{ color: 'rgba(240,244,255,0.3)', fontSize: '12px' }}>heathuw.com</span>
