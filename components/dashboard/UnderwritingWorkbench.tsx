@@ -1987,7 +1987,7 @@ export function UnderwritingWorkbench({
   return (
     <div ref={rootRef} className="min-h-screen bg-transparent">
       <div className="mx-auto max-w-[1600px] px-4 pt-2 md:px-6 md:pt-3">
-        <div className="rounded-2xl border border-border/65 bg-[#DAD7D2]/65 p-3 shadow-soft backdrop-blur-sm">
+        <div className="rounded-2xl border border-border/65 bg-[#d8e0f0]/65 p-3 shadow-soft backdrop-blur-sm">
           <div className="flex flex-wrap items-center gap-3">
             <div className="flex min-w-0 flex-1 items-center gap-3">
               <div className="relative flex-1 min-w-[360px]">
@@ -2385,7 +2385,7 @@ export function UnderwritingWorkbench({
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.28, ease: "easeOut" }}
-              className="relative overflow-hidden rounded-2xl border border-border/65 bg-[#DAD7D2]/85 p-5 pb-4 shadow-card-lift backdrop-blur-sm"
+              className="relative overflow-hidden rounded-2xl border border-border/65 bg-[#d8e0f0]/85 p-5 pb-4 shadow-card-lift backdrop-blur-sm"
             >
               <div
                 className="absolute inset-0 pointer-events-none opacity-35"
