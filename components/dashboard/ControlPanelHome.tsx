@@ -6,6 +6,7 @@ import type { ReactNode } from "react";
 import { useMemo } from "react";
 import { useI18n } from "@/components/providers/LanguageProvider";
 import { clearMockSession } from "@/lib/mockAuth";
+import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 
 type RiskLevel = "Bajo" | "Medio" | "Alto";
 type IntakeStatus = "Nueva" | "En revisión";
@@ -416,7 +417,12 @@ export function ControlPanelShell({
   const router = useRouter();
   const { locale } = useI18n();
 
-  function onLogout() {
+  async function onLogout() {
+    try {
+      await createSupabaseBrowserClient().auth.signOut();
+    } catch {
+      // ignore; clear local state regardless
+    }
     clearMockSession();
     router.replace(`/iniciar-sesion?redirect=/dashboard&lang=${locale}`);
   }

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { useI18n } from "@/components/providers/LanguageProvider";
 import { clearMockSession, getMockSession, type MockUser } from "@/lib/mockAuth";
+import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 
 type SubscriptionStatus = "Activa" | "En revisión" | "Pausada" | "Suspendida";
 type RiskLevel = "Bajo" | "Medio" | "Alto";
@@ -465,7 +466,12 @@ export function SubscriptionDashboard() {
   const [simulation, setSimulation] = useState<ReturnType<typeof computeSimulationImpact> | null>(null);
   const [simulating, setSimulating] = useState(false);
 
-  function onLogout() {
+  async function onLogout() {
+    try {
+      await createSupabaseBrowserClient().auth.signOut();
+    } catch {
+      // ignore; clear local state regardless
+    }
     clearMockSession();
     router.replace(`/iniciar-sesion?redirect=/dashboard`);
   }
