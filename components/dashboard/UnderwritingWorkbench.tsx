@@ -656,7 +656,7 @@ function TabButton({
       role="tab"
       aria-selected={active}
       tabIndex={active ? 0 : -1}
-      className={`group relative rounded-xl border px-4 py-2.5 text-sm font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[#F7F2EC] ${
+      className={`group relative rounded-xl border px-4 py-2.5 text-sm font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[#eaf1fb] ${
         active
           ? "border-border bg-white/80 text-primary shadow-soft"
           : "border-transparent text-secondary hover:border-border hover:bg-muted/50 hover:text-primary"
@@ -1779,7 +1779,7 @@ export function UnderwritingWorkbench({
 
   if (isLoading) {
     return (
-      <div ref={rootRef} className="min-h-screen bg-[#F7F2EC]">
+      <div ref={rootRef} className="min-h-screen bg-transparent">
         <div className="mx-auto max-w-[1600px] px-4 py-6 md:px-6 md:py-8">
           <div className="mb-5 flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
@@ -1985,7 +1985,7 @@ export function UnderwritingWorkbench({
   const workflowStepIdx = activeTab === "Resumen" ? 0 : activeTab === "Decisión" ? 2 : 1;
 
   return (
-    <div ref={rootRef} className="min-h-screen bg-[#F7F2EC]">
+    <div ref={rootRef} className="min-h-screen bg-transparent">
       <div className="mx-auto max-w-[1600px] px-4 pt-2 md:px-6 md:pt-3">
         <div className="rounded-2xl border border-border/65 bg-[#DAD7D2]/65 p-3 shadow-soft backdrop-blur-sm">
           <div className="flex flex-wrap items-center gap-3">
@@ -2301,7 +2301,7 @@ export function UnderwritingWorkbench({
                     key={s.id}
                     type="button"
                     onClick={() => onSelectSubmission(s.id)}
-                    className={`w-full rounded-2xl border p-3.5 text-left transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[#F7F2EC] ${
+                    className={`w-full rounded-2xl border p-3.5 text-left transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[#eaf1fb] ${
                       isSelected
                         ? "border-accent/25 bg-white ring-1 ring-accent/25 shadow-soft"
                         : "border-border bg-white/55 hover:bg-white hover:ring-1 hover:ring-accent/20 hover:shadow-soft hover:-translate-y-[1px]"
@@ -3379,7 +3379,7 @@ function DecisionSelectorButton({
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-2xl border p-3 text-left transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[#F7F2EC] ${
+      className={`rounded-2xl border p-3 text-left transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[#eaf1fb] ${
         active
           ? `bg-white/90 ${styles.border} ring-2 ring-accent/15`
           : `border-border bg-white/70 hover:bg-white`
@@ -3576,7 +3576,7 @@ function ActionButton({
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className={`group inline-flex items-center justify-between rounded-2xl border p-4 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[#F7F2EC] ${
+      className={`group inline-flex items-center justify-between rounded-2xl border p-4 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 focus-visible:ring-offset-2 focus-visible:ring-offset-[#eaf1fb] ${
         disabled
           ? "border-border opacity-60 cursor-not-allowed"
           : `border ${styles.border} bg-white/70 hover:bg-white hover:shadow-soft`
