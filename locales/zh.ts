@@ -283,7 +283,7 @@ export const zh = {
     },
     login: {
       title: "登录",
-      subtitle: "访问核保仪表盘（模拟，无后端）。",
+      subtitle: "访问核保仪表盘。",
       email: "工作邮箱",
       emailPlaceholder: "name@company.com",
       password: "密码",
@@ -474,7 +474,7 @@ export const zh = {
     },
     login: {
       title: "登录",
-      subtitle: "访问核保仪表盘。（无后端模拟）",
+      subtitle: "访问核保仪表盘。",
     },
   },
 } as const;

@@ -328,7 +328,7 @@ export const en = {
     },
     login: {
       title: "Sign in",
-      subtitle: "Access the underwriting dashboard (mock, no backend).",
+      subtitle: "Access the underwriting dashboard.",
       email: "Work email",
       emailPlaceholder: "name@company.com",
       password: "Password",
@@ -606,7 +606,7 @@ export const en = {
     },
     login: {
       title: "Sign in",
-      subtitle: "Access the underwriting dashboard. (Backend-free simulation)",
+      subtitle: "Access the underwriting dashboard.",
     },
   },
 } as const;

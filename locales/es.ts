@@ -608,7 +608,7 @@ export const es = {
     },
     login: {
       title: "Iniciar sesión",
-      subtitle: "Entrá al dashboard de suscripción. (Simulación sin backend)",
+      subtitle: "Entrá al dashboard de suscripción.",
     },
   },
 } as const;
