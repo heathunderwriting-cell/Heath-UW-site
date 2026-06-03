@@ -117,7 +117,7 @@ const LINES: SpecialtyLine[] = [
       'Hull treaty excess of loss',
     ],
     markets: 'Global. Focused on cedants in key maritime hubs — London market, Singapore, Rotterdam, Miami — as well as growing marine books in Latin America and Southeast Asia.',
-    image: 'https://images.unsplash.com/photo-1699588999949-e25959a59550?w=1400&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1494522855154-9297ac14b55f?w=1400&auto=format&fit=crop&q=80',
     imagePosition: 'center 50%',
   },
   {
@@ -153,40 +153,46 @@ function LineCard({ line }: { line: SpecialtyLine }) {
     <div style={{ position:'relative', overflow:'hidden', borderRadius:16, border:`1px solid ${open?'rgba(74,158,255,0.5)':'rgba(74,158,255,0.18)'}`, transition:'border-color 0.3s ease, box-shadow 0.3s ease', boxShadow: open ? '0 0 0 1px rgba(74,158,255,0.2), 0 24px 60px rgba(0,0,0,0.4)' : '0 8px 32px rgba(0,0,0,0.25)' }}>
       <div style={{ position:'absolute', inset:0, backgroundImage:`url(${line.image})`, backgroundSize:'cover', backgroundPosition:line.imagePosition, zIndex:0 }} />
       <div style={{ position:'absolute', inset:0, background: open ? 'linear-gradient(135deg,rgba(13,45,79,0.97) 0%,rgba(13,45,79,0.93) 100%)' : 'linear-gradient(105deg,rgba(13,45,79,0.94) 0%,rgba(13,45,79,0.80) 55%,rgba(13,45,79,0.70) 100%)', transition:'background 0.4s ease', zIndex:1 }} />
-      {/* H + Nodes decoration */}
+      {/* H + Nodes neon decoration */}
       <div style={{ position:'absolute', inset:0, zIndex:2, overflow:'hidden', pointerEvents:'none' }}>
         <svg width="100%" height="100%" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
-          <g opacity="0.10" transform="translate(950,20) scale(5.5) rotate(8 55 70)">
+          <defs>
+            <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="4" result="blur" />
+              <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+            </filter>
+          </defs>
+          <g opacity="0.15" transform="translate(950,20) scale(5.5) rotate(8 55 70)">
             <rect x="0" y="0" width="16" height="70" fill={LIGHT_BLUE} />
             <rect x="40" y="0" width="16" height="70" fill={LIGHT_BLUE} />
             <rect x="16" y="26" width="24" height="12" fill={LIGHT_BLUE} />
           </g>
-          <g opacity="0.07" transform="translate(-80,500) scale(4) rotate(-6 55 70)">
+          <g opacity="0.10" transform="translate(-80,500) scale(4) rotate(-6 55 70)">
             <rect x="0" y="0" width="16" height="70" fill={LIGHT_BLUE} />
             <rect x="40" y="0" width="16" height="70" fill={LIGHT_BLUE} />
             <rect x="16" y="26" width="24" height="12" fill={LIGHT_BLUE} />
           </g>
-          <g opacity="0.45" stroke={LIGHT_BLUE} strokeWidth="1.2" fill="none">
+          <g filter="url(#glow)" opacity="0.85" stroke={LIGHT_BLUE} strokeWidth="1.5" fill="none">
             <line x1="1280" y1="120" x2="1340" y2="85" />
             <line x1="1280" y1="120" x2="1230" y2="165" />
             <line x1="1280" y1="120" x2="1365" y2="150" />
             <line x1="1340" y1="85" x2="1300" y2="55" />
-            <circle cx="1280" cy="120" r="7" fill={LIGHT_BLUE} />
-            <circle cx="1280" cy="120" r="3" fill="#f0f4ff" opacity="0.5" />
-            <circle cx="1340" cy="85" r="4" fill={LIGHT_BLUE} opacity="0.6" />
-            <circle cx="1230" cy="165" r="4" fill={LIGHT_BLUE} opacity="0.6" />
-            <circle cx="1365" cy="150" r="3.5" fill={LIGHT_BLUE} opacity="0.4" />
-            <circle cx="1300" cy="55" r="3" fill={LIGHT_BLUE} opacity="0.35" />
+            <circle cx="1280" cy="120" r="8" fill={LIGHT_BLUE} />
+            <circle cx="1280" cy="120" r="3.5" fill="#e8f4ff" opacity="0.9" />
+            <circle cx="1340" cy="85" r="5" fill={LIGHT_BLUE} opacity="0.9" />
+            <circle cx="1230" cy="165" r="5" fill={LIGHT_BLUE} opacity="0.9" />
+            <circle cx="1365" cy="150" r="4" fill={LIGHT_BLUE} opacity="0.7" />
+            <circle cx="1300" cy="55" r="3.5" fill={LIGHT_BLUE} opacity="0.6" />
           </g>
-          <g opacity="0.38" stroke={LIGHT_BLUE} strokeWidth="1.2" fill="none">
+          <g filter="url(#glow)" opacity="0.80" stroke={LIGHT_BLUE} strokeWidth="1.5" fill="none">
             <line x1="90" y1="630" x2="150" y2="590" />
             <line x1="90" y1="630" x2="55" y2="680" />
             <line x1="90" y1="630" x2="160" y2="670" />
-            <circle cx="90" cy="630" r="7" fill={LIGHT_BLUE} />
-            <circle cx="90" cy="630" r="3" fill="#f0f4ff" opacity="0.5" />
-            <circle cx="150" cy="590" r="4" fill={LIGHT_BLUE} opacity="0.6" />
-            <circle cx="55" cy="680" r="4" fill={LIGHT_BLUE} opacity="0.6" />
-            <circle cx="160" cy="670" r="3.5" fill={LIGHT_BLUE} opacity="0.4" />
+            <circle cx="90" cy="630" r="8" fill={LIGHT_BLUE} />
+            <circle cx="90" cy="630" r="3.5" fill="#e8f4ff" opacity="0.9" />
+            <circle cx="150" cy="590" r="5" fill={LIGHT_BLUE} opacity="0.9" />
+            <circle cx="55" cy="680" r="5" fill={LIGHT_BLUE} opacity="0.9" />
+            <circle cx="160" cy="670" r="4" fill={LIGHT_BLUE} opacity="0.7" />
           </g>
         </svg>
       </div>
