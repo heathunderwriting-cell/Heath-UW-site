@@ -117,7 +117,7 @@ const LINES: SpecialtyLine[] = [
       'Hull treaty excess of loss',
     ],
     markets: 'Global. Focused on cedants in key maritime hubs — London market, Singapore, Rotterdam, Miami — as well as growing marine books in Latin America and Southeast Asia.',
-    image: 'https://images.unsplash.com/photo-1494522855154-9297ac14b55f?w=1400&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1699588999949-e25959a59550?w=1400&auto=format&fit=crop&q=80',
     imagePosition: 'center 50%',
   },
   {
