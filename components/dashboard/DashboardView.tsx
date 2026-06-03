@@ -183,7 +183,7 @@ function DashboardViewInner({
     view === "operations" ? d.views.operationsSubtitle : d.views.overviewSubtitle;
 
   return (
-    <div className="dashboard-theme min-h-screen bg-background">
+    <div className="dashboard-theme min-h-screen bg-transparent">
       <div className="mx-auto max-w-[1400px] px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
         <header className="mb-6 border-b border-border/60 pb-5">
           <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-secondary">
