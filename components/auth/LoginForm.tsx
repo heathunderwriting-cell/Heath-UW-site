@@ -2,12 +2,15 @@
 
 import { useMemo, useState, type FormEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Button } from "@/components/ui/Button";
-import { Heading } from "@/components/ui/Heading";
-import { Text } from "@/components/ui/Text";
 import { useI18n } from "@/components/providers/LanguageProvider";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { createMockSession } from "@/lib/mockAuth";
+
+const BLUE = "#4a9eff";
+const NAVY = "#02091c";
+const WHITE = "#f0f4ff";
+const MUTED = "rgba(240,244,255,0.6)";
+const BORDER = "rgba(74,158,255,0.3)";
 
 function deriveCompanyFromEmail(email: string) {
   const domain = email.split("@")[1] ?? "empresa";
@@ -17,6 +20,25 @@ function deriveCompanyFromEmail(email: string) {
     .trim()
     .replace(/\b\w/g, (m) => m.toUpperCase());
 }
+
+const inputStyle: React.CSSProperties = {
+  width: "100%",
+  borderRadius: 10,
+  border: `1px solid ${BORDER}`,
+  background: "rgba(255,255,255,0.04)",
+  padding: "12px 14px",
+  fontSize: "0.95rem",
+  color: WHITE,
+  outline: "none",
+};
+
+const labelStyle: React.CSSProperties = {
+  display: "block",
+  marginBottom: 6,
+  fontSize: "0.8rem",
+  fontWeight: 600,
+  color: WHITE,
+};
 
 export function LoginForm() {
   const router = useRouter();
@@ -64,7 +86,6 @@ export function LoginForm() {
         return;
       }
 
-      // Cosmetic local profile for the dashboard UI (display name only).
       const userEmail = data.user.email ?? trimmedEmail;
       const namePart = userEmail.split("@")[0]?.slice(0, 20) ?? "Usuario";
       const userName = namePart
@@ -88,19 +109,30 @@ export function LoginForm() {
 
   return (
     <form
-      className="mx-auto max-w-md space-y-6 text-left"
       onSubmit={onSubmit}
+      style={{
+        width: "100%",
+        maxWidth: 420,
+        background: "rgba(7,18,35,0.72)",
+        border: `1px solid ${BORDER}`,
+        borderRadius: 18,
+        padding: "40px 36px",
+        boxShadow: "0 24px 60px rgba(0,0,0,0.45), 0 0 0 1px rgba(74,158,255,0.08)",
+        backdropFilter: "blur(10px)",
+      }}
     >
-      <div className="space-y-3 text-center">
-        <Heading as="h1" variant="h1">
+      <div style={{ textAlign: "center", marginBottom: 28 }}>
+        <h1 style={{ fontSize: "1.9rem", fontWeight: 800, color: WHITE, margin: 0 }}>
           {dict.forms.login.title}
-        </Heading>
-        <Text className="md:text-lg">{dict.forms.login.subtitle}</Text>
+        </h1>
+        <p style={{ marginTop: 10, color: MUTED, fontSize: "0.95rem", lineHeight: 1.6 }}>
+          {dict.forms.login.subtitle}
+        </p>
       </div>
 
-      <div className="space-y-4">
+      <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
         <div>
-          <label htmlFor="email" className="mb-1 block text-sm font-medium text-primary">
+          <label htmlFor="email" style={labelStyle}>
             {dict.forms.login.email}
           </label>
           <input
@@ -110,13 +142,13 @@ export function LoginForm() {
             autoComplete="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full rounded-xl border border-border bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-500 outline-none ring-accent focus:ring-2"
+            style={inputStyle}
             placeholder={dict.forms.login.emailPlaceholder}
           />
         </div>
 
         <div>
-          <label htmlFor="password" className="mb-1 block text-sm font-medium text-primary">
+          <label htmlFor="password" style={labelStyle}>
             {dict.forms.login.password}
           </label>
           <input
@@ -126,31 +158,51 @@ export function LoginForm() {
             autoComplete="current-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full rounded-xl border border-border bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-500 outline-none ring-accent focus:ring-2"
+            style={inputStyle}
             placeholder={dict.forms.login.passwordPlaceholder}
           />
         </div>
 
         {error && (
           <div
-            className="rounded-xl border border-risk/30 bg-risk/5 px-4 py-3 text-sm text-risk"
             role="alert"
+            style={{
+              borderRadius: 10,
+              border: "1px solid rgba(248,113,113,0.4)",
+              background: "rgba(248,113,113,0.08)",
+              padding: "10px 14px",
+              fontSize: "0.85rem",
+              color: "#fca5a5",
+            }}
           >
             {error}
           </div>
         )}
       </div>
 
-      <div className="space-y-3">
-        <Button
-          variant="primary"
-          className="w-full"
+      <div style={{ marginTop: 26, display: "flex", flexDirection: "column", gap: 14 }}>
+        <button
           type="submit"
           disabled={loading}
+          style={{
+            width: "100%",
+            padding: "13px 20px",
+            borderRadius: 10,
+            border: "none",
+            background: BLUE,
+            color: NAVY,
+            fontSize: "0.95rem",
+            fontWeight: 700,
+            letterSpacing: "0.02em",
+            cursor: loading ? "default" : "pointer",
+            opacity: loading ? 0.7 : 1,
+            boxShadow: "0 0 18px rgba(74,158,255,0.5)",
+            transition: "opacity 0.2s",
+          }}
         >
           {loading ? dict.forms.login.submitting : dict.forms.login.submit}
-        </Button>
-        <div className="text-center text-xs text-secondary">
+        </button>
+        <div style={{ textAlign: "center", fontSize: "0.78rem", color: MUTED }}>
           {dict.forms.login.hint}
         </div>
       </div>
