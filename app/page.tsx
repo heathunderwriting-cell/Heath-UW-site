@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Heath Underwriting — AI-Native MGA',
+  title: 'Heath Underwriting â AI-Native MGA',
   description:
-    'Heath is the leading AI underwriting platform — a modern MGA specialising in specialty reinsurance.',
+    'Heath is the leading AI underwriting platform â a modern MGA specialising in specialty reinsurance.',
 };
 
 const NAVY = '#0d2d4f';
@@ -28,7 +28,7 @@ function Background() {
         preserveAspectRatio="xMidYMid slice"
         xmlns="http://www.w3.org/2000/svg"
       >
-        {/* H #1 – upper right */}
+        {/* H #1 â upper right */}
         <g opacity="0.13" transform="translate(1060,-60) scale(2.2) rotate(8 55 70)">
           <rect x="0" y="0" width="16" height="70" fill={LIGHT_BLUE} />
           <rect x="40" y="0" width="16" height="70" fill={LIGHT_BLUE} />
@@ -36,7 +36,7 @@ function Background() {
           <rect x="56" y="0" width="5" height="70" fill={LIGHT_BLUE} opacity="0.5" />
         </g>
 
-        {/* H #2 – left mid */}
+        {/* H #2 â left mid */}
         <g opacity="0.10" transform="translate(-120,250) scale(3.5) rotate(-5 55 70)">
           <rect x="0" y="0" width="16" height="70" fill={LIGHT_BLUE} />
           <rect x="40" y="0" width="16" height="70" fill={LIGHT_BLUE} />
@@ -44,7 +44,7 @@ function Background() {
           <rect x="56" y="0" width="5" height="70" fill={LIGHT_BLUE} opacity="0.5" />
         </g>
 
-        {/* H #3 – lower right */}
+        {/* H #3 â lower right */}
         <g opacity="0.11" transform="translate(1150,560) scale(2.0) rotate(12 55 70)">
           <rect x="0" y="0" width="16" height="70" fill={LIGHT_BLUE} />
           <rect x="40" y="0" width="16" height="70" fill={LIGHT_BLUE} />
@@ -52,7 +52,7 @@ function Background() {
           <rect x="56" y="0" width="5" height="70" fill={LIGHT_BLUE} opacity="0.5" />
         </g>
 
-        {/* H #4 – centre-bottom */}
+        {/* H #4 â centre-bottom */}
         <g opacity="0.08" transform="translate(380,640) scale(4.2) rotate(-3 55 70)">
           <rect x="0" y="0" width="16" height="70" fill={LIGHT_BLUE} />
           <rect x="40" y="0" width="16" height="70" fill={LIGHT_BLUE} />
@@ -137,71 +137,7 @@ export default function Home() {
       }}
     >
       <Background />
-
-      {/* ── NAV ── */}
-      <nav
-        style={{
-          position: 'relative',
-          zIndex: 10,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '0 48px',
-          height: '64px',
-          borderBottom: '1px solid rgba(74,158,255,0.15)',
-        }}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <svg width="40" height="32" viewBox="0 0 40 32" xmlns="http://www.w3.org/2000/svg">
-            <rect width="30" height="32" fill={NAVY} rx="3" />
-            <rect x="33" y="0" width="5" height="32" fill={LIGHT_BLUE} rx="1" />
-            <text
-              x="15"
-              y="22"
-              textAnchor="middle"
-              fill="white"
-              fontFamily="Arial Black, Arial, sans-serif"
-              fontSize="13"
-              fontWeight="900"
-            >
-              HU
-            </text>
-          </svg>
-          <span style={{ fontWeight: 700, fontSize: '16px', letterSpacing: '-0.3px' }}>
-            Heath
-          </span>
-        </div>
-        <div style={{ display: 'flex', gap: '32px', alignItems: 'center' }}>
-          {['Home', 'Portfolio', 'Company', 'Contact'].map((item) => (
-            <a
-              key={item}
-              href={`#${item.toLowerCase()}`}
-              style={{ color: 'rgba(240,244,255,0.55)', fontSize: '14px', textDecoration: 'none' }}
-            >
-              {item}
-            </a>
-          ))}
-          <a
-            href="#contact"
-            style={{
-              background: 'rgba(74,158,255,0.12)',
-              color: LIGHT_BLUE,
-              padding: '8px 20px',
-              borderRadius: '20px',
-              fontSize: '13px',
-              fontWeight: 600,
-              textDecoration: 'none',
-              border: `1px solid rgba(74,158,255,0.7)`,
-              boxShadow: '0 0 8px rgba(74,158,255,0.5), 0 0 20px rgba(74,158,255,0.25), inset 0 0 8px rgba(74,158,255,0.08)',
-              letterSpacing: '0.02em',
-            }}
-          >
-            Sign in
-          </a>
-        </div>
-      </nav>
-
-      {/* ── HERO (two-column) ── */}
+      {/* ââ HERO (two-column) ââ */}
       <section
         style={{
           position: 'relative',
@@ -217,7 +153,7 @@ export default function Home() {
       >
         {/* Left */}
         <div>
-          {/* AI-NATIVE MGA badge — visible */}
+          {/* AI-NATIVE MGA badge â visible */}
           <div
             style={{
               display: 'inline-flex',
@@ -248,7 +184,7 @@ export default function Home() {
           >
             Heath is the leading{' '}
             <span style={{ color: LIGHT_BLUE }}>AI underwriting platform</span>{' '}
-            —{' '}
+            â{' '}
             <span style={{ color: 'rgba(240,244,255,0.65)' }}>a modern MGA.</span>
           </h1>
 
@@ -299,7 +235,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Right – Underwriting Desk card (larger) */}
+        {/* Right â Underwriting Desk card (larger) */}
         <div
           style={{
             background: 'rgba(5,14,32,0.92)',
@@ -349,7 +285,7 @@ export default function Home() {
               { text: 'Specialty reinsurance underwriting across selected lines of business.', ai: false },
               { text: 'Portfolio discipline embedded at quotation and bind stages.', ai: false },
               { text: 'Capacity partnerships in active development with long-term orientation.', ai: false },
-              { text: 'Automated triage, analysis and response — powered by proprietary AI workflows.', ai: true },
+              { text: 'Automated triage, analysis and response â powered by proprietary AI workflows.', ai: true },
             ] as { text: string; ai: boolean }[]
           ).map((item, i, arr) => (
             <div
@@ -400,7 +336,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── PILLS ── */}
+      {/* ââ PILLS ââ */}
       <section
         style={{
           position: 'relative',
@@ -430,7 +366,7 @@ export default function Home() {
         ))}
       </section>
 
-      {/* ── WHO WE ARE ── */}
+      {/* ââ WHO WE ARE ââ */}
       <section
         id="about"
         style={{
@@ -492,18 +428,18 @@ export default function Home() {
             We are the leading{' '}
             <strong style={{ color: '#f0f4ff' }}>AI-native reinsurance underwriting</strong>{' '}
             business focused on specialty markets. We prioritize long-term value creation,
-            portfolio discipline, and alignment over short-term volume — powered by proprietary
+            portfolio discipline, and alignment over short-term volume â powered by proprietary
             AI technology.
           </p>
           <p style={{ color: 'rgba(240,244,255,0.55)', lineHeight: 1.75, fontSize: '16px' }}>
             Built from the ground up as an AI-native platform, Heath processes, analyses, and
             responds to submissions with a speed and consistency that traditional underwriting
-            cannot match — without compromising on judgment or discipline.
+            cannot match â without compromising on judgment or discipline.
           </p>
         </div>
       </section>
 
-      {/* ── THE HEATH MODEL ── */}
+      {/* ââ THE HEATH MODEL ââ */}
       <section
         id="model"
         style={{
@@ -604,7 +540,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── THE HEATH EDGE ── */}
+      {/* ââ THE HEATH EDGE ââ */}
       <section
         id="edge"
         style={{
@@ -667,7 +603,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── CTA — CAPACITY PROVIDERS ── */}
+      {/* ââ CTA â CAPACITY PROVIDERS ââ */}
       <section
         id="contact"
         style={{
@@ -696,7 +632,7 @@ export default function Home() {
             We partner with capacity providers and institutions seeking durable, disciplined reinsurance exposure.
           </h2>
           <p style={{ color: 'rgba(240,244,255,0.55)', fontSize: '17px', lineHeight: 1.7, marginBottom: '40px' }}>
-            Heath brings proprietary technology, rigorous underwriting, and deep specialty expertise — the infrastructure capacity partners need to deploy with confidence.
+            Heath brings proprietary technology, rigorous underwriting, and deep specialty expertise â the infrastructure capacity partners need to deploy with confidence.
           </p>
           <div style={{ display: 'flex', gap: '14px', justifyContent: 'center', flexWrap: 'wrap' }}>
             <a
@@ -734,7 +670,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── FOOTER ── */}
+      {/* ââ FOOTER ââ */}
       <footer
         style={{
           position: 'relative',
@@ -749,7 +685,7 @@ export default function Home() {
         }}
       >
         <span style={{ color: 'rgba(240,244,255,0.3)', fontSize: '12px' }}>
-          © 2025 Heath Underwriting · Sabotage &amp; Terrorism · Facultative Reinsurance
+          Â© 2025 Heath Underwriting Â· Sabotage &amp; Terrorism Â· Facultative Reinsurance
         </span>
         <span style={{ color: 'rgba(240,244,255,0.3)', fontSize: '12px' }}>heathuw.com</span>
       </footer>
