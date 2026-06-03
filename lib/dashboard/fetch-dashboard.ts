@@ -40,7 +40,7 @@ export async function fetchDashboardData(): Promise<
   | { ok: false; reason: "missing_env" }
   | { ok: false; reason: "fatal"; message: string }
 > {
-  const client = createSupabaseServerClient();
+  const client = await createSupabaseServerClient();
   if (!client) {
     return { ok: false, reason: "missing_env" };
   }
