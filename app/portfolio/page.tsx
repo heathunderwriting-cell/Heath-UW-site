@@ -155,44 +155,46 @@ function LineCard({ line }: { line: SpecialtyLine }) {
       <div style={{ position:'absolute', inset:0, background: open ? 'linear-gradient(135deg,rgba(13,45,79,0.97) 0%,rgba(13,45,79,0.93) 100%)' : 'linear-gradient(105deg,rgba(13,45,79,0.94) 0%,rgba(13,45,79,0.80) 55%,rgba(13,45,79,0.70) 100%)', transition:'background 0.4s ease', zIndex:1 }} />
       {/* H + Nodes neon decoration */}
       <div style={{ position:'absolute', inset:0, zIndex:2, overflow:'hidden', pointerEvents:'none' }}>
-        <svg width="100%" height="100%" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+        <svg width="100%" height="100%" viewBox="0 0 1200 280" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
           <defs>
-            <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur stdDeviation="4" result="blur" />
+            <filter id="cardglow" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur stdDeviation="5" result="blur" />
               <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
             </filter>
           </defs>
-          <g opacity="0.15" transform="translate(950,20) scale(5.5) rotate(8 55 70)">
+          <g opacity="0.12" transform="translate(960,-30) scale(3.5) rotate(8 55 70)">
             <rect x="0" y="0" width="16" height="70" fill={LIGHT_BLUE} />
             <rect x="40" y="0" width="16" height="70" fill={LIGHT_BLUE} />
             <rect x="16" y="26" width="24" height="12" fill={LIGHT_BLUE} />
           </g>
-          <g opacity="0.10" transform="translate(-80,500) scale(4) rotate(-6 55 70)">
+          <g opacity="0.08" transform="translate(-50,140) scale(2.5) rotate(-5 55 70)">
             <rect x="0" y="0" width="16" height="70" fill={LIGHT_BLUE} />
             <rect x="40" y="0" width="16" height="70" fill={LIGHT_BLUE} />
             <rect x="16" y="26" width="24" height="12" fill={LIGHT_BLUE} />
           </g>
-          <g filter="url(#glow)" opacity="0.85" stroke={LIGHT_BLUE} strokeWidth="1.5" fill="none">
-            <line x1="1280" y1="120" x2="1340" y2="85" />
-            <line x1="1280" y1="120" x2="1230" y2="165" />
-            <line x1="1280" y1="120" x2="1365" y2="150" />
-            <line x1="1340" y1="85" x2="1300" y2="55" />
-            <circle cx="1280" cy="120" r="8" fill={LIGHT_BLUE} />
-            <circle cx="1280" cy="120" r="3.5" fill="#e8f4ff" opacity="0.9" />
-            <circle cx="1340" cy="85" r="5" fill={LIGHT_BLUE} opacity="0.9" />
-            <circle cx="1230" cy="165" r="5" fill={LIGHT_BLUE} opacity="0.9" />
-            <circle cx="1365" cy="150" r="4" fill={LIGHT_BLUE} opacity="0.7" />
-            <circle cx="1300" cy="55" r="3.5" fill={LIGHT_BLUE} opacity="0.6" />
+          <g filter="url(#cardglow)" opacity="0.9" stroke={LIGHT_BLUE} strokeWidth="1.5" fill="none">
+            <line x1="1060" y1="75" x2="1115" y2="38" />
+            <line x1="1060" y1="75" x2="1005" y2="120" />
+            <line x1="1060" y1="75" x2="1135" y2="105" />
+            <line x1="1115" y1="38" x2="1085" y2="10" />
+            <circle cx="1060" cy="75" r="8" fill={LIGHT_BLUE} />
+            <circle cx="1060" cy="75" r="3.5" fill="#e8f4ff" opacity="0.9" />
+            <circle cx="1115" cy="38" r="5" fill={LIGHT_BLUE} opacity="0.9" />
+            <circle cx="1005" cy="120" r="5" fill={LIGHT_BLUE} opacity="0.85" />
+            <circle cx="1135" cy="105" r="4" fill={LIGHT_BLUE} opacity="0.7" />
+            <circle cx="1085" cy="10" r="3.5" fill={LIGHT_BLUE} opacity="0.6" />
           </g>
-          <g filter="url(#glow)" opacity="0.80" stroke={LIGHT_BLUE} strokeWidth="1.5" fill="none">
-            <line x1="90" y1="630" x2="150" y2="590" />
-            <line x1="90" y1="630" x2="55" y2="680" />
-            <line x1="90" y1="630" x2="160" y2="670" />
-            <circle cx="90" cy="630" r="8" fill={LIGHT_BLUE} />
-            <circle cx="90" cy="630" r="3.5" fill="#e8f4ff" opacity="0.9" />
-            <circle cx="150" cy="590" r="5" fill={LIGHT_BLUE} opacity="0.9" />
-            <circle cx="55" cy="680" r="5" fill={LIGHT_BLUE} opacity="0.9" />
-            <circle cx="160" cy="670" r="4" fill={LIGHT_BLUE} opacity="0.7" />
+          <g filter="url(#cardglow)" opacity="0.85" stroke={LIGHT_BLUE} strokeWidth="1.5" fill="none">
+            <line x1="115" y1="195" x2="170" y2="158" />
+            <line x1="115" y1="195" x2="68" y2="238" />
+            <line x1="115" y1="195" x2="185" y2="225" />
+            <line x1="170" y1="158" x2="205" y2="125" />
+            <circle cx="115" cy="195" r="8" fill={LIGHT_BLUE} />
+            <circle cx="115" cy="195" r="3.5" fill="#e8f4ff" opacity="0.9" />
+            <circle cx="170" cy="158" r="5" fill={LIGHT_BLUE} opacity="0.9" />
+            <circle cx="68" cy="238" r="5" fill={LIGHT_BLUE} opacity="0.85" />
+            <circle cx="185" cy="225" r="4" fill={LIGHT_BLUE} opacity="0.7" />
+            <circle cx="205" cy="125" r="3.5" fill={LIGHT_BLUE} opacity="0.6" />
           </g>
         </svg>
       </div>
