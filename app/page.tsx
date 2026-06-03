@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 };
 
 const NAVY = '#0d2d4f';
-const BLUE = '#2a7ac0';
+const BLUE = '#1a65a8';
 
 function Background() {
   return (
@@ -158,9 +158,9 @@ export default function Home() {
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-            <rect width="32" height="32" fill={NAVY} rx="3" />
-            <rect x="28" y="0" width="4" height="32" fill={BLUE} />
+          <svg width="40" height="32" viewBox="0 0 40 32" xmlns="http://www.w3.org/2000/svg">
+            <rect width="30" height="32" fill={NAVY} rx="3" />
+            <rect x="33" y="0" width="5" height="32" fill={BLUE} rx="1" />
             <text
               x="15"
               y="22"
