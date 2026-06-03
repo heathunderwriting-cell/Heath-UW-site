@@ -21,7 +21,7 @@ export function LanguageSwitcher() {
             onClick={() => setLocale(item)}
             className={`rounded-full px-3 py-1 text-xs font-semibold tabular-nums leading-5 transition-all duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-accent/50 ${
               active
-                ? "bg-gradient-to-r from-[#6d28d9] to-[#f97316] text-white shadow-soft"
+                ? "bg-[rgba(74,158,255,0.2)] text-[#4a9eff] shadow-[0_0_6px_rgba(74,158,255,0.4)] border border-[rgba(74,158,255,0.5)]"
                 : "text-secondary hover:bg-backgroundSecondary hover:text-primary"
             }`}
             aria-pressed={active}
