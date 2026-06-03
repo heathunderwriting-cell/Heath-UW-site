@@ -35,7 +35,7 @@ function Background() {
   );
 }
 
-expport default function HomeClient() {
+export default function HomeClient() {
   const { dict } = useI18n();
   const d = dict.home;
 
@@ -48,7 +48,7 @@ expport default function HomeClient() {
     <div style={{ background: NAVY, color: '#f0f4ff', minHeight: '100vh', fontFamily: 'Inter, system-ui, -apple-system, sans-serif', position: 'relative' }}>
       <Background />
 
-      {/* ── HERO ── */}
+      {/* ââ HERO ââ */}
       <section style={{ position: 'relative', zIndex: 5, maxWidth: '1160px', margin: '0 auto', padding: '72px 40px 72px', display: 'grid', gridTemplateColumns: '1fr 1.2fr', gap: '56px', alignItems: 'center' }}>
         {/* Left */}
         <div>
@@ -72,7 +72,7 @@ expport default function HomeClient() {
           </div>
         </div>
 
-        {/* Right – Underwriting Desk card */}
+        {/* Right â Underwriting Desk card */}
         <div style={{ background: 'rgba(5,14,32,0.92)', border: '1px solid rgba(74,158,255,0.22)', borderRadius: '14px', overflow: 'hidden', boxShadow: '0 8px 40px rgba(0,0,0,0.35)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '18px 26px', borderBottom: '1px solid rgba(74,158,255,0.15)' }}>
             <span style={{ color: 'rgba(240,244,255,0.55)', fontSize: '11px', fontWeight: 700, letterSpacing: '2.5px' }}>UNDERWRITING DESK</span>
@@ -94,7 +94,7 @@ expport default function HomeClient() {
         </div>
       </section>
 
-      {/* ── PILLS ── */}
+      {/* ââ PILLS ââ */}
       <section style={{ position: 'relative', zIndex: 5, display: 'flex', justifyContent: 'center', gap: '12px', flexWrap: 'wrap', padding: '0 40px 44px' }}>
         {(d.quickTags as readonly string[]).map((pill) => (
           <div key={pill} style={{ border: '1px solid rgba(74,158,255,0.2)', borderRadius: '4px', padding: '6px 18px', fontSize: '11px', fontWeight: 700, letterSpacing: '1.5px', color: 'rgba(240,244,255,0.38)' }}>
@@ -103,7 +103,7 @@ expport default function HomeClient() {
         ))}
       </section>
 
-      {/* ── WHO WE ARE ── */}
+      {/* ââ WHO WE ARE ââ */}
       <section id="about" style={{ position: 'relative', zIndex: 5, maxWidth: '1160px', margin: '0 auto', padding: '80px 40px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '64px', alignItems: 'center' }}>
         <div>
           <div style={{ color: 'rgba(240,244,255,0.4)', fontSize: '11px', fontWeight: 700, letterSpacing: '2px', marginBottom: '16px' }}>ABOUT</div>
@@ -122,7 +122,7 @@ expport default function HomeClient() {
         </div>
       </section>
 
-      {/* ── THE HEATH MODEL ── */}
+      {/* ââ THE HEATH MODEL ââ */}
       <section id="model" style={{ position: 'relative', zIndex: 5, background: 'rgba(8,18,36,0.6)', borderTop: '1px solid rgba(74,158,255,0.12)', borderBottom: '1px solid rgba(74,158,255,0.12)', padding: '80px 40px' }}>
         <div style={{ maxWidth: '1160px', margin: '0 auto' }}>
           <div style={{ color: 'rgba(240,244,255,0.4)', fontSize: '11px', fontWeight: 700, letterSpacing: '2px', marginBottom: '12px' }}>FRAMEWORK</div>
@@ -145,7 +145,7 @@ expport default function HomeClient() {
         </div>
       </section>
 
-      {/* ── THE HEATH EDGE ── */}
+      {/* ââ THE HEATH EDGE ââ */}
       <section id="edge" style={{ position: 'relative', zIndex: 5, maxWidth: '1160px', margin: '0 auto', padding: '80px 40px' }}>
         <div style={{ color: 'rgba(240,244,255,0.4)', fontSize: '11px', fontWeight: 700, letterSpacing: '2px', marginBottom: '12px' }}>DIFFERENTIATION</div>
         <h2 style={{ fontSize: 'clamp(24px, 3vw, 38px)', fontWeight: 800, letterSpacing: '-0.8px', color: '#f0f4ff', marginBottom: '48px' }}>
@@ -161,7 +161,7 @@ expport default function HomeClient() {
         </div>
       </section>
 
-      {/* ── CTA ── */}
+      {/* ââ CTA ââ */}
       <section id="contact" style={{ position: 'relative', zIndex: 5, background: 'rgba(8,18,36,0.7)', borderTop: '1px solid rgba(74,158,255,0.12)', padding: '100px 40px', textAlign: 'center' }}>
         <div style={{ maxWidth: '760px', margin: '0 auto' }}>
           <div style={{ color: 'rgba(240,244,255,0.4)', fontSize: '11px', fontWeight: 700, letterSpacing: '2px', marginBottom: '24px' }}>CAPACITY PROVIDERS</div>
@@ -182,7 +182,7 @@ expport default function HomeClient() {
         </div>
       </section>
 
-      {/* ── FOOTER ── */}
+      {/* ââ FOOTER ââ */}
       <footer style={{ position: 'relative', zIndex: 5, borderTop: '1px solid rgba(74,158,255,0.12)', padding: '32px 48px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
         <span style={{ color: 'rgba(240,244,255,0.3)', fontSize: '12px' }}>{dict.footer.copyright}</span>
         <span style={{ color: 'rgba(240,244,255,0.3)', fontSize: '12px' }}>heathuw.com</span>
