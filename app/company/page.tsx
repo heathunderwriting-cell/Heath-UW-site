@@ -124,7 +124,7 @@ export default function CompanyPage() {
   return (
     <main style={{ background: NAVY, color: WHITE, minHeight: '100vh', fontFamily: '-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif', position: 'relative' }}>
 
-      {/* Background chip + H */
+      {/* Background chip + H */}
       <div style={{ position:'fixed', inset:0, zIndex:0, pointerEvents:'none', overflow:'hidden' }}>
         <svg width="100%" height="100%" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" opacity="0.22">
 
