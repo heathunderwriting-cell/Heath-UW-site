@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 };
 
 const NAVY = '#0d2d4f';
-const BLUE = '#1a65a8';
+const BLUE = '#1a3060';
 
 function Background() {
   return (
@@ -27,44 +27,40 @@ function Background() {
         preserveAspectRatio="xMidYMid slice"
         xmlns="http://www.w3.org/2000/svg"
       >
-        {/* ── H Letterform Geometry ── */}
-
-        {/* H #1 — upper right, slight rotation */}
-        <g opacity="0.05" transform="translate(1060,-60) scale(2.2) rotate(8 55 70)">
+        {/* H #1 – upper right */}
+        <g opacity="0.07" transform="translate(1060,-60) scale(2.2) rotate(8 55 70)">
           <rect x="0" y="0" width="16" height="70" fill={BLUE} />
           <rect x="40" y="0" width="16" height="70" fill={BLUE} />
           <rect x="16" y="26" width="24" height="12" fill={BLUE} />
           <rect x="56" y="0" width="5" height="70" fill={BLUE} opacity="0.5" />
         </g>
 
-        {/* H #2 — left mid, larger, counter-rotated */}
-        <g opacity="0.035" transform="translate(-120,250) scale(3.5) rotate(-5 55 70)">
+        {/* H #2 – left mid */}
+        <g opacity="0.055" transform="translate(-120,250) scale(3.5) rotate(-5 55 70)">
           <rect x="0" y="0" width="16" height="70" fill={BLUE} />
           <rect x="40" y="0" width="16" height="70" fill={BLUE} />
           <rect x="16" y="26" width="24" height="12" fill={BLUE} />
           <rect x="56" y="0" width="5" height="70" fill={BLUE} opacity="0.5" />
         </g>
 
-        {/* H #3 — lower right */}
-        <g opacity="0.04" transform="translate(1150,560) scale(2.0) rotate(12 55 70)">
+        {/* H #3 – lower right */}
+        <g opacity="0.06" transform="translate(1150,560) scale(2.0) rotate(12 55 70)">
           <rect x="0" y="0" width="16" height="70" fill={BLUE} />
           <rect x="40" y="0" width="16" height="70" fill={BLUE} />
           <rect x="16" y="26" width="24" height="12" fill={BLUE} />
           <rect x="56" y="0" width="5" height="70" fill={BLUE} opacity="0.5" />
         </g>
 
-        {/* H #4 — centre-bottom, very large, nearly invisible */}
-        <g opacity="0.028" transform="translate(380,640) scale(4.2) rotate(-3 55 70)">
+        {/* H #4 – centre-bottom */}
+        <g opacity="0.04" transform="translate(380,640) scale(4.2) rotate(-3 55 70)">
           <rect x="0" y="0" width="16" height="70" fill={BLUE} />
           <rect x="40" y="0" width="16" height="70" fill={BLUE} />
           <rect x="16" y="26" width="24" height="12" fill={BLUE} />
           <rect x="56" y="0" width="5" height="70" fill={BLUE} opacity="0.5" />
         </g>
 
-        {/* ── Node Clusters ── */}
-
-        {/* Cluster 1 — upper left */}
-        <g opacity="0.22" stroke={BLUE} strokeWidth="1.2" fill="none">
+        {/* Node Clusters */}
+        <g opacity="0.28" stroke={BLUE} strokeWidth="1.2" fill="none">
           <line x1="155" y1="110" x2="215" y2="75" />
           <line x1="155" y1="110" x2="105" y2="155" />
           <line x1="155" y1="110" x2="240" y2="140" />
@@ -79,8 +75,7 @@ function Background() {
           <circle cx="110" cy="210" r="3" />
         </g>
 
-        {/* Cluster 2 — upper right */}
-        <g opacity="0.18" stroke={BLUE} strokeWidth="1.2" fill="none">
+        <g opacity="0.22" stroke={BLUE} strokeWidth="1.2" fill="none">
           <line x1="1290" y1="160" x2="1340" y2="100" />
           <line x1="1290" y1="160" x2="1230" y2="195" />
           <line x1="1290" y1="160" x2="1350" y2="220" />
@@ -95,8 +90,7 @@ function Background() {
           <circle cx="1195" cy="240" r="3" />
         </g>
 
-        {/* Cluster 3 — lower left */}
-        <g opacity="0.20" stroke={BLUE} strokeWidth="1.2" fill="none">
+        <g opacity="0.25" stroke={BLUE} strokeWidth="1.2" fill="none">
           <line x1="90" y1="630" x2="150" y2="590" />
           <line x1="90" y1="630" x2="55" y2="680" />
           <line x1="90" y1="630" x2="160" y2="670" />
@@ -111,8 +105,7 @@ function Background() {
           <circle cx="40" cy="730" r="3" />
         </g>
 
-        {/* Cluster 4 — lower right */}
-        <g opacity="0.16" stroke={BLUE} strokeWidth="1.2" fill="none">
+        <g opacity="0.20" stroke={BLUE} strokeWidth="1.2" fill="none">
           <line x1="1360" y1="700" x2="1300" y2="660" />
           <line x1="1360" y1="700" x2="1400" y2="750" />
           <line x1="1360" y1="700" x2="1410" y2="640" />
@@ -154,7 +147,7 @@ export default function Home() {
           justifyContent: 'space-between',
           padding: '0 48px',
           height: '64px',
-          borderBottom: '1px solid rgba(42,122,192,0.15)',
+          borderBottom: '1px solid rgba(26,48,96,0.4)',
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -174,22 +167,19 @@ export default function Home() {
             </text>
           </svg>
           <span style={{ fontWeight: 700, fontSize: '16px', letterSpacing: '-0.3px' }}>
-            Heath <span style={{ color: BLUE }}>Underwriting</span>
+            Heath
           </span>
         </div>
         <div style={{ display: 'flex', gap: '32px', alignItems: 'center' }}>
-          <a
-            href="#model"
-            style={{ color: 'rgba(240,244,255,0.55)', fontSize: '14px', textDecoration: 'none' }}
-          >
-            Model
-          </a>
-          <a
-            href="#edge"
-            style={{ color: 'rgba(240,244,255,0.55)', fontSize: '14px', textDecoration: 'none' }}
-          >
-            Edge
-          </a>
+          {'Home Portfolio Company Contact'.split(' ').map((item) => (
+            <a
+              key={item}
+              href={`#${item.toLowerCase()}`}
+              style={{ color: 'rgba(240,244,255,0.55)', fontSize: '14px', textDecoration: 'none' }}
+            >
+              {item}
+            </a>
+          ))}
           <a
             href="#contact"
             style={{
@@ -202,400 +192,213 @@ export default function Home() {
               textDecoration: 'none',
             }}
           >
-            Contact
+            Sign in
           </a>
         </div>
       </nav>
 
-      {/* ── HERO ── */}
+      {/* ── HERO (two-column) ── */}
       <section
-        style={{
-          position: 'relative',
-          zIndex: 5,
-          textAlign: 'center',
-          padding: '100px 40px 80px',
-          maxWidth: '900px',
-          margin: '0 auto',
-        }}
-      >
-        {/* Badge */}
-        <div
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '8px',
-            background: 'rgba(42,122,192,0.12)',
-            border: '1px solid rgba(42,122,192,0.35)',
-            borderRadius: '20px',
-            padding: '5px 16px',
-            marginBottom: '32px',
-          }}
-        >
-          <div
-            style={{ width: '6px', height: '6px', borderRadius: '50%', background: BLUE }}
-          />
-          <span
-            style={{
-              color: BLUE,
-              fontSize: '11px',
-              fontWeight: 700,
-              letterSpacing: '2px',
-            }}
-          >
-            AI-NATIVE MGA
-          </span>
-        </div>
-
-        <h1
-          style={{
-            fontSize: 'clamp(32px, 5vw, 56px)',
-            fontWeight: 800,
-            lineHeight: 1.12,
-            letterSpacing: '-1.5px',
-            marginBottom: '24px',
-            color: '#f0f4ff',
-          }}
-        >
-          Heath is the leading AI underwriting platform{' '}
-          <span style={{ color: BLUE }}>— a modern MGA.</span>
-        </h1>
-
-        <p
-          style={{
-            fontSize: '18px',
-            lineHeight: 1.65,
-            color: 'rgba(240,244,255,0.65)',
-            maxWidth: '680px',
-            margin: '0 auto 40px',
-          }}
-        >
-          We combine underwriting expertise, proprietary technology, and aligned capacity to
-          deliver the most advanced AI-powered reinsurance underwriting workflow.
-        </p>
-
-        <div
-          style={{
-            display: 'flex',
-            gap: '16px',
-            justifyContent: 'center',
-            flexWrap: 'wrap',
-          }}
-        >
-          <a
-            href="#contact"
-            style={{
-              background: BLUE,
-              color: 'white',
-              padding: '14px 32px',
-              borderRadius: '5px',
-              fontWeight: 600,
-              fontSize: '15px',
-              textDecoration: 'none',
-              letterSpacing: '-0.2px',
-            }}
-          >
-            Explore a Partnership
-          </a>
-          <a
-            href="#model"
-            style={{
-              background: 'transparent',
-              color: '#f0f4ff',
-              border: '1px solid rgba(240,244,255,0.2)',
-              padding: '14px 32px',
-              borderRadius: '5px',
-              fontWeight: 500,
-              fontSize: '15px',
-              textDecoration: 'none',
-            }}
-          >
-            Our Model →
-          </a>
-        </div>
-      </section>
-
-      {/* ── PILLS ── */}
-      <section
-        style={{
-          position: 'relative',
-          zIndex: 5,
-          display: 'flex',
-          justifyContent: 'center',
-          gap: '12px',
-          flexWrap: 'wrap',
-          padding: '0 40px 80px',
-        }}
-      >
-        {[
-          'SPECIALTY LINES',
-          'PORTFOLIO DISCIPLINE',
-          'ALIGNED CAPACITY',
-          'TECHNOLOGY-ENABLED EXECUTION',
-        ].map((pill) => (
-          <div
-            key={pill}
-            style={{
-              border: '1px solid rgba(42,122,192,0.28)',
-              borderRadius: '4px',
-              padding: '6px 18px',
-              fontSize: '11px',
-              fontWeight: 700,
-              letterSpacing: '1.5px',
-              color: 'rgba(240,244,255,0.45)',
-            }}
-          >
-            {pill}
-          </div>
-        ))}
-      </section>
-
-      {/* ── WHO WE ARE ── */}
-      <section
-        id="about"
         style={{
           position: 'relative',
           zIndex: 5,
           maxWidth: '1100px',
           margin: '0 auto',
-          padding: '80px 40px',
+          padding: '80px 40px 80px',
           display: 'grid',
           gridTemplateColumns: '1fr 1fr',
           gap: '64px',
           alignItems: 'center',
         }}
       >
+        {/* Left */}
         <div>
           <div
             style={{
-              color: BLUE,
-              fontSize: '11px',
-              fontWeight: 700,
-              letterSpacing: '2px',
-              marginBottom: '16px',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              background: 'rgba(26,48,96,0.25)',
+              border: '1px solid rgba(26,48,96,0.6)',
+              borderRadius: '20px',
+              padding: '5px 16px',
+              marginBottom: '28px',
             }}
           >
-            WHO WE ARE
+            <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: BLUE }} />
+            <span style={{ color: BLUE, fontSize: '11px', fontWeight: 700, letterSpacing: '2px' }}>
+              AI-NATIVE MGA
+            </span>
           </div>
-          <h2
+
+          <h1
             style={{
-              fontSize: 'clamp(24px, 3vw, 38px)',
+              fontSize: 'clamp(28px, 4vw, 48px)',
               fontWeight: 800,
-              letterSpacing: '-0.8px',
-              lineHeight: 1.2,
+              lineHeight: 1.12,
+              letterSpacing: '-1.2px',
               marginBottom: '20px',
               color: '#f0f4ff',
             }}
           >
-            An AI-native specialty reinsurance MGA built for the modern market.
-          </h2>
+            Heath is the leading{' '}
+            <span style={{ color: '#4a9eff' }}>AI underwriting platform</span>{' '}
+            —{' '}
+            <span style={{ color: 'rgba(240,244,255,0.7)' }}>a modern MGA.</span>
+          </h1>
+
           <p
             style={{
-              color: 'rgba(240,244,255,0.6)',
-              lineHeight: 1.75,
               fontSize: '16px',
-              marginBottom: '16px',
+              lineHeight: 1.65,
+              color: 'rgba(240,244,255,0.6)',
+              marginBottom: '36px',
             }}
           >
-            Heath Underwriting is a specialty reinsurance MGA operating in sabotage &amp;
-            terrorism and facultative lines. We combine deep underwriting expertise with
-            proprietary AI workflows to deliver superior risk selection and portfolio
-            performance.
+            We combine underwriting expertise, proprietary technology, and{' '}
+            <strong style={{ color: '#f0f4ff', fontWeight: 600 }}>
+              AI-powered reinsurance underwriting workflow.
+            </strong>
           </p>
-          <p
-            style={{ color: 'rgba(240,244,255,0.6)', lineHeight: 1.75, fontSize: '16px' }}
-          >
-            Built from the ground up as an AI-native platform, Heath processes, analyses, and
-            responds to submissions with a speed and consistency that traditional underwriting
-            cannot match — without compromising on judgment or discipline.
-          </p>
-        </div>
-        <div
-          style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}
-        >
-          {(
-            [
-              { value: 'AI-Native', label: 'Built from day one on proprietary AI workflows' },
-              { value: 'Specialty', label: 'Sabotage, terrorism & facultative lines' },
-              { value: 'Reinsurance', label: 'Focused exclusively on reinsurance structures' },
-              { value: 'Disciplined', label: 'Rigorous risk selection at every step' },
-            ] as { value: string; label: string }[]
-          ).map(({ value, label }) => (
-            <div
-              key={value}
+
+          <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap' }}>
+            <a
+              href="#contact"
               style={{
-                background: 'rgba(42,122,192,0.06)',
-                border: '1px solid rgba(42,122,192,0.18)',
-                borderRadius: '8px',
-                padding: '24px 20px',
+                background: BLUE,
+                color: 'white',
+                padding: '12px 28px',
+                borderRadius: '5px',
+                fontWeight: 600,
+                fontSize: '14px',
+                textDecoration: 'none',
               }}
             >
-              <div
-                style={{
-                  fontSize: '18px',
-                  fontWeight: 800,
-                  color: BLUE,
-                  marginBottom: '8px',
-                }}
-              >
-                {value}
-              </div>
-              <div
-                style={{
-                  fontSize: '13px',
-                  color: 'rgba(240,244,255,0.5)',
-                  lineHeight: 1.55,
-                }}
-              >
-                {label}
-              </div>
+              Contact us
+            </a>
+            <a
+              href="#model"
+              style={{
+                background: 'transparent',
+                color: '#f0f4ff',
+                border: '1px solid rgba(240,244,255,0.2)',
+                padding: '12px 28px',
+                borderRadius: '5px',
+                fontWeight: 500,
+                fontSize: '14px',
+                textDecoration: 'none',
+              }}
+            >
+              Explore underwriting
+            </a>
+          </div>
+        </div>
+
+        {/* Right – Underwriting Desk card */}
+        <div
+          style={{
+            background: 'rgba(8,22,44,0.9)',
+            border: '1px solid rgba(26,48,96,0.55)',
+            borderRadius: '12px',
+            overflow: 'hidden',
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              padding: '14px 20px',
+              borderBottom: '1px solid rgba(26,48,96,0.4)',
+            }}
+          >
+            <span style={{ color: 'rgba(240,244,255,0.5)', fontSize: '11px', fontWeight: 700, letterSpacing: '2px' }}>
+              UNDERWRITING DESK
+            </span>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '11px', color: '#10b981', fontWeight: 600 }}>
+              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#10b981', display: 'inline-block' }} />
+              Live
+            </span>
+          </div>
+
+          {(
+            [
+              { text: 'Specialty reinsurance underwriting across selected lines of business.', ai: false },
+              { text: 'Portfolio discipline embedded at quotation and bind stages.', ai: false },
+              { text: 'Capacity partnerships in active development with long-term orientation.', ai: false },
+              { text: 'Automated triage, analysis and response — powered by proprietary AI sworkflows.', ai: true },
+            ] as { text: string; ai: boolean }[]
+          ).map((item, i, arr) => (
+            <div
+              key={i}
+              style={{
+                padding: '14px 20px',
+                borderBottom: i < arr.length - 1 ? '1px solid rgba(26,48,96,0.3)' : 'none',
+                display: 'flex',
+                alignItems: 'flex-start',
+                gap: '10px',
+              }}
+            >
+              {item.ai && (
+                <span style={{ flexShrink: 0, background: 'rgba(26,48,96,0.5)', border: '1px solid rgba(26,48,96,0.8)', borderRadius: '3px', padding: '2px 6px', fontSize: '9px', fontWeight: 700, color: '#7aa8e0', letterSpacing: '0.8px', marginTop: '2px' }}>
+                  AI
+                </span>
+              )}
+              <span style={{ fontSize: '13px', color: 'rgba(240,244,255,0.7)', lineHeight: 1.55 }}>
+                {item.text}
+              </span>
             </div>
           ))}
         </div>
       </section>
 
-      {/* ── THE HEATH MODEL ── */}
-      <section
-        id="model"
-        style={{
-          position: 'relative',
-          zIndex: 5,
-          background: 'rgba(42,122,192,0.04)',
-          borderTop: '1px solid rgba(42,122,192,0.12)',
-          borderBottom: '1px solid rgba(42,122,192,0.12)',
-          padding: '80px 40px',
-        }}
-      >
-        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: '56px' }}>
-            <div
-              style={{
-                color: BLUE,
-                fontSize: '11px',
-                fontWeight: 700,
-                letterSpacing: '2px',
-                marginBottom: '16px',
-              }}
-            >
-              THE HEATH MODEL
-            </div>
-            <h2
-              style={{
-                fontSize: 'clamp(24px, 3vw, 38px)',
-                fontWeight: 800,
-                letterSpacing: '-0.8px',
-                color: '#f0f4ff',
-                marginBottom: '14px',
-              }}
-            >
-              The Underwriting Desk
-            </h2>
-            <p
-              style={{
-                color: 'rgba(240,244,255,0.5)',
-                fontSize: '16px',
-                maxWidth: '520px',
-                margin: '0 auto',
-              }}
-            >
-              A complete, AI-powered specialty reinsurance operation.
-            </p>
+      {/* ── PILLS ── */}
+      <section style={{ position: 'relative', zIndex: 5, display: 'flex', justifyContent: 'center', gap: '12px', flexWrap: 'wrap', padding: '0 40px 80px' }}>
+        {['SPECIALTY LINES', 'PORTFOLIO DISCIPLINE', 'ALIGNED CAPACITY', 'TECHNOLOGY-ENABLED EXECUTION'].map((pill) => (
+          <div key={pill} style={{ border: '1px solid rgba(26,48,96,0.5)', borderRadius: '4px', padding: '6px 18px', fontSize: '11px', fontWeight: 700, letterSpacing: '1.5px', color: 'rgba(240,244,255,0.4)' }}>
+            {pill}
           </div>
+        ))}
+      </section>
 
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(4, 1fr)',
-              gap: '20px',
-            }}
-          >
-            {(
-              [
-                {
-                  num: '01',
-                  title: 'Submission Intake',
-                  body: 'Specialty reinsurance underwriting across selected lines of business.',
-                  ai: false,
-                },
-                {
-                  num: '02',
-                  title: 'Risk Analysis',
-                  body: 'Proprietary models assess exposure, pricing adequacy, and portfolio fit across every submission.',
-                  ai: false,
-                },
-                {
-                  num: '03',
-                  title: 'Capacity Deployment',
-                  body: 'Aligned capacity deployed with discipline — every risk measured against portfolio objectives.',
-                  ai: false,
-                },
-                {
-                  num: '04',
-                  title: 'AI Workflows',
-                  body: 'Automated triage, analysis and response — powered by proprietary AI workflows.',
-                  ai: true,
-                },
-              ] as { num: string; title: string; body: string; ai: boolean }[]
-            ).map(({ num, title, body, ai }) => (
-              <div
-                key={num}
-                style={{
-                  background: 'rgba(13,45,79,0.8)',
-                  border: '1px solid rgba(42,122,192,0.2)',
-                  borderRadius: '10px',
-                  padding: '28px 22px',
-                  borderTop: `3px solid ${BLUE}`,
-                }}
-              >
-                <div
-                  style={{
-                    color: BLUE,
-                    fontSize: '12px',
-                    fontWeight: 700,
-                    marginBottom: '14px',
-                    opacity: 0.65,
-                  }}
-                >
-                  {num}
-                </div>
-                <h3
-                  style={{
-                    fontWeight: 700,
-                    fontSize: '15px',
-                    marginBottom: '12px',
-                    color: '#f0f4ff',
-                  }}
-                >
-                  {title}
+      {/* ── WHO WE ARE ── */}
+      <section id="about" style={{ position: 'relative', zIndex: 5, maxWidth: '1100px', margin: '0 auto', padding: '80px 40px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '64px', alignItems: 'center' }}>
+        <div>
+          <div style={{ color: 'rgba(240,244,255,0.4)', fontSize: '11px', fontWeight: 700, letterSpacing: '2px', marginBottom: '16px' }}>ABOUT</div>
+          <h2 style={{ fontSize: 'clamp(24px, 3vw, 38px)', fontWeight: 800, letterSpacing: '-0.8px', lineHeight: 1.2, marginBottom: '32px', color: '#f0f4ff' }}>Who We Are</h2>
+          <svg width="90" height="72" viewBox="0 0 90 72" xmlns="http://www.w3.org/2000/svg" opacity="0.55">
+            <rect width="68" height="72" fill={NAVY} rx="6" />
+            <rect x="74" y="0" width="12" height="72" fill={BLUE} rx="2" />
+            <rect x="12" y="14" width="14" height="44" fill="rgba(74,158,255,0.6)" rx="2"/>
+            <rect x="42" y="14" width="14" height="44" fill="rgba(74,158,255,0.6)" rx="2"/>
+            <rect x="26" y="30" width="16" height="10" fill="rgba(74,158,255,0.6)" rx="1"/>
+          </svg>
+        </div>
+        <div>
+          <p style={{ color: 'rgba(240,244,255,0.7)', lineHeight: 1.75, fontSize: '16px', marginBottom: '16px' }}>
+            We are the leading{' '}<strong style={{ color: '#f0f4ff' }}>AI-native reinsurance underwriting</strong>{' '}business focused on specialty markets. We prioritize long-term value creation, portfolio discipline, and alignment over short-term volume — powered by proprietary AI technology.
+          </p>
+          <p style={{ color: 'rgba(240,244,255,0.55)', lineHeight: 1.75, fontSize: '16px' }}>Built from the ground up as an AI-native platform, Heath processes, analyses, and responds to submissions with a speed and consistency that traditional underwriting cannot match — without compromising on judgment or discipline.</p>
+        </div>
+      </section>
+
+      {/* ── THE HEATH MODEL ── */}
+      <section id="model" style={{ position: 'relative', zIndex: 5, background: 'rgba(8,18,36,0.6)', borderTop: '1px solid rgba(26,48,96,0.35)', borderBottom: '1px solid rgba(26,48,96,0.35)', padding: '80px 40px' }}>
+        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+          <div style={{ color: 'rgba(240,244,255,0.4)', fontSize: '11px', fontWeight: 700, letterSpacing: '2px', marginBottom: '12px' }}>FRAMEWORK</div>
+          <h2 style={{ fontSize: 'clamp(24px, 3vw, 38px)', fontWeight: 800, letterSpacing: '-0.8px', color: '#f0f4ff', marginBottom: '48px' }}>The Heath Model</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '20px' }}>
+            {([
+              { title: 'Underwriting expertise', body: 'Senior underwriting capability by line, supported by clear technical authority and governance.', ai: false },
+              { title: 'Aligned capacity mindset', body: 'We operate with a capacity partner perspective, protecting technical outcomes through the cycle.', ai: false },
+              { title: 'Portfolio-driven decisions', body: 'Each risk is evaluated in portfolio context, including accumulation, concentration, and expected return.', ai: false },
+              { title: 'Technology-enabled execution', body: 'Our proprietary AI platform enhances speed and operating quality without replacing underwriting judgment.', ai: true },
+            ] as { title: string; body: string; ai: boolean }[]).map(({ title, body, ai }) => (
+              <div key={title} style={{ background: 'rgba(8,18,36,0.8)', border: '1px solid rgba(26,48,96,0.4)', borderRadius: '10px', padding: '28px 24px', borderTop: `3px solid ${BLUE}` }}>
+                <h3 style={{ fontWeight: 700, fontSize: '15px', marginBottom: '10px', color: '#f0f4ff', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  {title}{ai && <span style={{ background: 'rgba(26,48,96,0.5)', border: '1px solid rgba(26,48,96,0.8)', borderRadius: '3px', padding: '2px 7px', fontSize: '9px', fontWeight: 700, color: '#7aa8e0', letterSpacing: '1px' }}>AI</span>}
                 </h3>
-                <p
-                  style={{
-                    color: 'rgba(240,244,255,0.55)',
-                    fontSize: '13px',
-                    lineHeight: 1.65,
-                  }}
-                >
-                  {body}
-                </p>
-                {ai && (
-                  <div
-                    style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '5px',
-                      background: 'rgba(42,122,192,0.15)',
-                      border: '1px solid rgba(42,122,192,0.3)',
-                      borderRadius: '3px',
-                      padding: '3px 9px',
-                      marginTop: '14px',
-                      fontSize: '10px',
-                      fontWeight: 700,
-                      color: BLUE,
-                      letterSpacing: '1px',
-                    }}
-                  >
-                    ✦ AI
-                  </div>
-                )}
+                <p style={{ color: 'rgba(240,244,255,0.5)', fontSize: '13px', lineHeight: 1.65 }}>{body}</p>
               </div>
             ))}
           </div>
@@ -603,180 +406,39 @@ export default function Home() {
       </section>
 
       {/* ── THE HEATH EDGE ── */}
-      <section
-        id="edge"
-        style={{
-          position: 'relative',
-          zIndex: 5,
-          maxWidth: '1100px',
-          margin: '0 auto',
-          padding: '80px 40px',
-        }}
-      >
-        <div style={{ textAlign: 'center', marginBottom: '56px' }}>
-          <div
-            style={{
-              color: BLUE,
-              fontSize: '11px',
-              fontWeight: 700,
-              letterSpacing: '2px',
-              marginBottom: '16px',
-            }}
-          >
-            THE HEATH EDGE
-          </div>
-          <h2
-            style={{
-              fontSize: 'clamp(24px, 3vw, 38px)',
-              fontWeight: 800,
-              letterSpacing: '-0.8px',
-              color: '#f0f4ff',
-            }}
-          >
-            Why Heath outperforms
-          </h2>
-        </div>
-
-        <div
-          style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px' }}
-        >
-          {(
-            [
-              {
-                icon: '⚡',
-                title: 'Speed at Scale',
-                body: 'AI-driven intake and triage means every submission is assessed, priced, and responded to faster than any traditional team — without sacrificing quality.',
-              },
-              {
-                icon: '🎯',
-                title: 'Portfolio Discipline',
-                body: 'Every risk is evaluated in the context of the full portfolio. Correlations, accumulations, and concentration risks are managed proactively — not reactively.',
-              },
-              {
-                icon: '🔬',
-                title: 'Data-Driven Underwriting',
-                body: 'Proprietary data pipelines enrich every submission. Underwriters act on better information, faster — leading to more consistent, defensible decisions.',
-              },
-            ] as { icon: string; title: string; body: string }[]
-          ).map(({ icon, title, body }) => (
-            <div
-              key={title}
-              style={{
-                background: 'rgba(42,122,192,0.05)',
-                border: '1px solid rgba(42,122,192,0.16)',
-                borderRadius: '10px',
-                padding: '32px 28px',
-              }}
-            >
-              <div style={{ fontSize: '28px', marginBottom: '16px' }}>{icon}</div>
-              <h3
-                style={{
-                  fontWeight: 700,
-                  fontSize: '17px',
-                  marginBottom: '12px',
-                  color: '#f0f4ff',
-                }}
-              >
-                {title}
-              </h3>
-              <p
-                style={{
-                  color: 'rgba(240,244,255,0.55)',
-                  fontSize: '14px',
-                  lineHeight: 1.7,
-                }}
-              >
-                {body}
-              </p>
+      <section id="edge" style={{ position: 'relative', zIndex: 5, maxWidth: '1100px', margin: '0 auto', padding: '80px 40px' }}>
+        <div style={{ color: 'rgba(240,244,255,0.4)', fontSize: '11px', fontWeight: 700, letterSpacing: '2px', marginBottom: '12px' }}>DIFFERENTIATION</div>
+        <h2 style={{ fontSize: 'clamp(24px, 3vw, 38px)', fontWeight: 800, letterSpacing: '-0.8px', color: '#f0f4ff', marginBottom: '48px' }}>The Heath Edge</h2>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px' }}>
+          {([
+            { title: 'Underwrite with context', body: 'We turn fragmented submission data into decision-ready underwriting context.' },
+            { title: 'Alignment over volume', body: 'We optimize for partner alignment and sustained technical performance, not transactional growth.' },
+            { title: 'Built for speed', body: 'We pair underwriting discipline with execution velocity to respond quickly without compromising standards.' },
+          ] as { title: string; body: string }[]).map(({ title, body }) => (
+            <div key={title} style={{ background: 'rgba(8,18,36,0.5)', border: '1px solid rgba(26,48,96,0.35)', borderRadius: '10px', padding: '28px 24px' }}>
+              <h3 style={{ fontWeight: 700, fontSize: '15px', marginBottom: '10px', color: '#f0f4ff' }}>{title}</h3>
+              <p style={{ color: 'rgba(240,244,255,0.5)', fontSize: '13px', lineHeight: 1.7 }}>{body}</p>
             </div>
           ))}
         </div>
       </section>
 
       {/* ── CTA ── */}
-      <section
-        id="contact"
-        style={{
-          position: 'relative',
-          zIndex: 5,
-          background: 'rgba(42,122,192,0.07)',
-          borderTop: '1px solid rgba(42,122,192,0.15)',
-          padding: '100px 40px',
-          textAlign: 'center',
-        }}
-      >
+      <section id="contact" style={{ position: 'relative', zIndex: 5, background: 'rgba(8,18,36,0.7)', borderTop: '1px solid rgba(26,48,96,0.35)', padding: '100px 40px', textAlign: 'center' }}>
         <div style={{ maxWidth: '720px', margin: '0 auto' }}>
-          <div
-            style={{
-              color: BLUE,
-              fontSize: '11px',
-              fontWeight: 700,
-              letterSpacing: '2px',
-              marginBottom: '24px',
-            }}
-          >
-            CAPACITY PARTNERSHIPS
+          <div style={{ color: 'rgba(240,244,255,0.4)', fontSize: '11px', fontWeight: 700, letterSpacing: '2px', marginBottom: '24px' }}>CAPACITY PARTNERSHIPS</div>
+          <h2 style={{ fontSize: 'clamp(26px, 3.5vw, 44px)', fontWeight: 800, letterSpacing: '-1px', lineHeight: 1.18, color: '#f0f4ff', marginBottom: '24px' }}>Build capacity with technical discipline</h2>
+          <p style={{ color: 'rgba(240,244,255,0.55)', fontSize: '17px', lineHeight: 1.7, marginBottom: '40px' }}>We partner with institutions seeking durable underwriting performance in specialty reinsurance markets.</p>
+          <div style={{ display: 'flex', gap: '14px', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <a href="mailto:info@heathuw.com" style={{ display: 'inline-block', background: BLUE, color: 'white', padding: '16px 40px', borderRadius: '5px', fontWeight: 700, fontSize: '15px', textDecoration: 'none' }}>Partner with us</a>
+            <a href="#about" style={{ display: 'inline-block', background: 'transparent', color: '#f0f4ff', border: '1px solid rgba(240,244,255,0.2)', padding: '16px 40px', borderRadius: '5px', fontWeight: 500, fontSize: '15px', textDecoration: 'none' }}>Company</a>
           </div>
-          <h2
-            style={{
-              fontSize: 'clamp(26px, 3.5vw, 44px)',
-              fontWeight: 800,
-              letterSpacing: '-1px',
-              lineHeight: 1.18,
-              color: '#f0f4ff',
-              marginBottom: '24px',
-            }}
-          >
-            We partner with capacity providers and institutions seeking durable, disciplined
-            reinsurance exposure.
-          </h2>
-          <p
-            style={{
-              color: 'rgba(240,244,255,0.6)',
-              fontSize: '17px',
-              lineHeight: 1.7,
-              marginBottom: '40px',
-            }}
-          >
-            Heath brings proprietary technology, rigorous underwriting, and deep specialty
-            expertise — the infrastructure capacity partners need to deploy with confidence.
-          </p>
-          <a
-            href="mailto:info@heathuw.com"
-            style={{
-              display: 'inline-block',
-              background: BLUE,
-              color: 'white',
-              padding: '16px 40px',
-              borderRadius: '5px',
-              fontWeight: 700,
-              fontSize: '15px',
-              textDecoration: 'none',
-              letterSpacing: '-0.2px',
-            }}
-          >
-            Explore a Partnership
-          </a>
         </div>
       </section>
 
       {/* ── FOOTER ── */}
-      <footer
-        style={{
-          position: 'relative',
-          zIndex: 5,
-          borderTop: '1px solid rgba(42,122,192,0.1)',
-          padding: '32px 48px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: '16px',
-        }}
-      >
-        <span style={{ color: 'rgba(240,244,255,0.3)', fontSize: '12px' }}>
-          © 2025 Heath Underwriting · Sabotage &amp; Terrorism · Facultative Reinsurance
-        </span>
+      <footer style={{ position: 'relative', zIndex: 5, borderTop: '1px solid rgba(26,48,96,0.3)', padding: '32px 48px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
+        <span style={{ color: 'rgba(240,244,255,0.3)', fontSize: '12px' }}>© 2025 Heath Underwriting · Sabotage &amp; Terrorism · Facultative Reinsurance</span>
         <span style={{ color: 'rgba(240,244,255,0.3)', fontSize: '12px' }}>heathuw.com</span>
       </footer>
     </div>
