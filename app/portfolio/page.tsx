@@ -42,7 +42,7 @@ const LINES: SpecialtyLine[] = [
       'S&T wrap on top of existing property programs',
     ],
     markets: 'Global. Particular focus on high-risk and emerging markets where S&T exposure is material — Middle East, Latin America, South and Southeast Asia, and strategic infrastructure assets worldwide.',
-    image: 'https://images.unsplash.com/photo-1586339949916-3e9457bef6d3?w=1400&auto=format&fit=crop&q=80',
+    image: 'https://images.unsplash.com/photo-1520452112805-c6692c840af0?w=1400&auto=format&fit=crop&q=80',
     imagePosition: 'center 40%',
   },
   {
