@@ -14,9 +14,9 @@ export default async function DashboardLayout({ children }: { children: ReactNod
     }
   }
   return (
-    <div style={{ position: "relative", minHeight: "100vh" }}>
+    <div style={{ position: "relative", minHeight: "100vh", background: "#f4f6fa" }}>
       {/* Subtle chip+H wallpaper behind the (light) dashboard content */}
-      <ChipBackground opacity={0.4} />
+      <ChipBackground opacity={0.6} tone="light" />
       <div style={{ position: "relative", zIndex: 1 }}>{children}</div>
     </div>
   );
