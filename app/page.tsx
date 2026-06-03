@@ -184,13 +184,16 @@ export default function Home() {
           <a
             href="#contact"
             style={{
-              background: BLUE,
-              color: 'white',
+              background: 'rgba(74,158,255,0.12)',
+              color: LIGHT_BLUE,
               padding: '8px 20px',
-              borderRadius: '4px',
+              borderRadius: '20px',
               fontSize: '13px',
               fontWeight: 600,
               textDecoration: 'none',
+              border: `1px solid rgba(74,158,255,0.7)`,
+              boxShadow: '0 0 8px rgba(74,158,255,0.5), 0 0 20px rgba(74,158,255,0.25), inset 0 0 8px rgba(74,158,255,0.08)',
+              letterSpacing: '0.02em',
             }}
           >
             Sign in
