@@ -44,6 +44,13 @@ function IconFinance() {
     </svg>
   );
 }
+function IconPlane() {
+  return (
+    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <path d="M12 3c.8 0 1.4.9 1.4 2v4.2l7.6 4.3v1.8l-7.6-2.3v4.1l2 1.4v1.5L12 19.5 8.6 20.7v-1.5l2-1.4v-4.1L3 15.3v-1.8l7.6-4.3V5c0-1.1.6-2 1.4-2z" />
+    </svg>
+  );
+}
 
 export default function SuscripcionPage() {
   const { locale } = useI18n();
@@ -80,6 +87,12 @@ export default function SuscripcionPage() {
       desc: pick(locale, "Mesa de trabajo de suscripción.", "Underwriting workbench.", "核保工作台。"),
       href: "/suscripcion/lineas-financieras",
       icon: <IconFinance />,
+    },
+    {
+      title: "Aviation",
+      desc: pick(locale, "Mesa de trabajo de suscripción.", "Underwriting workbench.", "核保工作台。"),
+      href: "/suscripcion/aviation",
+      icon: <IconPlane />,
     },
   ];
 
