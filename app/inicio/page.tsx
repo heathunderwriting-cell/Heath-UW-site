@@ -89,7 +89,7 @@ export default function InicioPage() {
     {
       title: "Underwriting",
       desc: pick(locale, "Proceso de suscripción de todos los productos.", "Underwriting process for all products.", "所有产品的核保流程。"),
-      href: "/dashboard?view=operations&module=1",
+      href: "/suscripcion",
       icon: <IconUnderwriting />,
       ready: true,
     },
