@@ -46,7 +46,7 @@ export function LoginForm() {
 
   const redirect = useMemo(() => {
     const param = searchParams.get("redirect");
-    return param && param.startsWith("/") ? param : "/dashboard?view=operations";
+    return param && param.startsWith("/") ? param : "/inicio";
   }, [searchParams]);
 
   const [email, setEmail] = useState("");
