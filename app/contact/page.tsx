@@ -50,12 +50,12 @@ export default function ContactPage() {
   }
 
   const inputCls =
-    "w-full rounded-lg border border-border bg-white/5 px-3.5 py-2.5 text-sm text-primary placeholder:text-secondary outline-none transition focus:border-[#4a9eff] focus:ring-2 focus:ring-[#4a9eff]/40";
+    "w-full rounded-lg border border-border bg-[#0f2b4e] px-3.5 py-2.5 text-sm text-primary placeholder:text-secondary outline-none transition focus:border-[#4a9eff] focus:ring-2 focus:ring-[#4a9eff]/40";
 
   return (
     <>
       <ChipBackground />
-      <section className="relative z-10 px-6 py-16 md:px-10 md:py-24">
+      <section className="relative z-10 bg-[#0a1a30]/70 px-6 py-16 md:px-10 md:py-24">
         <div className="mx-auto max-w-6xl">
           <span className="inline-flex items-center gap-2 rounded-full border border-[#4a9eff]/40 px-3.5 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#4a9eff]">
             <span
@@ -74,22 +74,22 @@ export default function ContactPage() {
             <div className="flex flex-col gap-4">
               <a
                 href={`mailto:${CONTACT_EMAIL}`}
-                className="group rounded-2xl border border-border bg-[#081224]/60 p-5 backdrop-blur-sm transition hover:border-[#4a9eff]"
+                className="group rounded-2xl border border-border bg-card p-5 backdrop-blur-sm transition hover:border-[#4a9eff]"
               >
                 <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-secondary">{L.emailLabel}</div>
                 <div className="mt-1.5 break-all text-base font-semibold text-primary transition-colors group-hover:text-[#4a9eff]">
                   {CONTACT_EMAIL}
                 </div>
               </a>
-              <div className="rounded-2xl border border-border bg-[#081224]/60 p-5 backdrop-blur-sm">
+              <div className="rounded-2xl border border-border bg-card p-5 backdrop-blur-sm">
                 <div className="text-base font-semibold text-primary">{L.response}</div>
               </div>
-              <div className="rounded-2xl border border-border bg-[#081224]/60 p-5 backdrop-blur-sm">
+              <div className="rounded-2xl border border-border bg-card p-5 backdrop-blur-sm">
                 <div className="text-base font-semibold text-primary">{L.partnerships}</div>
               </div>
               <Link
                 href="/underwriting"
-                className="mt-1 inline-flex items-center justify-center self-start rounded-full border border-border bg-[#081224]/60 px-6 py-2.5 text-sm font-semibold text-primary transition-colors hover:border-[#4a9eff]"
+                className="mt-1 inline-flex items-center justify-center self-start rounded-full border border-border bg-card px-6 py-2.5 text-sm font-semibold text-primary transition-colors hover:border-[#4a9eff]"
               >
                 {copy.secondary}
               </Link>
@@ -98,7 +98,7 @@ export default function ContactPage() {
             {/* Right: message form (opens visitor's email, pre-filled) */}
             <form
               onSubmit={handleSubmit}
-              className="rounded-2xl border border-border bg-[#081224]/80 p-6 shadow-soft backdrop-blur-sm md:p-7"
+              className="rounded-2xl border border-border bg-card p-6 shadow-soft backdrop-blur-sm md:p-7"
             >
               <h2 className="text-lg font-semibold text-primary">{L.formTitle}</h2>
               <div className="mt-5 grid gap-4 sm:grid-cols-2">
