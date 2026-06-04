@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useI18n } from "@/components/providers/LanguageProvider";
 
 /**
@@ -146,14 +146,73 @@ function SectionLabel({ text, count, accent }: { text: string; count: number; ac
 
 export function InboxReviewPanel({ rows = READINESS_MOCK }: { rows?: ReviewRow[] }) {
   const { locale } = useI18n();
+  const [query, setQuery] = useState("");
+
   const { ready, inProgress } = useMemo(() => {
-    const ready = rows.filter(isReady);
-    const inProgress = rows.filter((r) => !isReady(r));
-    return { ready, inProgress };
-  }, [rows]);
+    const q = query.trim().toLowerCase();
+    const matches = (r: ReviewRow) =>
+      q === "" ||
+      [r.insured, r.broker_name, r.line_of_business]
+        .filter(Boolean)
+        .some((v) => (v as string).toLowerCase().includes(q));
+    const filtered = rows.filter(matches);
+    return { ready: filtered.filter(isReady), inProgress: filtered.filter((r) => !isReady(r)) };
+  }, [rows, query]);
+
+  const searchPlaceholder = pick(
+    locale,
+    "Buscar por asegurado, broker o línea…",
+    "Search by insured, broker or line…",
+    "按被保险人、经纪人或险种搜索…"
+  );
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 10, maxWidth: 380 }}>
+      <div style={{ position: "relative", marginBottom: 4 }}>
+        <span
+          aria-hidden
+          style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "#94a3b8", fontSize: "0.9rem" }}
+        >
+          ⌕
+        </span>
+        <input
+          type="text"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder={searchPlaceholder}
+          aria-label={searchPlaceholder}
+          className="bg-card text-primary"
+          style={{
+            width: "100%",
+            border: "1px solid #d9e2f0",
+            borderRadius: 999,
+            padding: "9px 34px 9px 30px",
+            fontSize: "0.82rem",
+            outline: "none",
+          }}
+        />
+        {query !== "" && (
+          <button
+            type="button"
+            onClick={() => setQuery("")}
+            aria-label={pick(locale, "Limpiar", "Clear", "清除")}
+            style={{
+              position: "absolute",
+              right: 10,
+              top: "50%",
+              transform: "translateY(-50%)",
+              border: "none",
+              background: "transparent",
+              color: "#94a3b8",
+              cursor: "pointer",
+              fontSize: "0.9rem",
+              lineHeight: 1,
+            }}
+          >
+            ✕
+          </button>
+        )}
+      </div>
       <SectionLabel
         text={pick(locale, "PARA REVISAR · LISTOS PARA COTIZAR", "FOR REVIEW · READY TO QUOTE", "待核保 · 可报价").toUpperCase()}
         count={ready.length}
