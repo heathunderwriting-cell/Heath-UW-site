@@ -4,8 +4,8 @@ import { useI18n } from '@/components/providers/LanguageProvider';
 import { companyCopy } from '@/locales/company-content';
 
 const NAVY = '#02091c';
-const NAVY_CARD = '#071223';
-const NAVY_LIGHT = '#0a1a2e';
+const NAVY_CARD = '#1d4d80';
+const NAVY_LIGHT = '#16345c';
 const BLUE = '#4a9eff';
 const BLUE_DIM = 'rgba(74,158,255,0.12)';
 const BLUE_BORDER = 'rgba(74,158,255,0.25)';
@@ -272,7 +272,7 @@ export default function CompanyPage() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 20 }}>
             {techItems.map(({ icon, title, desc, tag, highlight }) => (
               <div key={title} style={{
-                background: highlight ? 'linear-gradient(135deg,rgba(74,158,255,0.1),#071223)' : NAVY_CARD,
+                background: highlight ? 'linear-gradient(135deg,rgba(74,158,255,0.1),#1d4d80)' : NAVY_CARD,
                 border: `1px solid ${highlight ? 'rgba(74,158,255,0.5)' : BLUE_BORDER}`,
                 borderRadius: 14, padding: '32px 28px',
               }}>
