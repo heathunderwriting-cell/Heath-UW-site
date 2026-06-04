@@ -89,14 +89,14 @@ export default function InicioPage() {
     {
       title: "Underwriting",
       desc: pick(locale, "Proceso de suscripción de todos los productos.", "Underwriting process for all products.", "所有产品的核保流程。"),
-      href: "/dashboard?view=operations",
+      href: "/dashboard?view=operations&module=1",
       icon: <IconUnderwriting />,
       ready: true,
     },
     {
       title: "Dashboard",
       desc: pick(locale, "Cifras y métricas de la compañía.", "Company figures and metrics.", "公司数据与指标。"),
-      href: "/dashboard?view=overview",
+      href: "/dashboard?view=overview&module=1",
       icon: <IconDashboard />,
       ready: true,
     },
