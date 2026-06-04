@@ -167,7 +167,7 @@ export function InboxReviewPanel({ rows = READINESS_MOCK }: { rows?: ReviewRow[]
   );
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 10, maxWidth: 380 }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 10, maxWidth: 320 }}>
       <div style={{ position: "relative", marginBottom: 4 }}>
         <span
           aria-hidden
