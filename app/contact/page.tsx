@@ -55,7 +55,7 @@ export default function ContactPage() {
   return (
     <>
       <ChipBackground />
-      <section className="relative z-10 bg-[#0a1a30]/70 px-6 py-16 md:px-10 md:py-24">
+      <section className="relative z-10 px-6 py-16 md:px-10 md:py-24">
         <div className="mx-auto max-w-6xl">
           <span className="inline-flex items-center gap-2 rounded-full border border-[#4a9eff]/40 px-3.5 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#4a9eff]">
             <span
