@@ -182,7 +182,7 @@ export default function HomeClient() {
         </div>
 
         {/* Right – Underwriting Desk card */}
-        <div style={{ background: 'rgba(5,14,32,0.92)', border: '1px solid rgba(74,158,255,0.22)', borderRadius: '14px', overflow: 'hidden', boxShadow: '0 8px 40px rgba(0,0,0,0.35)' }}>
+        <div style={{ background: 'rgba(29,77,128,0.92)', border: '1px solid rgba(74,158,255,0.22)', borderRadius: '14px', overflow: 'hidden', boxShadow: '0 8px 40px rgba(0,0,0,0.35)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '18px 26px', borderBottom: '1px solid rgba(74,158,255,0.15)' }}>
             <span style={{ color: 'rgba(240,244,255,0.55)', fontSize: '11px', fontWeight: 700, letterSpacing: '2.5px' }}>UNDERWRITING DESK</span>
             <span style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '11px', color: '#10b981', fontWeight: 600 }}>
