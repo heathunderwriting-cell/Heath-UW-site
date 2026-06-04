@@ -3,7 +3,7 @@ import React from 'react';
 import { useI18n } from '@/components/providers/LanguageProvider';
 import { companyCopy } from '@/locales/company-content';
 
-const NAVY = '#02091c';
+const NAVY = '#0d2440';
 const NAVY_CARD = '#1d4d80';
 const NAVY_LIGHT = '#16345c';
 const BLUE = '#4a9eff';
