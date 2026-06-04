@@ -7,15 +7,9 @@ import { useI18n } from "@/components/providers/LanguageProvider";
 import type { DashboardData } from "@/lib/dashboard/fetch-dashboard";
 
 export function ProductWorkbench({ title, data }: { title: string; data: DashboardData }) {
-  const { locale } = useI18n();
-  const kicker = locale === "es" ? "Heath · Suscripción" : locale === "zh" ? "Heath · 核保" : "Heath · Underwriting";
-  const backLabel = locale === "es" ? "Underwriting" : locale === "zh" ? "核保" : "Underwriting";
-  const subtitle =
-    locale === "es"
-      ? "Mesa de trabajo: cola, filtros y priorización de submissions."
-      : locale === "zh"
-      ? "工作台：队列、筛选与提交优先级。"
-      : "Workbench: queue, filters and submission prioritization.";
+  const kicker = "Heath · Suscripción";
+  const backLabel = "Suscripción";
+  const subtitle = "Mesa de trabajo: cola, filtros y priorización de submissions.";
 
   return (
     <div className="dashboard-theme min-h-screen bg-transparent">
