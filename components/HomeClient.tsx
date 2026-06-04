@@ -232,7 +232,7 @@ export default function HomeClient() {
       </section>
 
       {/* ── THE HEATH MODEL ── */}
-      <section id="model" style={{ position: 'relative', zIndex: 5, background: 'rgba(8,18,36,0.6)', borderTop: '1px solid rgba(74,158,255,0.12)', borderBottom: '1px solid rgba(74,158,255,0.12)', padding: '80px 40px' }}>
+      <section id="model" style={{ position: 'relative', zIndex: 5, background: 'rgba(29,77,128,0.6)', borderTop: '1px solid rgba(74,158,255,0.12)', borderBottom: '1px solid rgba(74,158,255,0.12)', padding: '80px 40px' }}>
         <div style={{ maxWidth: '1160px', margin: '0 auto' }}>
           <div style={{ color: 'rgba(240,244,255,0.4)', fontSize: '11px', fontWeight: 700, letterSpacing: '2px', marginBottom: '12px' }}>FRAMEWORK</div>
           <h2 style={{ fontSize: 'clamp(24px, 3vw, 38px)', fontWeight: 800, letterSpacing: '-0.8px', color: '#f0f4ff', marginBottom: '48px' }}>
@@ -240,7 +240,7 @@ export default function HomeClient() {
           </h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '20px' }}>
             {(d.model.pillars as readonly { title: string; body: string }[]).map((pillar, idx) => (
-              <div key={pillar.title} style={{ background: 'rgba(8,18,36,0.8)', border: '1px solid rgba(74,158,255,0.18)', borderRadius: '10px', padding: '28px 24px', borderTop: `3px solid ${BLUE}` }}>
+              <div key={pillar.title} style={{ background: 'rgba(29,77,128,0.8)', border: '1px solid rgba(74,158,255,0.18)', borderRadius: '10px', padding: '28px 24px', borderTop: `3px solid ${BLUE}` }}>
                 <h3 style={{ fontWeight: 700, fontSize: '15px', marginBottom: '10px', color: '#f0f4ff', display: 'flex', alignItems: 'center', gap: '10px' }}>
                   {pillar.title}
                   {idx === 3 && (
@@ -262,7 +262,7 @@ export default function HomeClient() {
         </h2>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px' }}>
           {(d.edge.items as readonly { title: string; body: string }[]).map((item) => (
-            <div key={item.title} style={{ background: 'rgba(8,18,36,0.5)', border: '1px solid rgba(74,158,255,0.15)', borderRadius: '10px', padding: '28px 24px' }}>
+            <div key={item.title} style={{ background: 'rgba(29,77,128,0.5)', border: '1px solid rgba(74,158,255,0.15)', borderRadius: '10px', padding: '28px 24px' }}>
               <h3 style={{ fontWeight: 700, fontSize: '15px', marginBottom: '10px', color: '#f0f4ff' }}>{item.title}</h3>
               <p style={{ color: 'rgba(240,244,255,0.5)', fontSize: '13px', lineHeight: 1.7 }}>{item.body}</p>
             </div>
@@ -271,7 +271,7 @@ export default function HomeClient() {
       </section>
 
       {/* ── CTA ── */}
-      <section id="contact" style={{ position: 'relative', zIndex: 5, background: 'rgba(8,18,36,0.7)', borderTop: '1px solid rgba(74,158,255,0.12)', padding: '100px 40px', textAlign: 'center' }}>
+      <section id="contact" style={{ position: 'relative', zIndex: 5, background: 'rgba(29,77,128,0.7)', borderTop: '1px solid rgba(74,158,255,0.12)', padding: '100px 40px', textAlign: 'center' }}>
         <div style={{ maxWidth: '760px', margin: '0 auto' }}>
           <div style={{ color: 'rgba(240,244,255,0.4)', fontSize: '11px', fontWeight: 700, letterSpacing: '2px', marginBottom: '24px' }}>CAPACITY PROVIDERS</div>
           <h2 style={{ fontSize: 'clamp(26px, 3.5vw, 44px)', fontWeight: 800, letterSpacing: '-1px', lineHeight: 1.18, color: '#f0f4ff', marginBottom: '24px' }}>
