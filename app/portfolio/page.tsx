@@ -27,7 +27,7 @@ function LineCard({ line, copy }: { line: SpecialtyLine; copy: (typeof portfolio
   return (
     <div style={{ position:'relative', overflow:'hidden', borderRadius:16, border:`1px solid ${open?'rgba(74,158,255,0.5)':'rgba(74,158,255,0.18)'}`, transition:'border-color 0.3s ease, box-shadow 0.3s ease', boxShadow: open ? '0 0 0 1px rgba(74,158,255,0.2), 0 24px 60px rgba(0,0,0,0.4)' : '0 8px 32px rgba(0,0,0,0.25)' }}>
       <div style={{ position:'absolute', inset:0, backgroundImage:`url(${line.image})`, backgroundSize:'cover', backgroundPosition:line.imagePosition, zIndex:0 }} />
-      <div style={{ position:'absolute', inset:0, background: open ? 'linear-gradient(135deg,rgba(2,9,28,0.97) 0%,rgba(2,9,28,0.93) 100%)' : 'linear-gradient(105deg,rgba(2,9,28,0.94) 0%,rgba(2,9,28,0.80) 55%,rgba(2,9,28,0.70) 100%)', transition:'background 0.4s ease', zIndex:1 }} />
+      <div style={{ position:'absolute', inset:0, background: open ? 'linear-gradient(135deg,rgba(29,77,128,0.97) 0%,rgba(29,77,128,0.93) 100%)' : 'linear-gradient(105deg,rgba(29,77,128,0.94) 0%,rgba(29,77,128,0.80) 55%,rgba(29,77,128,0.70) 100%)', transition:'background 0.4s ease', zIndex:1 }} />
       <div style={{ position:'relative', zIndex:2, padding:'36px 40px' }}>
         <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:20 }}>
           <div>
