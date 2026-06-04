@@ -8,6 +8,7 @@ import type { DashboardData } from "@/lib/dashboard/fetch-dashboard";
 
 export function ProductWorkbench({ title, data }: { title: string; data: DashboardData }) {
   const { locale } = useI18n();
+  const kicker = locale === "es" ? "Heath · Suscripción" : locale === "zh" ? "Heath · 核保" : "Heath · Underwriting";
   const backLabel = locale === "es" ? "Underwriting" : locale === "zh" ? "核保" : "Underwriting";
   const subtitle =
     locale === "es"
@@ -22,7 +23,7 @@ export function ProductWorkbench({ title, data }: { title: string; data: Dashboa
         <header className="mb-6 flex flex-wrap items-start justify-between gap-3 border-b border-border/60 pb-5">
           <div className="min-w-0">
             <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-secondary">
-              HEATH · UNDERWRITING
+              {kicker}
             </p>
             <h1 className="mt-1.5 text-2xl font-semibold tracking-tight text-primary sm:text-[1.65rem]">{title}</h1>
             <p className="mt-1 max-w-2xl text-sm leading-snug text-secondary">{subtitle}</p>
