@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useI18n } from '@/components/providers/LanguageProvider';
 import { portfolioCopy, type LineContent } from '@/locales/portfolio-lines';
 
-const NAVY = '#02091c';
+const NAVY = '#0d2440';
 const LIGHT = '#4a9eff';
 const DARK = 'rgba(2,9,28,0.6)';
 
