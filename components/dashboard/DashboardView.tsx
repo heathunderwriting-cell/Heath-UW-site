@@ -71,7 +71,7 @@ function DashboardViewInner({
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const param = searchParams.get("view");
+  const param = searchParams.get("view"); const moduleParam = searchParams.get("module");
   const view =
     param === null ? initialView : parseDashboardViewParam(param);
 
@@ -194,7 +194,7 @@ function DashboardViewInner({
               {view === "overview" ? (
                 <>
                   <h1 className="text-2xl font-semibold tracking-tight text-primary sm:text-[1.65rem]">
-                    {ov.pageTitle}
+                    {moduleParam ? "Dashboard" : ov.pageTitle}
                   </h1>
                   <p className="mt-1 max-w-2xl text-[13px] leading-snug text-secondary">
                     {ov.pageSubtitle}
@@ -209,7 +209,7 @@ function DashboardViewInner({
               ) : (
                 <>
                   <h1 className="text-2xl font-semibold tracking-tight text-primary sm:text-[1.65rem]">
-                    {d.title}
+                    {moduleParam ? "Underwriting" : d.title}
                   </h1>
                   <p className="mt-1 max-w-2xl text-sm leading-snug text-secondary">
                     {pageSubtitle}
@@ -218,7 +218,7 @@ function DashboardViewInner({
               )}
             </div>
             <div className="flex shrink-0 flex-wrap items-center gap-2">
-              {view === "operations" ? (
+              {(moduleParam || view === "operations") ? (
                 <Button href="/inicio" variant="secondary">
                   {common.backToHome}
                 </Button>
@@ -229,7 +229,7 @@ function DashboardViewInner({
                 value={view}
                 onChange={setView}
                 size="compact"
-                className="w-auto max-w-none"
+                className={moduleParam ? "hidden" : "w-auto max-w-none"}
               />
               <LanguageSwitcher />
             </div>
