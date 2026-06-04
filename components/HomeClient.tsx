@@ -3,7 +3,7 @@
 import React from 'react';
 import { useI18n } from '@/components/providers/LanguageProvider';
 
-const NAVY = '#02091c';
+const NAVY = '#0d2440';
 const BLUE = '#1a70f7';
 const LIGHT_BLUE = '#4a9eff';
 
