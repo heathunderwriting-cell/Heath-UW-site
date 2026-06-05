@@ -154,6 +154,8 @@ const EN_TOKEN_REPLACEMENTS: Array<[string, string]> = [
   ["Resumen", "Summary"],
   ["Decisión", "Decision"],
   ["Justo ahora", "Just now"],
+  ["Participación sugerida", "Suggested participation"],
+  ["pedir info", "request info"],
 ];
 
 const ZH_TOKEN_REPLACEMENTS: Array<[string, string]> = [
@@ -268,54 +270,78 @@ const ZH_TOKEN_REPLACEMENTS: Array<[string, string]> = [
   ["Resumen", "摘要"],
   ["Decisión", "决策"],
   ["Justo ahora", "刚刚"],
+  ["Participación sugerida", "建议参与比例"],
+  ["Sistema:", "系统："],
+  ["Comprensión", "理解"],
+  ["Evaluación", "评估"],
+  ["Notas del equipo", "团队备注"],
+  ["pedir info", "请求信息"],
 ];
 
 function reversePairs(pairs: ReadonlyArray<readonly [string, string]>) {
-  return pairs.map(([from, to]) => [to, from] as const);
+  return pairs.map(([from, to]) => [to, from] as [string, string]);
+}
+
+// Sort longest-source-first so compound phrases are replaced before their
+// shorter substrings (this is what prevents the mixed-language leaks like
+// "可进入Decisions").
+function bySourceLenDesc(pairs: ReadonlyArray<readonly [string, string]>) {
+  return [...pairs].sort((a, b) => b[0].length - a[0].length);
+}
+
+const ES_TO_EN = bySourceLenDesc(EN_TOKEN_REPLACEMENTS);
+const ES_TO_ZH = bySourceLenDesc(ZH_TOKEN_REPLACEMENTS);
+const EN_TO_ES = bySourceLenDesc(reversePairs(EN_TOKEN_REPLACEMENTS));
+const ZH_TO_ES = bySourceLenDesc(reversePairs(ZH_TOKEN_REPLACEMENTS));
+
+function applyPairs(text: string, pairs: ReadonlyArray<readonly [string, string]>) {
+  let out = text;
+  for (const [from, to] of pairs) {
+    if (from && from !== to) out = out.split(from).join(to);
+  }
+  return out;
+}
+
+function timeToEs(text: string) {
+  return text
+    .replace(/(\d+)\s*天前/g, "Hace $1d")
+    .replace(/(\d+)\s*小时前/g, "Hace $1h")
+    .replace(/(\d+)\s*分钟前/g, "Hace $1m")
+    .replace(/(\d+)\s*d\s*ago/gi, "Hace $1d")
+    .replace(/(\d+)\s*h\s*ago/gi, "Hace $1h")
+    .replace(/(\d+)\s*m\s*ago/gi, "Hace $1m");
+}
+
+function timeFromEs(text: string, locale: Locale) {
+  if (locale === "en") {
+    return text
+      .replace(/Hace\s*(\d+)\s*d/gi, "$1d ago")
+      .replace(/Hace\s*(\d+)\s*h/gi, "$1h ago")
+      .replace(/Hace\s*(\d+)\s*m/gi, "$1m ago");
+  }
+  if (locale === "zh") {
+    return text
+      .replace(/Hace\s*(\d+)\s*d/gi, "$1天前")
+      .replace(/Hace\s*(\d+)\s*h/gi, "$1小时前")
+      .replace(/Hace\s*(\d+)\s*m/gi, "$1分钟前");
+  }
+  return text;
 }
 
 function translateWorkbenchText(text: string, locale: Locale) {
-  let out = text;
-  const EN_TO_ES = reversePairs(EN_TOKEN_REPLACEMENTS);
-  const ZH_TO_ES = reversePairs(ZH_TOKEN_REPLACEMENTS);
+  // 1) Normalize whatever is currently rendered back to the Spanish canonical.
+  //    Only normalize FROM the other languages (never from the target language
+  //    itself) so we don't corrupt real data such as broker/insured names.
+  let es = text;
+  if (locale === "en") es = applyPairs(es, ZH_TO_ES);
+  else if (locale === "zh") es = applyPairs(es, EN_TO_ES);
+  else es = applyPairs(applyPairs(es, EN_TO_ES), ZH_TO_ES);
+  es = timeToEs(es);
 
-  const replacements =
-    locale === "en"
-      ? [...ZH_TO_ES, ...EN_TOKEN_REPLACEMENTS]
-      : locale === "zh"
-        ? [...EN_TO_ES, ...ZH_TOKEN_REPLACEMENTS]
-        : [...EN_TO_ES, ...ZH_TO_ES];
-
-  for (const [from, to] of replacements) {
-    out = out.replaceAll(from, to);
-  }
-
-  if (locale === "en") {
-    out = out.replace(/\bHace\s+(\d+\s*[dhm])\s*ago\b/gi, "$1 ago");
-    out = out.replace(/\bHace\s+(\d+\s*[dhm])\b/gi, "$1 ago");
-    out = out.replace(/\b(\d+)\s*d\b/g, "$1d ago");
-    out = out.replace(/\b(\d+)\s*h\b/g, "$1h ago");
-    out = out.replace(/\b(\d+)\s*m\b/g, "$1m ago");
-    out = out.replace(/\b(\d+)\s*小时前\b/g, "$1h ago");
-    out = out.replace(/\b(\d+)\s*分钟前\b/g, "$1m ago");
-    out = out.replace(/\b(\d+)\s*天前\b/g, "$1d ago");
-  } else if (locale === "zh") {
-    out = out.replace(/\bHace\s+(\d+)\s*d\b/gi, "$1天前");
-    out = out.replace(/\bHace\s+(\d+)\s*h\b/gi, "$1小时前");
-    out = out.replace(/\bHace\s+(\d+)\s*m\b/gi, "$1分钟前");
-    out = out.replace(/\b(\d+)d ago\b/gi, "$1天前");
-    out = out.replace(/\b(\d+)h ago\b/gi, "$1小时前");
-    out = out.replace(/\b(\d+)m ago\b/gi, "$1分钟前");
-  } else {
-    out = out.replace(/\b(\d+\s*[dhm])\s*ago\b/gi, "Hace $1");
-    out = out.replace(/\b(\d+)d ago\b/g, "Hace $1d");
-    out = out.replace(/\b(\d+)h ago\b/g, "Hace $1h");
-    out = out.replace(/\b(\d+)m ago\b/g, "Hace $1m");
-    out = out.replace(/\b(\d+)\s*小时前\b/g, "Hace $1h");
-    out = out.replace(/\b(\d+)\s*分钟前\b/g, "Hace $1m");
-    out = out.replace(/\b(\d+)\s*天前\b/g, "Hace $1d");
-  }
-  return out;
+  // 2) Map the Spanish canonical to the target language.
+  if (locale === "es") return es;
+  const out = applyPairs(es, locale === "en" ? ES_TO_EN : ES_TO_ZH);
+  return timeFromEs(out, locale);
 }
 
 export function translateWorkbenchDom(root: HTMLElement, locale: Locale) {
