@@ -299,8 +299,16 @@ function mapDashboardRowsToWorkbenchSubmissions(rows: DashboardSubmissionRow[]):
   });
 }
 
+// Active BCP-47 tag for number/date formatting. The component updates this on
+// every render from the current locale (see setWorkbenchFormatLocale), so dates
+// and amounts follow the selected language instead of being pinned to es-AR.
+let activeFormatTag = "es-AR";
+export function setWorkbenchFormatLocale(locale: "es" | "en" | "zh") {
+  activeFormatTag = locale === "en" ? "en-US" : locale === "zh" ? "zh-CN" : "es-AR";
+}
+
 function formatMoneyUSD(n: number) {
-  const nf = new Intl.NumberFormat("es-AR", {
+  const nf = new Intl.NumberFormat(activeFormatTag, {
     style: "currency",
     currency: "USD",
     maximumFractionDigits: 0,
@@ -311,19 +319,19 @@ function formatMoneyUSD(n: number) {
 function formatCompactDate(iso: string) {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return iso;
-  return d.toLocaleDateString("es-AR", { day: "2-digit", month: "short", year: "numeric" });
+  return d.toLocaleDateString(activeFormatTag, { day: "2-digit", month: "short", year: "numeric" });
 }
 
 function formatShortDate(iso: string) {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return iso;
-  return d.toLocaleDateString("es-AR", { day: "2-digit", month: "short" });
+  return d.toLocaleDateString(activeFormatTag, { day: "2-digit", month: "short" });
 }
 
 function formatTime(iso: string) {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return iso;
-  return d.toLocaleTimeString("es-AR", { hour: "2-digit", minute: "2-digit" });
+  return d.toLocaleTimeString(activeFormatTag, { hour: "2-digit", minute: "2-digit" });
 }
 
 function msToCompactDuration(ms: number) {
@@ -1385,6 +1393,7 @@ export function UnderwritingWorkbench({
   sourceSubmissions?: DashboardSubmissionRow[];
 }) {
   const { locale } = useI18n();
+  setWorkbenchFormatLocale(locale);
   const rootRef = useRef<HTMLDivElement>(null);
   const initialLocaleRef = useRef(locale);
   const [isLoading, setIsLoading] = useState(true);
