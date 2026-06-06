@@ -30,6 +30,7 @@ type ViewRow = {
   has_loss_data: boolean | null;
   docs_received: number | null;
   compliance_status: string | null;
+  compliance_evidence_path: string | null;
 };
 
 function mapRow(r: ViewRow): ReviewRow {
@@ -47,6 +48,7 @@ function mapRow(r: ViewRow): ReviewRow {
     sov: r.has_sov ? "met" : "missing",
     loss: r.has_loss_data ? "met" : "missing",
     ofac,
+    ofac_evidence_path: r.compliance_evidence_path,
     docs_count: r.docs_received ?? 0,
   };
 }
@@ -64,7 +66,7 @@ export default function SabotajeTerrorismoPage() {
         const { data, error } = await supabase
           .from("dashboard_submissions_table")
           .select(
-            "id,insured,broker_name,line_of_business,is_joint_review_request,has_slip,has_sov,has_loss_data,docs_received,compliance_status"
+            "id,insured,broker_name,line_of_business,is_joint_review_request,has_slip,has_sov,has_loss_data,docs_received,compliance_status,compliance_evidence_path"
           )
           .eq("is_joint_review_request", true);
         if (error) throw error;
