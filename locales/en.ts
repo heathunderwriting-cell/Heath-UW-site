@@ -234,7 +234,7 @@ export const en = {
   home: {
     hero: {
       kicker: "Modern MGA",
-      title: "Heath is a partner-led underwriting platform operating as a modern MGA.",
+      title: "Heath is a pioneering AI-native MGA.",
       subtitle:
         "We combine underwriting expertise, proprietary technology, and aligned capacity to deliver disciplined, risk-adjusted growth.",
       primaryCta: "Contact us",
