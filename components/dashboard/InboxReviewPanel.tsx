@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useI18n } from "@/components/providers/LanguageProvider";
+import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 
 /**
  * Self-contained Inbox + For review panel.
@@ -12,7 +13,8 @@ import { useI18n } from "@/components/providers/LanguageProvider";
  * Each row carries the five readiness checks the underwriter needs before a
  * case is "free to quote": commercial decision (joint-work email), slip
  * received, SOV / statement of values (risk locations + insured value per
- * site), loss/claims data present, and OFAC compliance clear.
+ * site), loss/claims data present, and OFAC compliance clear. The OFAC chip
+ * links to the stored screening evidence PDF when one exists.
  */
 
 type CheckState = "met" | "partial" | "missing";
@@ -30,6 +32,7 @@ export type ReviewRow = {
   loss_received?: number;
   loss_expected?: number;
   ofac: "clear" | "review" | "hit";
+  ofac_evidence_path?: string | null; // storage path of the OFAC evidence PDF
   docs_count?: number;
 };
 
@@ -66,12 +69,28 @@ const READINESS_MOCK: ReviewRow[] = [
   { id: "6", insured: "Cordillera Logistics", broker_name: "Lockton Re", line_of_business: "Marine", commercial: "met", slip: "met", sov: "missing", loss: "missing", ofac: "clear", docs_count: 2 },
 ];
 
-function Chip({ label, state, locale }: { label: string; state: CheckState | "clear" | "review" | "hit"; locale: string }) {
+function Chip({
+  label,
+  state,
+  onClick,
+  title,
+}: {
+  label: string;
+  state: CheckState | "clear" | "review" | "hit";
+  onClick?: () => void;
+  title?: string;
+}) {
   const tone = toneFor(state);
   const ok = state === "met" || state === "clear";
   const partial = state === "partial" || state === "review";
+  const clickable = !!onClick;
   return (
     <span
+      onClick={onClick}
+      title={title}
+      role={clickable ? "button" : undefined}
+      tabIndex={clickable ? 0 : undefined}
+      onKeyDown={clickable ? (e) => { if (e.key === "Enter" || e.key === " ") onClick!(); } : undefined}
       style={{
         display: "inline-flex",
         alignItems: "center",
@@ -83,10 +102,14 @@ function Chip({ label, state, locale }: { label: string; state: CheckState | "cl
         background: tone.bg,
         color: tone.fg,
         whiteSpace: "nowrap",
+        cursor: clickable ? "pointer" : "default",
+        textDecoration: clickable ? "underline dotted" : "none",
+        textUnderlineOffset: 2,
       }}
     >
       <span aria-hidden style={{ fontSize: "0.85em", lineHeight: 1 }}>{ok ? "✓" : partial ? "◐" : "✕"}</span>
       {label}
+      {clickable && <span aria-hidden style={{ fontSize: "0.85em", lineHeight: 1 }}>↗</span>}
     </span>
   );
 }
@@ -109,6 +132,23 @@ function Card({ row, locale }: { row: ReviewRow; locale: string }) {
       : row.ofac === "review"
       ? pick(locale, "OFAC revisar", "OFAC review", "OFAC 待审")
       : pick(locale, "OFAC alerta", "OFAC hit", "OFAC 命中");
+
+  async function openEvidence() {
+    if (!row.ofac_evidence_path) return;
+    try {
+      const supabase = createSupabaseBrowserClient();
+      const { data, error } = await supabase.storage
+        .from("compliance")
+        .createSignedUrl(row.ofac_evidence_path, 3600);
+      if (error) throw error;
+      if (data?.signedUrl) window.open(data.signedUrl, "_blank", "noopener,noreferrer");
+    } catch {
+      /* no-op: evidence not available */
+    }
+  }
+
+  const hasEvidence = !!row.ofac_evidence_path;
+  const evidenceTitle = pick(locale, "Ver evidencia OFAC (PDF)", "View OFAC evidence (PDF)", "查看 OFAC 证据 (PDF)");
 
   return (
     <div
@@ -134,11 +174,16 @@ function Card({ row, locale }: { row: ReviewRow; locale: string }) {
         </span>
       </div>
       <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 12 }}>
-        <Chip locale={locale} state={row.commercial} label={pick(locale, "Comercial", "Commercial", "商务")} />
-        <Chip locale={locale} state={row.slip} label={pick(locale, "Slip", "Slip", "Slip")} />
-        <Chip locale={locale} state={row.sov ?? "missing"} label={pick(locale, "SOV · valores", "SOV · values", "SOV · 标的表")} />
-        <Chip locale={locale} state={row.loss} label={lossLabel} />
-        <Chip locale={locale} state={row.ofac} label={ofacLabel} />
+        <Chip state={row.commercial} label={pick(locale, "Comercial", "Commercial", "商务")} />
+        <Chip state={row.slip} label={pick(locale, "Slip", "Slip", "Slip")} />
+        <Chip state={row.sov ?? "missing"} label={pick(locale, "SOV · valores", "SOV · values", "SOV · 标的表")} />
+        <Chip state={row.loss} label={lossLabel} />
+        <Chip
+          state={row.ofac}
+          label={ofacLabel}
+          onClick={hasEvidence ? openEvidence : undefined}
+          title={hasEvidence ? evidenceTitle : undefined}
+        />
       </div>
     </div>
   );
