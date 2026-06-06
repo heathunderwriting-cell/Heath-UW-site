@@ -236,7 +236,7 @@ export const es = {
   home: {
     hero: {
       kicker: "MGA moderno",
-      title: "Heath es una plataforma de suscripción liderada por socios, operando como un MGA moderno.",
+      title: "Heath es un MGA pionero AI-native.",
       subtitle:
         "Combinamos experiencia técnica de suscripción, tecnología propietaria y capacidad alineada para construir crecimiento disciplinado ajustado por riesgo.",
       primaryCta: "Contáctanos",
