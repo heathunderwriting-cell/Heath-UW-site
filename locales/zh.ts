@@ -218,7 +218,7 @@ export const zh = {
   home: {
     hero: {
       kicker: "现代 MGA",
-      title: "Heath 是由合伙人主导的核保平台，以现代 MGA 方式运营。",
+      title: "Heath 是一家开创性的 AI-native MGA。",
       subtitle: "我们结合核保专业能力、自研技术与一致利益的承保能力，实现纪律化、风险调整后的增长。",
       primaryCta: "联系我们",
       secondaryCta: "了解核保",
