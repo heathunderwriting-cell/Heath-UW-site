@@ -26,6 +26,7 @@ type ViewRow = {
   line_of_business: string | null;
   is_joint_review_request: boolean | null;
   has_slip: boolean | null;
+  has_sov: boolean | null;
   has_loss_data: boolean | null;
   docs_received: number | null;
   compliance_status: string | null;
@@ -42,6 +43,8 @@ function mapRow(r: ViewRow): ReviewRow {
     // Appears here only because a commercial commitment was sent → Commercial is met.
     commercial: r.is_joint_review_request ? "met" : "missing",
     slip: r.has_slip ? "met" : "missing",
+    // SOV / relación de valores y ubicaciones (Excel del broker)
+    sov: r.has_sov ? "met" : "missing",
     loss: r.has_loss_data ? "met" : "missing",
     ofac,
     docs_count: r.docs_received ?? 0,
@@ -61,7 +64,7 @@ export default function SabotajeTerrorismoPage() {
         const { data, error } = await supabase
           .from("dashboard_submissions_table")
           .select(
-            "id,insured,broker_name,line_of_business,is_joint_review_request,has_slip,has_loss_data,docs_received,compliance_status"
+            "id,insured,broker_name,line_of_business,is_joint_review_request,has_slip,has_sov,has_loss_data,docs_received,compliance_status"
           )
           .eq("is_joint_review_request", true);
         if (error) throw error;
