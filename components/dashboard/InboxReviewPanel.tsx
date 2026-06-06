@@ -9,9 +9,10 @@ import { useI18n } from "@/components/providers/LanguageProvider";
  * reviewed in the real theme. Phase 2: pass `rows` from the dashboard
  * submissions view once the readiness columns exist in Supabase.
  *
- * Each row carries the four readiness checks the underwriter needs before a
+ * Each row carries the five readiness checks the underwriter needs before a
  * case is "free to quote": commercial decision (joint-work email), slip
- * received, loss/claims data present, and OFAC compliance clear.
+ * received, SOV / statement of values (risk locations + insured value per
+ * site), loss/claims data present, and OFAC compliance clear.
  */
 
 type CheckState = "met" | "partial" | "missing";
@@ -24,6 +25,7 @@ export type ReviewRow = {
   // readiness (written by n8n in phase 2)
   commercial: CheckState;        // correo de trabajo conjunto / decisión comercial
   slip: CheckState;              // slip enviado por el broker
+  sov?: CheckState;              // SOV / relación de valores y ubicaciones (Excel del broker)
   loss: CheckState;              // siniestralidad (slip + Excel adjuntos)
   loss_received?: number;
   loss_expected?: number;
@@ -46,16 +48,22 @@ function toneFor(state: CheckState | "clear" | "review" | "hit") {
 }
 
 function isReady(r: ReviewRow) {
-  return r.commercial === "met" && r.slip === "met" && r.loss === "met" && r.ofac === "clear";
+  return (
+    r.commercial === "met" &&
+    r.slip === "met" &&
+    r.sov === "met" &&
+    r.loss === "met" &&
+    r.ofac === "clear"
+  );
 }
 
 const READINESS_MOCK: ReviewRow[] = [
-  { id: "1", insured: "Andinos Retail Group SA", broker_name: "Beacon Re Brokers", line_of_business: "Property", commercial: "met", slip: "met", loss: "met", ofac: "clear", docs_count: 4 },
-  { id: "2", insured: "Pacífico Mining Ltd.", broker_name: "Guy Carpenter", line_of_business: "Property", commercial: "met", slip: "met", loss: "met", ofac: "clear", docs_count: 5 },
-  { id: "3", insured: "Harvard Navigation Co.", broker_name: "Carpenter Marsh", line_of_business: "Marine", commercial: "met", slip: "missing", loss: "missing", ofac: "review" },
-  { id: "4", insured: "Delta Energy Holdings", broker_name: "Aon", line_of_business: "Financial Lines", commercial: "met", slip: "met", loss: "partial", loss_received: 1, loss_expected: 2, ofac: "hit", docs_count: 3 },
-  { id: "5", insured: "Río Verde Agro SAS", broker_name: "Marsh", line_of_business: "Property", commercial: "missing", slip: "missing", loss: "missing", ofac: "review" },
-  { id: "6", insured: "Cordillera Logistics", broker_name: "Lockton Re", line_of_business: "Marine", commercial: "met", slip: "met", loss: "missing", ofac: "clear", docs_count: 2 },
+  { id: "1", insured: "Andinos Retail Group SA", broker_name: "Beacon Re Brokers", line_of_business: "Property", commercial: "met", slip: "met", sov: "met", loss: "met", ofac: "clear", docs_count: 4 },
+  { id: "2", insured: "Pacífico Mining Ltd.", broker_name: "Guy Carpenter", line_of_business: "Property", commercial: "met", slip: "met", sov: "met", loss: "met", ofac: "clear", docs_count: 5 },
+  { id: "3", insured: "Harvard Navigation Co.", broker_name: "Carpenter Marsh", line_of_business: "Marine", commercial: "met", slip: "missing", sov: "missing", loss: "missing", ofac: "review" },
+  { id: "4", insured: "Delta Energy Holdings", broker_name: "Aon", line_of_business: "Financial Lines", commercial: "met", slip: "met", sov: "met", loss: "partial", loss_received: 1, loss_expected: 2, ofac: "hit", docs_count: 3 },
+  { id: "5", insured: "Río Verde Agro SAS", broker_name: "Marsh", line_of_business: "Property", commercial: "missing", slip: "missing", sov: "missing", loss: "missing", ofac: "review" },
+  { id: "6", insured: "Cordillera Logistics", broker_name: "Lockton Re", line_of_business: "Marine", commercial: "met", slip: "met", sov: "missing", loss: "missing", ofac: "clear", docs_count: 2 },
 ];
 
 function Chip({ label, state, locale }: { label: string; state: CheckState | "clear" | "review" | "hit"; locale: string }) {
@@ -128,6 +136,7 @@ function Card({ row, locale }: { row: ReviewRow; locale: string }) {
       <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 12 }}>
         <Chip locale={locale} state={row.commercial} label={pick(locale, "Comercial", "Commercial", "商务")} />
         <Chip locale={locale} state={row.slip} label={pick(locale, "Slip", "Slip", "Slip")} />
+        <Chip locale={locale} state={row.sov ?? "missing"} label={pick(locale, "SOV · valores", "SOV · values", "SOV · 标的表")} />
         <Chip locale={locale} state={row.loss} label={lossLabel} />
         <Chip locale={locale} state={row.ofac} label={ofacLabel} />
       </div>
