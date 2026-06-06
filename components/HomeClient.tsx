@@ -193,7 +193,7 @@ export default function HomeClient() {
           {credibilityItems.map((item, i) => (
             <div key={i} style={{ padding: '18px 26px', borderBottom: i < credibilityItems.length - 1 ? '1px solid rgba(74,158,255,0.12)' : 'none', display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
               {item.ai ? (
-                <span style={{ flexShrink: 0, background: 'rgba(74,158,255,0.15)', border: '1px solid rgba(74,158,255,0.4)', borderRadius: '3px', padding: '2px 7px', fontSize: '9px', fontWeight: 700, color: '#7ab8f5', letterSpacing: '0.8px', marginTop: '3pc' }}>AI</span>
+                <span style={{ flexShrink: 0, background: 'rgba(74,158,255,0.28)', border: '1px solid #4a9eff', borderRadius: '4px', padding: '3px 9px', fontSize: '11px', fontWeight: 700, color: '#e6f4ff', letterSpacing: '1px', boxShadow: '0 0 12px rgba(74,158,255,0.6)', marginTop: '2px' }}>AI</span>
               ) : (
                 <span style={{ flexShrink: 0, width: '5px', height: '5px', borderRadius: '50%', background: 'rgba(74,158,255,0.45)', marginTop: '8px' }} />
               )}
