@@ -441,7 +441,7 @@ export const en = {
     },
     portfolio: {
       title: "Portfolio",
-      subtitle: "We build the book with a full view of accumulation, concentration, and expected return.",
+      subtitle: "We build a portfolio with a full view of accumulation, concentration, and expected return.",
       intro:
         "Every underwriting decision is validated in portfolio context to support durable technical outcomes through the cycle.",
       metrics: [
