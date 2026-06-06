@@ -6,7 +6,7 @@ import { useI18n } from "@/components/providers/LanguageProvider";
 import { ChipBackground } from "@/components/ChipBackground";
 import { LoginForm } from "@/components/auth/LoginForm";
 
-const NAVY = "#02091c";
+const NAVY = "#0d2440";
 const BLUE = "#4a9eff";
 
 export default function IniciarSesionPage() {
