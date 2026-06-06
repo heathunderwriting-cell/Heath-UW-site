@@ -443,7 +443,7 @@ export const es = {
     },
     portfolio: {
       title: "Portafolio",
-      subtitle: "Construimos el libro con visión integral de acumulación, concentración y retorno esperado.",
+      subtitle: "Construimos un portafolio con visión integral de acumulación, concentración y retorno esperado.",
       intro:
         "Cada decisión se valida en contexto de portafolio para sostener resultados técnicos y estabilidad en el ciclo.",
       metrics: [
