@@ -5,13 +5,9 @@ import { useI18n } from "@/components/providers/LanguageProvider";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 
 /**
- * Inbox + For review panel (joint-review path: decision = REVIEW / "Disponible
- * para revisión"). Five readiness checks (commercial, slip, SOV, loss, OFAC);
- * the OFAC chip links to the stored evidence PDF. Each case has a "Declinar"
- * action: pick a standard reason (from the decline_reasons catalog — the same
- * vocabulary the automated workflow uses) → marks the case DECLINE and drops it
- * from the list (record kept for history). A broker decline email with the
- * reason is sent by the backend flow.
+ * Inbox + For review list (joint-review path). Five readiness checks; OFAC chip
+ * links to the evidence PDF; each case has a "Declinar" action (catalog reason).
+ * Clicking a card selects it (onSelect) so the detail + decision panels update.
  */
 
 type CheckState = "met" | "partial" | "missing";
@@ -34,7 +30,6 @@ export type ReviewRow = {
 
 type DeclineReason = { code: string; label: string };
 
-// Fallback list (mirrors the decline_reasons catalog) in case the fetch fails.
 const DEFAULT_REASONS: DeclineReason[] = [
   { code: "fuera_apetito", label: "Fuera de apetito" },
   { code: "compromiso_otro_canal", label: "Compromiso con otro canal" },
@@ -59,7 +54,7 @@ function toneFor(state: CheckState | "clear" | "review" | "hit") {
   return RED;
 }
 
-function isReady(r: ReviewRow) {
+export function isReady(r: ReviewRow) {
   return (
     r.commercial === "met" &&
     r.slip === "met" &&
@@ -95,11 +90,11 @@ function Chip({
   const clickable = !!onClick;
   return (
     <span
-      onClick={onClick}
+      onClick={clickable ? (e) => { e.stopPropagation(); onClick!(); } : undefined}
       title={title}
       role={clickable ? "button" : undefined}
       tabIndex={clickable ? 0 : undefined}
-      onKeyDown={clickable ? (e) => { if (e.key === "Enter" || e.key === " ") onClick!(); } : undefined}
+      onKeyDown={clickable ? (e) => { if (e.key === "Enter" || e.key === " ") { e.stopPropagation(); onClick!(); } } : undefined}
       style={{
         display: "inline-flex",
         alignItems: "center",
@@ -128,11 +123,15 @@ function Card({
   locale,
   reasons,
   onDecline,
+  selected,
+  onSelect,
 }: {
   row: ReviewRow;
   locale: string;
   reasons: DeclineReason[];
   onDecline: (id: string, reason: string) => Promise<void>;
+  selected?: boolean;
+  onSelect?: (row: ReviewRow) => void;
 }) {
   const ready = isReady(row);
   const [confirming, setConfirming] = useState(false);
@@ -193,13 +192,16 @@ function Card({
   return (
     <div
       className="bg-card"
+      onClick={() => onSelect?.(row)}
       style={{
-        border: "1px solid #d9e2f0",
+        border: `1px solid ${selected ? "#4a9eff" : "#d9e2f0"}`,
         borderLeft: `3px solid ${pill.tone.fg}`,
         borderRadius: 14,
         borderTopLeftRadius: 0,
         borderBottomLeftRadius: 0,
         padding: "14px 16px",
+        cursor: onSelect ? "pointer" : "default",
+        boxShadow: selected ? "0 0 0 2px rgba(74,158,255,0.15)" : "none",
       }}
     >
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8 }}>
@@ -226,21 +228,12 @@ function Card({
         />
       </div>
 
-      <div style={{ marginTop: 12, borderTop: "1px solid #eef2f8", paddingTop: 10 }}>
+      <div onClick={(e) => e.stopPropagation()} style={{ marginTop: 12, borderTop: "1px solid #eef2f8", paddingTop: 10 }}>
         {!confirming ? (
           <button
             type="button"
             onClick={() => setConfirming(true)}
-            style={{
-              border: "1px solid #f0c8c2",
-              background: "transparent",
-              color: RED.fg,
-              fontSize: "0.74rem",
-              fontWeight: 600,
-              padding: "5px 12px",
-              borderRadius: 999,
-              cursor: "pointer",
-            }}
+            style={{ border: "1px solid #f0c8c2", background: "transparent", color: RED.fg, fontSize: "0.74rem", fontWeight: 600, padding: "5px 12px", borderRadius: 999, cursor: "pointer" }}
           >
             {pick(locale, "Declinar", "Decline", "拒绝")}
           </button>
@@ -255,9 +248,7 @@ function Card({
               className="bg-card text-primary"
               style={{ border: "1px solid #d9e2f0", borderRadius: 8, padding: "7px 10px", fontSize: "0.78rem", outline: "none" }}
             >
-              {reasons.map((r) => (
-                <option key={r.code} value={r.code}>{r.label}</option>
-              ))}
+              {reasons.map((r) => (<option key={r.code} value={r.code}>{r.label}</option>))}
             </select>
             {code === "otro" && (
               <input
@@ -273,20 +264,10 @@ function Card({
               {pick(locale, "Se enviará un correo de declinación al broker con este motivo.", "A decline email with this reason will be sent to the broker.", "将以此原因向经纪人发送拒绝邮件。")}
             </div>
             <div style={{ display: "flex", gap: 8 }}>
-              <button
-                type="button"
-                disabled={busy}
-                onClick={confirmDecline}
-                style={{ border: "none", background: RED.fg, color: "#fff", fontSize: "0.74rem", fontWeight: 600, padding: "6px 12px", borderRadius: 999, cursor: busy ? "default" : "pointer", opacity: busy ? 0.6 : 1 }}
-              >
+              <button type="button" disabled={busy} onClick={confirmDecline} style={{ border: "none", background: RED.fg, color: "#fff", fontSize: "0.74rem", fontWeight: 600, padding: "6px 12px", borderRadius: 999, cursor: busy ? "default" : "pointer", opacity: busy ? 0.6 : 1 }}>
                 {busy ? pick(locale, "Declinando…", "Declining…", "处理中…") : pick(locale, "Confirmar declinación", "Confirm decline", "确认拒绝")}
               </button>
-              <button
-                type="button"
-                disabled={busy}
-                onClick={() => { setConfirming(false); setOtherText(""); setErr(null); }}
-                style={{ border: "1px solid #d9e2f0", background: "transparent", color: "#64748b", fontSize: "0.74rem", fontWeight: 600, padding: "6px 12px", borderRadius: 999, cursor: "pointer" }}
-              >
+              <button type="button" disabled={busy} onClick={() => { setConfirming(false); setOtherText(""); setErr(null); }} style={{ border: "1px solid #d9e2f0", background: "transparent", color: "#64748b", fontSize: "0.74rem", fontWeight: 600, padding: "6px 12px", borderRadius: 999, cursor: "pointer" }}>
                 {pick(locale, "Cancelar", "Cancel", "取消")}
               </button>
             </div>
@@ -307,7 +288,15 @@ function SectionLabel({ text, count, accent }: { text: string; count: number; ac
   );
 }
 
-export function InboxReviewPanel({ rows = READINESS_MOCK }: { rows?: ReviewRow[] }) {
+export function InboxReviewPanel({
+  rows = READINESS_MOCK,
+  selectedId,
+  onSelect,
+}: {
+  rows?: ReviewRow[];
+  selectedId?: string;
+  onSelect?: (row: ReviewRow) => void;
+}) {
   const { locale } = useI18n();
   const [query, setQuery] = useState("");
   const [declinedIds, setDeclinedIds] = useState<Set<string>>(() => new Set());
@@ -324,9 +313,7 @@ export function InboxReviewPanel({ rows = READINESS_MOCK }: { rows?: ReviewRow[]
           .eq("active", true)
           .order("sort_order", { ascending: true });
         if (!error && data && data.length && active) setReasons(data as DeclineReason[]);
-      } catch {
-        /* keep defaults */
-      }
+      } catch { /* keep defaults */ }
     })();
     return () => { active = false; };
   }, []);
@@ -338,40 +325,24 @@ export function InboxReviewPanel({ rows = READINESS_MOCK }: { rows?: ReviewRow[]
       p_reason: reason && reason.trim() ? reason.trim() : "Declinado por suscripción",
     });
     if (error) throw error;
-    setDeclinedIds((prev) => {
-      const next = new Set(prev);
-      next.add(id);
-      return next;
-    });
+    setDeclinedIds((prev) => { const next = new Set(prev); next.add(id); return next; });
   }
 
   const { ready, inProgress } = useMemo(() => {
     const q = query.trim().toLowerCase();
     const matches = (r: ReviewRow) =>
       q === "" ||
-      [r.insured, r.broker_name, r.line_of_business]
-        .filter(Boolean)
-        .some((v) => (v as string).toLowerCase().includes(q));
+      [r.insured, r.broker_name, r.line_of_business].filter(Boolean).some((v) => (v as string).toLowerCase().includes(q));
     const filtered = rows.filter((r) => !declinedIds.has(r.id) && matches(r));
     return { ready: filtered.filter(isReady), inProgress: filtered.filter((r) => !isReady(r)) };
   }, [rows, query, declinedIds]);
 
-  const searchPlaceholder = pick(
-    locale,
-    "Buscar por asegurado, broker o línea…",
-    "Search by insured, broker or line…",
-    "按被保险人、经纪人或险种搜索…"
-  );
+  const searchPlaceholder = pick(locale, "Buscar por asegurado, broker o línea…", "Search by insured, broker or line…", "按被保险人、经纪人或险种搜索…");
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 10, maxWidth: 320 }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 10, width: 320 }}>
       <div style={{ position: "relative", marginBottom: 4 }}>
-        <span
-          aria-hidden
-          style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "#94a3b8", fontSize: "0.9rem" }}
-        >
-          ⌕
-        </span>
+        <span aria-hidden style={{ position: "absolute", left: 12, top: "50%", transform: "translateY(-50%)", color: "#94a3b8", fontSize: "0.9rem" }}>⌕</span>
         <input
           type="text"
           value={query}
@@ -382,44 +353,28 @@ export function InboxReviewPanel({ rows = READINESS_MOCK }: { rows?: ReviewRow[]
           style={{ width: "100%", border: "1px solid #d9e2f0", borderRadius: 999, padding: "9px 34px 9px 30px", fontSize: "0.82rem", outline: "none" }}
         />
         {query !== "" && (
-          <button
-            type="button"
-            onClick={() => setQuery("")}
-            aria-label={pick(locale, "Limpiar", "Clear", "清除")}
-            style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)", border: "none", background: "transparent", color: "#94a3b8", cursor: "pointer", fontSize: "0.9rem", lineHeight: 1 }}
-          >
-            ✕
-          </button>
+          <button type="button" onClick={() => setQuery("")} aria-label={pick(locale, "Limpiar", "Clear", "清除")} style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)", border: "none", background: "transparent", color: "#94a3b8", cursor: "pointer", fontSize: "0.9rem", lineHeight: 1 }}>✕</button>
         )}
       </div>
-      <SectionLabel
-        text={pick(locale, "PARA REVISAR · LISTOS PARA COTIZAR", "FOR REVIEW · READY TO QUOTE", "待核保 · 可报价").toUpperCase()}
-        count={ready.length}
-        accent="#0f6e56"
-      />
+      <SectionLabel text={pick(locale, "PARA REVISAR · LISTOS PARA COTIZAR", "FOR REVIEW · READY TO QUOTE", "待核保 · 可报价").toUpperCase()} count={ready.length} accent="#0f6e56" />
       {ready.length === 0 && (
         <div className="text-secondary" style={{ fontSize: "0.8rem", padding: "8px 2px 4px" }}>
           {pick(locale, "Aún no hay casos listos.", "No ready cases yet.", "暂无就绪案件。")}
         </div>
       )}
       {ready.map((r) => (
-        <Card key={r.id} row={r} locale={locale} reasons={reasons} onDecline={handleDecline} />
+        <Card key={r.id} row={r} locale={locale} reasons={reasons} onDecline={handleDecline} selected={selectedId === r.id} onSelect={onSelect} />
       ))}
 
       <div style={{ display: "flex", alignItems: "center", gap: 6, margin: "14px 2px 8px" }}>
         <span style={{ flex: 1, height: 1, background: "#cdd9ec" }} />
-        <span style={{ fontSize: "0.66rem", color: "#94a3b8" }}>
-          {pick(locale, "faltan checks", "missing checks", "缺少检查")}
-        </span>
+        <span style={{ fontSize: "0.66rem", color: "#94a3b8" }}>{pick(locale, "faltan checks", "missing checks", "缺少检查")}</span>
         <span style={{ flex: 1, height: 1, background: "#cdd9ec" }} />
       </div>
 
-      <SectionLabel
-        text={pick(locale, "INBOX · EN PROCESO", "INBOX · IN PROGRESS", "收件箱 · 处理中").toUpperCase()}
-        count={inProgress.length}
-      />
+      <SectionLabel text={pick(locale, "INBOX · EN PROCESO", "INBOX · IN PROGRESS", "收件箱 · 处理中").toUpperCase()} count={inProgress.length} />
       {inProgress.map((r) => (
-        <Card key={r.id} row={r} locale={locale} reasons={reasons} onDecline={handleDecline} />
+        <Card key={r.id} row={r} locale={locale} reasons={reasons} onDecline={handleDecline} selected={selectedId === r.id} onSelect={onSelect} />
       ))}
 
       <div style={{ display: "flex", gap: 14, marginTop: 12, padding: "0 2px" }}>
