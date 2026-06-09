@@ -43,7 +43,7 @@ function mapRow(r: ViewRow): ReviewRow {
     // Canonical broker (Marsh Colombia variants etc. collapse to one).
     broker_name: r.broker_canonical ?? r.broker_name,
     line_of_business: r.line_of_business,
-    // Appears here only because a commercial commitment was sent → Commercial is met.
+    // On the panel only because this is the joint review path → Commercial met.
     commercial: r.is_joint_review_request ? "met" : "missing",
     slip: r.has_slip ? "met" : "missing",
     // SOV / relación de valores y ubicaciones (Excel del broker)
@@ -70,6 +70,9 @@ export default function SabotajeTerrorismoPage() {
           .select(
             "id,insured,broker_name,broker_canonical,line_of_business,is_joint_review_request,has_slip,has_sov,has_loss_data,docs_received,compliance_status,compliance_evidence_path"
           )
+          // Review path only: businesses available for joint review (the quote path).
+          .eq("decision", "REVIEW")
+          .eq("decision_reason", "Disponible para revisión")
           .eq("is_joint_review_request", true);
         if (error) throw error;
         const filtered = (data as ViewRow[]).filter(
@@ -89,17 +92,17 @@ export default function SabotajeTerrorismoPage() {
   const title = pick(locale, "Sabotaje y Terrorismo", "Sabotage & Terrorism", "破坏与恐怖主义");
   const subtitle = pick(
     locale,
-    "Negocios con trabajo conjunto enviado. Listos para cotizar arriba.",
-    "Businesses with commercial commitment sent. Ready to quote on top.",
-    "已发送商务承诺的业务，可报价的在上方。"
+    "Negocios disponibles para revisión conjunta. Listos para cotizar arriba.",
+    "Businesses available for joint review. Ready to quote on top.",
+    "可联合核保的业务，可报价的在上方。"
   );
   const back = pick(locale, "Suscripción", "Underwriting", "核保");
   const loading = pick(locale, "Cargando…", "Loading…", "加载中…");
   const empty = pick(
     locale,
-    "Aún no hay negocios con trabajo conjunto en esta línea.",
-    "No businesses with commercial commitment in this line yet.",
-    "该险种暂无已发送商务承诺的业务。"
+    "Aún no hay negocios disponibles para revisión en esta línea.",
+    "No businesses available for review in this line yet.",
+    "该险种暂无可核保的业务。"
   );
 
   return (
