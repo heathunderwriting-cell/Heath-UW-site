@@ -1,16 +1,17 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useI18n } from "@/components/providers/LanguageProvider";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 
 /**
- * Self-contained Inbox + For review panel.
- * Renders the joint-review path (decision = REVIEW / "Disponible para revisión").
- * Each row carries five readiness checks (commercial, slip, SOV, loss, OFAC).
- * The OFAC chip links to the stored screening evidence PDF when one exists.
- * Each case has a "Declinar" action that marks it DECLINE (drops it from the
- * list); the record stays for history/compliance (no deletion).
+ * Inbox + For review panel (joint-review path: decision = REVIEW / "Disponible
+ * para revisión"). Five readiness checks (commercial, slip, SOV, loss, OFAC);
+ * the OFAC chip links to the stored evidence PDF. Each case has a "Declinar"
+ * action: pick a standard reason (from the decline_reasons catalog — the same
+ * vocabulary the automated workflow uses) → marks the case DECLINE and drops it
+ * from the list (record kept for history). A broker decline email with the
+ * reason is sent by the backend flow.
  */
 
 type CheckState = "met" | "partial" | "missing";
@@ -30,6 +31,19 @@ export type ReviewRow = {
   ofac_evidence_path?: string | null;
   docs_count?: number;
 };
+
+type DeclineReason = { code: string; label: string };
+
+// Fallback list (mirrors the decline_reasons catalog) in case the fetch fails.
+const DEFAULT_REASONS: DeclineReason[] = [
+  { code: "fuera_apetito", label: "Fuera de apetito" },
+  { code: "compromiso_otro_canal", label: "Compromiso con otro canal" },
+  { code: "mercado_vigente", label: "Mercado vigente" },
+  { code: "fuera_binder", label: "Fuera de binder authority" },
+  { code: "ofac_hit", label: "Hallazgo en lista OFAC" },
+  { code: "siniestralidad_alta", label: "Siniestralidad alta" },
+  { code: "otro", label: "Otro" },
+];
 
 function pick(locale: string, es: string, en: string, zh: string) {
   return locale === "es" ? es : locale === "zh" ? zh : en;
@@ -112,15 +126,18 @@ function Chip({
 function Card({
   row,
   locale,
+  reasons,
   onDecline,
 }: {
   row: ReviewRow;
   locale: string;
+  reasons: DeclineReason[];
   onDecline: (id: string, reason: string) => Promise<void>;
 }) {
   const ready = isReady(row);
   const [confirming, setConfirming] = useState(false);
-  const [reason, setReason] = useState("");
+  const [code, setCode] = useState(reasons[0]?.code ?? "fuera_apetito");
+  const [otherText, setOtherText] = useState("");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
@@ -158,6 +175,10 @@ function Card({
   async function confirmDecline() {
     setBusy(true);
     setErr(null);
+    const reason =
+      code === "otro"
+        ? (otherText.trim() || "Otro")
+        : (reasons.find((r) => r.code === code)?.label ?? "Declinado por suscripción");
     try {
       await onDecline(row.id, reason);
     } catch (e: any) {
@@ -225,37 +246,45 @@ function Card({
           </button>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            <input
-              type="text"
-              value={reason}
-              onChange={(e) => setReason(e.target.value)}
-              placeholder={pick(locale, "Motivo de declinación (opcional)", "Decline reason (optional)", "拒绝原因（可选）")}
+            <label style={{ fontSize: "0.7rem", color: "#64748b", fontWeight: 600 }}>
+              {pick(locale, "Motivo de declinación", "Decline reason", "拒绝原因")}
+            </label>
+            <select
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
               className="bg-card text-primary"
               style={{ border: "1px solid #d9e2f0", borderRadius: 8, padding: "7px 10px", fontSize: "0.78rem", outline: "none" }}
-            />
+            >
+              {reasons.map((r) => (
+                <option key={r.code} value={r.code}>{r.label}</option>
+              ))}
+            </select>
+            {code === "otro" && (
+              <input
+                type="text"
+                value={otherText}
+                onChange={(e) => setOtherText(e.target.value)}
+                placeholder={pick(locale, "Especifica el motivo…", "Specify the reason…", "请说明原因…")}
+                className="bg-card text-primary"
+                style={{ border: "1px solid #d9e2f0", borderRadius: 8, padding: "7px 10px", fontSize: "0.78rem", outline: "none" }}
+              />
+            )}
+            <div style={{ fontSize: "0.68rem", color: "#94a3b8" }}>
+              {pick(locale, "Se enviará un correo de declinación al broker con este motivo.", "A decline email with this reason will be sent to the broker.", "将以此原因向经纪人发送拒绝邮件。")}
+            </div>
             <div style={{ display: "flex", gap: 8 }}>
               <button
                 type="button"
                 disabled={busy}
                 onClick={confirmDecline}
-                style={{
-                  border: "none",
-                  background: RED.fg,
-                  color: "#fff",
-                  fontSize: "0.74rem",
-                  fontWeight: 600,
-                  padding: "6px 12px",
-                  borderRadius: 999,
-                  cursor: busy ? "default" : "pointer",
-                  opacity: busy ? 0.6 : 1,
-                }}
+                style={{ border: "none", background: RED.fg, color: "#fff", fontSize: "0.74rem", fontWeight: 600, padding: "6px 12px", borderRadius: 999, cursor: busy ? "default" : "pointer", opacity: busy ? 0.6 : 1 }}
               >
                 {busy ? pick(locale, "Declinando…", "Declining…", "处理中…") : pick(locale, "Confirmar declinación", "Confirm decline", "确认拒绝")}
               </button>
               <button
                 type="button"
                 disabled={busy}
-                onClick={() => { setConfirming(false); setReason(""); setErr(null); }}
+                onClick={() => { setConfirming(false); setOtherText(""); setErr(null); }}
                 style={{ border: "1px solid #d9e2f0", background: "transparent", color: "#64748b", fontSize: "0.74rem", fontWeight: 600, padding: "6px 12px", borderRadius: 999, cursor: "pointer" }}
               >
                 {pick(locale, "Cancelar", "Cancel", "取消")}
@@ -282,6 +311,25 @@ export function InboxReviewPanel({ rows = READINESS_MOCK }: { rows?: ReviewRow[]
   const { locale } = useI18n();
   const [query, setQuery] = useState("");
   const [declinedIds, setDeclinedIds] = useState<Set<string>>(() => new Set());
+  const [reasons, setReasons] = useState<DeclineReason[]>(DEFAULT_REASONS);
+
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      try {
+        const supabase = createSupabaseBrowserClient();
+        const { data, error } = await supabase
+          .from("decline_reasons")
+          .select("code,label")
+          .eq("active", true)
+          .order("sort_order", { ascending: true });
+        if (!error && data && data.length && active) setReasons(data as DeclineReason[]);
+      } catch {
+        /* keep defaults */
+      }
+    })();
+    return () => { active = false; };
+  }, []);
 
   async function handleDecline(id: string, reason: string) {
     const supabase = createSupabaseBrowserClient();
@@ -331,32 +379,14 @@ export function InboxReviewPanel({ rows = READINESS_MOCK }: { rows?: ReviewRow[]
           placeholder={searchPlaceholder}
           aria-label={searchPlaceholder}
           className="bg-card text-primary"
-          style={{
-            width: "100%",
-            border: "1px solid #d9e2f0",
-            borderRadius: 999,
-            padding: "9px 34px 9px 30px",
-            fontSize: "0.82rem",
-            outline: "none",
-          }}
+          style={{ width: "100%", border: "1px solid #d9e2f0", borderRadius: 999, padding: "9px 34px 9px 30px", fontSize: "0.82rem", outline: "none" }}
         />
         {query !== "" && (
           <button
             type="button"
             onClick={() => setQuery("")}
             aria-label={pick(locale, "Limpiar", "Clear", "清除")}
-            style={{
-              position: "absolute",
-              right: 10,
-              top: "50%",
-              transform: "translateY(-50%)",
-              border: "none",
-              background: "transparent",
-              color: "#94a3b8",
-              cursor: "pointer",
-              fontSize: "0.9rem",
-              lineHeight: 1,
-            }}
+            style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)", border: "none", background: "transparent", color: "#94a3b8", cursor: "pointer", fontSize: "0.9rem", lineHeight: 1 }}
           >
             ✕
           </button>
@@ -373,7 +403,7 @@ export function InboxReviewPanel({ rows = READINESS_MOCK }: { rows?: ReviewRow[]
         </div>
       )}
       {ready.map((r) => (
-        <Card key={r.id} row={r} locale={locale} onDecline={handleDecline} />
+        <Card key={r.id} row={r} locale={locale} reasons={reasons} onDecline={handleDecline} />
       ))}
 
       <div style={{ display: "flex", alignItems: "center", gap: 6, margin: "14px 2px 8px" }}>
@@ -389,7 +419,7 @@ export function InboxReviewPanel({ rows = READINESS_MOCK }: { rows?: ReviewRow[]
         count={inProgress.length}
       />
       {inProgress.map((r) => (
-        <Card key={r.id} row={r} locale={locale} onDecline={handleDecline} />
+        <Card key={r.id} row={r} locale={locale} reasons={reasons} onDecline={handleDecline} />
       ))}
 
       <div style={{ display: "flex", gap: 14, marginTop: 12, padding: "0 2px" }}>
