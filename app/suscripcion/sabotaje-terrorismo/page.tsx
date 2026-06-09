@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useI18n } from "@/components/providers/LanguageProvider";
 import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
 import { InboxReviewPanel, type ReviewRow } from "@/components/dashboard/InboxReviewPanel";
+import { ClauseSelector } from "@/components/dashboard/ClauseSelector";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 
 function pick(locale: string, es: string, en: string, zh: string) {
@@ -370,7 +371,10 @@ export default function SabotajeTerrorismoPage() {
             <div style={{ flex: 1, minWidth: 340, display: "flex", flexDirection: "column", gap: 14 }}>
               <CaseDetailPanel row={selected} locale={locale} />
               {selected && selected.uw_stage === "cotizacion" && (
-                <QuoteForm row={selected} locale={locale} busy={busy} onSave={onSaveQuote} onSendEmail={onSendQuoteEmail} />
+                <>
+                  <QuoteForm row={selected} locale={locale} busy={busy} onSave={onSaveQuote} onSendEmail={onSendQuoteEmail} />
+                  <ClauseSelector submissionId={selected.id} locale={locale} />
+                </>
               )}
             </div>
             <DecisionPanel row={selected} locale={locale} reasons={reasons} busy={busy} onParticipate={onParticipate} onRequestInfo={onRequestInfo} onAssign={onAssign} onDecline={onDecline} />
