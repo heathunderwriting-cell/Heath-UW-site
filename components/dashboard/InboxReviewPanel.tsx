@@ -6,15 +6,11 @@ import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 
 /**
  * Self-contained Inbox + For review panel.
- * Phase 1: renders from mock data (READINESS_MOCK) so the design can be
- * reviewed in the real theme. Phase 2: pass `rows` from the dashboard
- * submissions view once the readiness columns exist in Supabase.
- *
- * Each row carries the five readiness checks the underwriter needs before a
- * case is "free to quote": commercial decision (joint-work email), slip
- * received, SOV / statement of values (risk locations + insured value per
- * site), loss/claims data present, and OFAC compliance clear. The OFAC chip
- * links to the stored screening evidence PDF when one exists.
+ * Renders the joint-review path (decision = REVIEW / "Disponible para revisión").
+ * Each row carries five readiness checks (commercial, slip, SOV, loss, OFAC).
+ * The OFAC chip links to the stored screening evidence PDF when one exists.
+ * Each case has a "Declinar" action that marks it DECLINE (drops it from the
+ * list); the record stays for history/compliance (no deletion).
  */
 
 type CheckState = "met" | "partial" | "missing";
@@ -24,15 +20,14 @@ export type ReviewRow = {
   insured: string;
   broker_name: string | null;
   line_of_business: string | null;
-  // readiness (written by n8n in phase 2)
-  commercial: CheckState;        // correo de trabajo conjunto / decisión comercial
-  slip: CheckState;              // slip enviado por el broker
-  sov?: CheckState;              // SOV / relación de valores y ubicaciones (Excel del broker)
-  loss: CheckState;              // siniestralidad (slip + Excel adjuntos)
+  commercial: CheckState;
+  slip: CheckState;
+  sov?: CheckState;
+  loss: CheckState;
   loss_received?: number;
   loss_expected?: number;
   ofac: "clear" | "review" | "hit";
-  ofac_evidence_path?: string | null; // storage path of the OFAC evidence PDF
+  ofac_evidence_path?: string | null;
   docs_count?: number;
 };
 
@@ -114,8 +109,21 @@ function Chip({
   );
 }
 
-function Card({ row, locale }: { row: ReviewRow; locale: string }) {
+function Card({
+  row,
+  locale,
+  onDecline,
+}: {
+  row: ReviewRow;
+  locale: string;
+  onDecline: (id: string, reason: string) => Promise<void>;
+}) {
   const ready = isReady(row);
+  const [confirming, setConfirming] = useState(false);
+  const [reason, setReason] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+
   let pill: { text: string; tone: typeof GREEN };
   if (row.ofac === "hit") pill = { text: pick(locale, "Bloqueo compliance", "Compliance hold", "合规暂停"), tone: RED };
   else if (ready) pill = { text: pick(locale, "Listo", "Ready", "就绪"), tone: GREEN };
@@ -143,7 +151,18 @@ function Card({ row, locale }: { row: ReviewRow; locale: string }) {
       if (error) throw error;
       if (data?.signedUrl) window.open(data.signedUrl, "_blank", "noopener,noreferrer");
     } catch {
-      /* no-op: evidence not available */
+      /* no-op */
+    }
+  }
+
+  async function confirmDecline() {
+    setBusy(true);
+    setErr(null);
+    try {
+      await onDecline(row.id, reason);
+    } catch (e: any) {
+      setErr(e?.message ?? "Error");
+      setBusy(false);
     }
   }
 
@@ -185,6 +204,67 @@ function Card({ row, locale }: { row: ReviewRow; locale: string }) {
           title={hasEvidence ? evidenceTitle : undefined}
         />
       </div>
+
+      <div style={{ marginTop: 12, borderTop: "1px solid #eef2f8", paddingTop: 10 }}>
+        {!confirming ? (
+          <button
+            type="button"
+            onClick={() => setConfirming(true)}
+            style={{
+              border: "1px solid #f0c8c2",
+              background: "transparent",
+              color: RED.fg,
+              fontSize: "0.74rem",
+              fontWeight: 600,
+              padding: "5px 12px",
+              borderRadius: 999,
+              cursor: "pointer",
+            }}
+          >
+            {pick(locale, "Declinar", "Decline", "拒绝")}
+          </button>
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            <input
+              type="text"
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+              placeholder={pick(locale, "Motivo de declinación (opcional)", "Decline reason (optional)", "拒绝原因（可选）")}
+              className="bg-card text-primary"
+              style={{ border: "1px solid #d9e2f0", borderRadius: 8, padding: "7px 10px", fontSize: "0.78rem", outline: "none" }}
+            />
+            <div style={{ display: "flex", gap: 8 }}>
+              <button
+                type="button"
+                disabled={busy}
+                onClick={confirmDecline}
+                style={{
+                  border: "none",
+                  background: RED.fg,
+                  color: "#fff",
+                  fontSize: "0.74rem",
+                  fontWeight: 600,
+                  padding: "6px 12px",
+                  borderRadius: 999,
+                  cursor: busy ? "default" : "pointer",
+                  opacity: busy ? 0.6 : 1,
+                }}
+              >
+                {busy ? pick(locale, "Declinando…", "Declining…", "处理中…") : pick(locale, "Confirmar declinación", "Confirm decline", "确认拒绝")}
+              </button>
+              <button
+                type="button"
+                disabled={busy}
+                onClick={() => { setConfirming(false); setReason(""); setErr(null); }}
+                style={{ border: "1px solid #d9e2f0", background: "transparent", color: "#64748b", fontSize: "0.74rem", fontWeight: 600, padding: "6px 12px", borderRadius: 999, cursor: "pointer" }}
+              >
+                {pick(locale, "Cancelar", "Cancel", "取消")}
+              </button>
+            </div>
+            {err && <span style={{ color: RED.fg, fontSize: "0.72rem" }}>{err}</span>}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -201,6 +281,21 @@ function SectionLabel({ text, count, accent }: { text: string; count: number; ac
 export function InboxReviewPanel({ rows = READINESS_MOCK }: { rows?: ReviewRow[] }) {
   const { locale } = useI18n();
   const [query, setQuery] = useState("");
+  const [declinedIds, setDeclinedIds] = useState<Set<string>>(() => new Set());
+
+  async function handleDecline(id: string, reason: string) {
+    const supabase = createSupabaseBrowserClient();
+    const { error } = await supabase.rpc("decline_submission", {
+      p_id: id,
+      p_reason: reason && reason.trim() ? reason.trim() : "Declinado por suscripción",
+    });
+    if (error) throw error;
+    setDeclinedIds((prev) => {
+      const next = new Set(prev);
+      next.add(id);
+      return next;
+    });
+  }
 
   const { ready, inProgress } = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -209,9 +304,9 @@ export function InboxReviewPanel({ rows = READINESS_MOCK }: { rows?: ReviewRow[]
       [r.insured, r.broker_name, r.line_of_business]
         .filter(Boolean)
         .some((v) => (v as string).toLowerCase().includes(q));
-    const filtered = rows.filter(matches);
+    const filtered = rows.filter((r) => !declinedIds.has(r.id) && matches(r));
     return { ready: filtered.filter(isReady), inProgress: filtered.filter((r) => !isReady(r)) };
-  }, [rows, query]);
+  }, [rows, query, declinedIds]);
 
   const searchPlaceholder = pick(
     locale,
@@ -278,7 +373,7 @@ export function InboxReviewPanel({ rows = READINESS_MOCK }: { rows?: ReviewRow[]
         </div>
       )}
       {ready.map((r) => (
-        <Card key={r.id} row={r} locale={locale} />
+        <Card key={r.id} row={r} locale={locale} onDecline={handleDecline} />
       ))}
 
       <div style={{ display: "flex", alignItems: "center", gap: 6, margin: "14px 2px 8px" }}>
@@ -294,7 +389,7 @@ export function InboxReviewPanel({ rows = READINESS_MOCK }: { rows?: ReviewRow[]
         count={inProgress.length}
       />
       {inProgress.map((r) => (
-        <Card key={r.id} row={r} locale={locale} />
+        <Card key={r.id} row={r} locale={locale} onDecline={handleDecline} />
       ))}
 
       <div style={{ display: "flex", gap: 14, marginTop: 12, padding: "0 2px" }}>
