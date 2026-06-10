@@ -24,6 +24,7 @@ type Provider = {
   contact_name: string | null;
   contact_email: string | null;
   notes: string | null;
+  binder_ref: string | null;
   sort_order: number | null;
 };
 
@@ -69,7 +70,14 @@ function ProviderCard({ p }: { p: Provider }) {
         </div>
       </div>
 
-      <div style={{ marginTop: 18, padding: "14px 16px", background: "#f4f8fd", border: "1px solid #e2ecf8", borderRadius: 14 }}>
+      {p.binder_ref && (
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 14 }}>
+          <span style={{ fontSize: "0.68rem", letterSpacing: "0.1em", fontWeight: 700, color: "#64748b", textTransform: "uppercase" }}>Binder</span>
+          <span style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace", fontSize: "0.82rem", fontWeight: 700, color: "#0b1220", background: "#eef2f8", border: "1px solid #d9e2f0", borderRadius: 8, padding: "3px 10px", letterSpacing: "0.04em" }}>{p.binder_ref}</span>
+        </div>
+      )}
+
+      <div style={{ marginTop: 14, padding: "14px 16px", background: "#f4f8fd", border: "1px solid #e2ecf8", borderRadius: 14 }}>
         <p style={{ fontSize: "0.68rem", letterSpacing: "0.12em", fontWeight: 700, color: "#2563eb", textTransform: "uppercase", margin: 0 }}>Capacidad por riesgo</p>
         <p style={{ fontSize: "1.85rem", fontWeight: 800, color: "#0b1220", margin: "4px 0 0", letterSpacing: "-0.01em" }}>{money(p.capacity_amount, p.currency)}</p>
       </div>
