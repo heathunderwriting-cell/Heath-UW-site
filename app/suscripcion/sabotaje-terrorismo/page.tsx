@@ -20,6 +20,7 @@ type CaseRow = ReviewRow & {
   insured_limit?: number | null;
   uw_stage?: string | null;
   assigned_to?: string | null;
+  correspondence_lang?: string | null;
 };
 
 type DeclineReason = { code: string; label: string };
@@ -38,7 +39,7 @@ type ViewRow = {
   line_of_business: string | null; country: string | null; currency: string | null; insured_limit: number | null;
   is_joint_review_request: boolean | null; has_slip: boolean | null; has_sov: boolean | null; has_loss_data: boolean | null;
   docs_received: number | null; compliance_status: string | null; compliance_evidence_path: string | null;
-  uw_stage: string | null; assigned_to: string | null;
+  uw_stage: string | null; assigned_to: string | null; correspondence_lang: string | null;
 };
 
 function mapRow(r: ViewRow): CaseRow {
@@ -49,6 +50,7 @@ function mapRow(r: ViewRow): CaseRow {
     slip: r.has_slip ? "met" : "missing", sov: r.has_sov ? "met" : "missing", loss: r.has_loss_data ? "met" : "missing",
     ofac, ofac_evidence_path: r.compliance_evidence_path, docs_count: r.docs_received ?? 0,
     country: r.country, currency: r.currency, insured_limit: r.insured_limit, uw_stage: r.uw_stage, assigned_to: r.assigned_to,
+    correspondence_lang: r.correspondence_lang ?? "es",
   };
 }
 
@@ -62,6 +64,68 @@ function fmtMoney(amount?: number | null, currency?: string | null) {
   if (amount == null) return null;
   try { return new Intl.NumberFormat("es-CO", { style: "currency", currency: currency || "USD", maximumFractionDigits: 0 }).format(amount); }
   catch { return `${currency || ""} ${amount.toLocaleString("es-CO")}`.trim(); }
+}
+
+// ---- Broker-facing email builders (use the CASE language, not the UI language) ----
+function declineEmail(ml: string, insured: string, line: string | null, reasonLabel: string) {
+  const subject = pick(ml, `Declinación – ${insured}`, `Declinature – ${insured}`, `谢绝承保 – ${insured}`);
+  const body = pick(ml,
+`Estimados,
+
+Gracias por la oportunidad de evaluar ${insured} (${line ?? "S&T"}). Tras una revisión cuidadosa, lamentamos informar que en esta ocasión no podemos ofrecer términos.
+
+Motivo: ${reasonLabel}
+
+Quedamos atentos para futuras oportunidades.
+Heath Underwriting`,
+`Dear team,
+
+Thank you for the opportunity to consider ${insured} (${line ?? "S&T"}). After careful review, we regret that we are unable to offer terms on this occasion.
+
+Reason: ${reasonLabel}
+
+We remain at your disposal for future submissions.
+Heath Underwriting`,
+`您好，
+
+感谢贵方提供 ${insured}（${line ?? "S&T"}）的承保机会。经审慎评估，我方很遗憾本次无法提供条款。
+
+原因：${reasonLabel}
+
+期待未来的合作机会。
+Heath Underwriting`);
+  return { subject, body };
+}
+
+function requestInfoEmail(ml: string, insured: string, line: string | null, missing: string[]) {
+  const items = missing.length ? missing.map((m) => `- ${m}`).join("\n") : pick(ml, "- Información adicional del riesgo", "- Additional risk information", "- 其他风险信息");
+  const subject = pick(ml, `Solicitud de información – ${insured}`, `Request for information – ${insured}`, `信息请求 – ${insured}`);
+  const body = pick(ml,
+`Estimados,
+
+Para continuar con la evaluación de ${insured} (${line ?? "S&T"}), agradecemos nos faciliten lo siguiente:
+
+${items}
+
+Quedamos atentos a su respuesta.
+Heath Underwriting`,
+`Dear team,
+
+To progress our assessment of ${insured} (${line ?? "S&T"}), we would be grateful if you could provide the following:
+
+${items}
+
+We look forward to your reply.
+Heath Underwriting`,
+`您好，
+
+为推进对 ${insured}（${line ?? "S&T"}）的评估，烦请提供以下资料：
+
+${items}
+
+期待您的回复。
+Heath Underwriting`);
+  return { subject, body };
 }
 
 function KV({ k, v, muted }: { k: string; v: string; muted?: boolean }) {
@@ -89,6 +153,7 @@ function StageBadge({ stage, assigned, locale }: { stage?: string | null; assign
   const items: { text: string; tone: typeof BLUE }[] = [];
   if (stage === "cotizacion") items.push({ text: pick(locale, "En cotización", "Quoting", "报价中"), tone: GREEN });
   if (stage === "info_solicitada") items.push({ text: pick(locale, "Info solicitada", "Info requested", "已请求信息"), tone: AMBER });
+  if (stage === "bound") items.push({ text: pick(locale, "Sellada", "Bound", "已出单"), tone: BLUE });
   if (assigned) items.push({ text: `${pick(locale, "Asignado", "Assigned", "已分配")}: ${assigned}`, tone: BLUE });
   if (!items.length) return null;
   return (
@@ -98,7 +163,27 @@ function StageBadge({ stage, assigned, locale }: { stage?: string | null; assign
   );
 }
 
-function CaseDetailPanel({ row, locale }: { row: CaseRow | null; locale: string }) {
+function LangToggle({ value, locale, busy, onChange }: { value: string; locale: string; busy: boolean; onChange: (lang: string) => void }) {
+  const opts = [{ k: "es", t: "ES" }, { k: "en", t: "EN" }];
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 10 }}>
+      <span style={{ fontSize: "0.72rem", color: "#64748b" }}>{pick(locale, "Idioma con el broker", "Broker language", "经纪人语言")}:</span>
+      <div style={{ display: "inline-flex", border: "1px solid #d9e2f0", borderRadius: 999, overflow: "hidden" }}>
+        {opts.map((o) => {
+          const on = value === o.k;
+          return (
+            <button key={o.k} type="button" disabled={busy || on} onClick={() => onChange(o.k)}
+              style={{ border: "none", background: on ? "#2f6fb3" : "transparent", color: on ? "#fff" : "#64748b", fontSize: "0.72rem", fontWeight: 700, padding: "4px 12px", cursor: on ? "default" : "pointer" }}>
+              {o.t}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function CaseDetailPanel({ row, locale, busy, onSetLang }: { row: CaseRow | null; locale: string; busy: boolean; onSetLang: (id: string, lang: string) => void }) {
   if (!row) return <PanelCard><p className="text-secondary" style={{ fontSize: "0.85rem" }}>{pick(locale, "Selecciona un caso de la izquierda para ver su información.", "Select a case on the left to see its details.", "请在左侧选择一个案件查看详情。")}</p></PanelCard>;
   const pend = pick(locale, "Pendiente de captura", "Pending capture", "待采集");
   const limit = fmtMoney(row.insured_limit, row.currency);
@@ -111,6 +196,7 @@ function CaseDetailPanel({ row, locale }: { row: CaseRow | null; locale: string 
             <h2 className="text-primary" style={{ fontSize: "1.4rem", fontWeight: 700, marginTop: 4 }}>{row.insured}</h2>
             <p className="text-secondary" style={{ fontSize: "0.84rem", marginTop: 2 }}>{[row.broker_name, row.line_of_business].filter(Boolean).join(" · ")}</p>
             <StageBadge stage={row.uw_stage} assigned={row.assigned_to} locale={locale} />
+            <LangToggle value={row.correspondence_lang ?? "es"} locale={locale} busy={busy} onChange={(lang) => onSetLang(row.id, lang)} />
           </div>
           <div style={{ textAlign: "right" }}>
             <p style={{ fontSize: "0.66rem", color: "#94a3b8" }}>{pick(locale, "Límite", "Limit", "保额")}</p>
@@ -141,8 +227,8 @@ function CaseDetailPanel({ row, locale }: { row: CaseRow | null; locale: string 
   );
 }
 
-function QuoteForm({ row, locale, busy, onSave, onSendEmail }: {
-  row: CaseRow; locale: string; busy: boolean;
+function QuoteForm({ row, locale, mailLocale, busy, onSave, onSendEmail }: {
+  row: CaseRow; locale: string; mailLocale: string; busy: boolean;
   onSave: (id: string, q: any) => Promise<void>;
   onSendEmail: (id: string, subject: string, body: string) => Promise<void>;
 }) {
@@ -168,22 +254,22 @@ function QuoteForm({ row, locale, busy, onSave, onSendEmail }: {
     });
     setSaved(true);
   }
-  const emailSubject = `${pick(locale, "Cotización", "Quote", "报价")} – ${row.insured}`;
+  const emailSubject = `${pick(mailLocale, "Cotización", "Quote", "报价")} – ${row.insured}`;
   const emailBody =
-`${pick(locale, "Estimados,", "Dear team,", "您好，")}
+`${pick(mailLocale, "Estimados,", "Dear team,", "您好，")}
 
-${pick(locale, "En relación con", "Regarding", "关于")} ${row.insured} (${row.line_of_business ?? "S&T"}), ${pick(locale, "nos complace compartir nuestra cotización:", "we are pleased to share our quote:", "我们很高兴提供报价：")}
+${pick(mailLocale, "En relación con", "Regarding", "关于")} ${row.insured} (${row.line_of_business ?? "S&T"}), ${pick(mailLocale, "nos complace compartir nuestra cotización:", "we are pleased to share our quote:", "我们很高兴提供报价：")}
 
-- ${pick(locale, "Participación", "Participation", "参与比例")}: ${participation || "—"}%
-- ${pick(locale, "Prima", "Premium", "保费")}: ${premium ? `${cur} ${premium}` : "—"}
-- ${pick(locale, "Tasa", "Rate", "费率")}: ${rate || "—"}%
-- ${pick(locale, "Comisión", "Commission", "佣金")}: ${commission || "—"}%
-- ${pick(locale, "Deducible", "Deductible", "免赔额")}: ${deductible || "—"}
-- ${pick(locale, "Capacidad", "Capacity", "承保能力")}: ${capacity ? `${cur} ${capacity}` : "—"}
-- ${pick(locale, "Vigencia", "Validity", "有效期")}: ${validity || "—"}
-${terms ? `\n${pick(locale, "Condiciones:", "Conditions:", "条件：")} ${terms}` : ""}
+- ${pick(mailLocale, "Participación", "Participation", "参与比例")}: ${participation || "—"}%
+- ${pick(mailLocale, "Prima", "Premium", "保费")}: ${premium ? `${cur} ${premium}` : "—"}
+- ${pick(mailLocale, "Tasa", "Rate", "费率")}: ${rate || "—"}%
+- ${pick(mailLocale, "Comisión", "Commission", "佣金")}: ${commission || "—"}%
+- ${pick(mailLocale, "Deducible", "Deductible", "免赔额")}: ${deductible || "—"}
+- ${pick(mailLocale, "Capacidad", "Capacity", "承保能力")}: ${capacity ? `${cur} ${capacity}` : "—"}
+- ${pick(mailLocale, "Vigencia", "Validity", "有效期")}: ${validity || "—"}
+${terms ? `\n${pick(mailLocale, "Condiciones:", "Conditions:", "条件：")} ${terms}` : ""}
 
-${pick(locale, "Quedamos atentos a sus comentarios.", "We remain at your disposal.", "期待您的回复。")}
+${pick(mailLocale, "Quedamos atentos a sus comentarios.", "We remain at your disposal.", "期待您的回复。")}
 Heath Underwriting`;
 
   const inputStyle = { border: "1px solid #d9e2f0", borderRadius: 8, padding: "8px 10px", fontSize: "0.82rem", outline: "none", width: "100%" } as const;
@@ -218,7 +304,7 @@ Heath Underwriting`;
       </div>
       {confirming && (
         <div style={{ marginTop: 12, border: "1px solid #d9e2f0", borderRadius: 12, padding: 12 }}>
-          <p style={{ fontSize: "0.74rem", fontWeight: 700, color: "#2f6fb3", marginBottom: 6 }}>{pick(locale, "Vista previa del correo al broker", "Preview of the broker email", "经纪人邮件预览")}</p>
+          <p style={{ fontSize: "0.74rem", fontWeight: 700, color: "#2f6fb3", marginBottom: 6 }}>{pick(locale, "Vista previa del correo al broker", "Preview of the broker email", "经纪人邮件预览")} · {(mailLocale || "es").toUpperCase()}</p>
           <p className="text-primary" style={{ fontSize: "0.78rem", fontWeight: 600 }}>{emailSubject}</p>
           <pre className="text-secondary" style={{ whiteSpace: "pre-wrap", fontSize: "0.74rem", marginTop: 6, fontFamily: "inherit" }}>{emailBody}</pre>
           <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
@@ -242,6 +328,7 @@ function DecisionPanel({ row, locale, reasons, busy, onParticipate, onRequestInf
   useEffect(() => { setMode(null); setOther(""); setAssignee(""); }, [row?.id]);
   const disabled = !row || busy;
   const quoting = row?.uw_stage === "cotizacion";
+  const ml = (row?.correspondence_lang ?? "es").toUpperCase();
   const ActionButton = ({ label, desc, color, border, onClick }: any) => (
     <button type="button" disabled={disabled} onClick={onClick} className="bg-card" style={{ textAlign: "left", width: "100%", border: `1px solid ${border}`, borderRadius: 14, padding: "12px 14px", cursor: disabled ? "default" : "pointer", opacity: disabled ? 0.55 : 1 }}>
       <div style={{ fontSize: "0.9rem", fontWeight: 700, color }}>{label}</div>
@@ -255,6 +342,7 @@ function DecisionPanel({ row, locale, reasons, busy, onParticipate, onRequestInf
         <h3 className="text-primary" style={{ fontSize: "1.1rem", fontWeight: 700, marginTop: 4 }}>{pick(locale, "Acciones sobre el riesgo", "Actions on this risk", "针对该风险的操作")}</h3>
         <p className="text-secondary" style={{ fontSize: "0.78rem", marginTop: 4 }}>{row ? row.insured : pick(locale, "Sin caso seleccionado", "No case selected", "未选择案件")}</p>
         {row && <StageBadge stage={row.uw_stage} assigned={row.assigned_to} locale={locale} />}
+        {row && <p className="text-secondary" style={{ fontSize: "0.68rem", marginTop: 8 }}>{pick(locale, "Los correos al broker se redactan en", "Broker emails are written in", "致经纪人的邮件语言为")} <strong>{ml}</strong></p>}
       </PanelCard>
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
         {!quoting && <ActionButton label={pick(locale, "Participar", "Participate", "参与")} desc={pick(locale, "Avanzar a cotización", "Move to quote", "进入报价")} color={GREEN.fg} border="#bfe4d3" onClick={() => row && onParticipate(row.id)} />}
@@ -268,7 +356,7 @@ function DecisionPanel({ row, locale, reasons, busy, onParticipate, onRequestInf
               {reasons.map((r) => (<option key={r.code} value={r.code}>{r.label}</option>))}
             </select>
             {code === "otro" && (<input value={other} onChange={(e) => setOther(e.target.value)} placeholder={pick(locale, "Especifica…", "Specify…", "请说明…")} className="bg-card text-primary" style={{ border: "1px solid #d9e2f0", borderRadius: 8, padding: "7px 10px", fontSize: "0.78rem" }} />)}
-            <span style={{ fontSize: "0.68rem", color: "#94a3b8" }}>{pick(locale, "Se enviará un correo de declinación al broker.", "A decline email will be sent to the broker.", "将向经纪人发送拒绝邮件。")}</span>
+            <span style={{ fontSize: "0.68rem", color: "#94a3b8" }}>{pick(locale, "Se enviará un correo de declinación al broker en", "A decline email will be sent to the broker in", "将以以下语言向经纪人发送拒绝邮件：")} {ml}.</span>
             <div style={{ display: "flex", gap: 8 }}>
               <button type="button" disabled={busy} onClick={() => row && onDecline(row.id, code === "otro" ? (other.trim() || "Otro") : (reasons.find((r) => r.code === code)?.label ?? "Declinado por suscripción"))} style={{ border: "none", background: RED.fg, color: "#fff", fontSize: "0.74rem", fontWeight: 600, padding: "6px 12px", borderRadius: 999, cursor: "pointer" }}>{pick(locale, "Confirmar", "Confirm", "确认")}</button>
               <button type="button" onClick={() => setMode(null)} style={{ border: "1px solid #d9e2f0", background: "transparent", color: "#64748b", fontSize: "0.74rem", fontWeight: 600, padding: "6px 12px", borderRadius: 999, cursor: "pointer" }}>{pick(locale, "Cancelar", "Cancel", "取消")}</button>
@@ -307,7 +395,7 @@ export default function SabotajeTerrorismoPage() {
         const supabase = createSupabaseBrowserClient();
         const [{ data, error }, rs] = await Promise.all([
           supabase.from("dashboard_submissions_table")
-            .select("id,insured,broker_name,broker_canonical,line_of_business,country,currency,insured_limit,is_joint_review_request,has_slip,has_sov,has_loss_data,docs_received,compliance_status,compliance_evidence_path,uw_stage,assigned_to")
+            .select("id,insured,broker_name,broker_canonical,line_of_business,country,currency,insured_limit,is_joint_review_request,has_slip,has_sov,has_loss_data,docs_received,compliance_status,compliance_evidence_path,uw_stage,assigned_to,correspondence_lang")
             .eq("decision", "REVIEW").eq("decision_reason", "Disponible para revisión").eq("is_joint_review_request", true),
           supabase.from("decline_reasons").select("code,label").eq("active", true).order("sort_order", { ascending: true }),
         ]);
@@ -329,14 +417,45 @@ export default function SabotajeTerrorismoPage() {
     const { error } = await supabase.rpc(name, args);
     if (error) throw error;
   }
+  function caseLang(id: string): string {
+    return (cases?.find((c) => c.id === id)?.correspondence_lang as string) || "es";
+  }
+  async function onSetLang(id: string, lang: string) {
+    setBusy(true);
+    try { await rpc("set_correspondence_lang", { p_id: id, p_lang: lang }); patchCase(id, { correspondence_lang: lang }); }
+    catch (e: any) { setError(e?.message ?? "Error"); } finally { setBusy(false); }
+  }
   async function onParticipate(id: string) { setBusy(true); try { await rpc("case_action", { p_id: id, p_stage: "cotizacion" }); patchCase(id, { uw_stage: "cotizacion" }); } catch (e: any) { setError(e?.message ?? "Error"); } finally { setBusy(false); } }
-  async function onRequestInfo(id: string) { setBusy(true); try { await rpc("case_action", { p_id: id, p_stage: "info_solicitada" }); patchCase(id, { uw_stage: "info_solicitada" }); } catch (e: any) { setError(e?.message ?? "Error"); } finally { setBusy(false); } }
+  async function onRequestInfo(id: string) {
+    setBusy(true);
+    try {
+      const row = cases?.find((c) => c.id === id);
+      if (row) {
+        const missing: string[] = [];
+        const ml = caseLang(id);
+        if (row.slip !== "met") missing.push(pick(ml, "Slip de términos", "Terms slip", "条款 Slip"));
+        if ((row.sov ?? "missing") !== "met") missing.push(pick(ml, "Relación de valores y ubicaciones (SOV)", "Statement of Values (SOV)", "标的清单 (SOV)"));
+        if (row.loss !== "met") missing.push(pick(ml, "Historial de siniestralidad (loss run)", "Loss run / claims history", "理赔历史 (loss run)"));
+        const { subject, body } = requestInfoEmail(ml, row.insured, row.line_of_business, missing);
+        await rpc("enqueue_broker_email", { p_submission_id: id, p_kind: "request_info", p_subject: subject, p_body: body });
+      }
+      await rpc("case_action", { p_id: id, p_stage: "info_solicitada" }); patchCase(id, { uw_stage: "info_solicitada" });
+    } catch (e: any) { setError(e?.message ?? "Error"); } finally { setBusy(false); }
+  }
   async function onAssign(id: string, name: string) { setBusy(true); try { await rpc("case_action", { p_id: id, p_assigned: name }); patchCase(id, { assigned_to: name }); } catch (e: any) { setError(e?.message ?? "Error"); } finally { setBusy(false); } }
   async function onSaveQuote(id: string, q: any) { setBusy(true); try { await rpc("save_quote", { p_id: id, ...q }); patchCase(id, { uw_stage: "cotizacion" }); } catch (e: any) { setError(e?.message ?? "Error"); throw e; } finally { setBusy(false); } }
   async function onSendQuoteEmail(id: string, subject: string, body: string) { setBusy(true); try { await rpc("enqueue_broker_email", { p_submission_id: id, p_kind: "quote", p_subject: subject, p_body: body }); } catch (e: any) { setError(e?.message ?? "Error"); throw e; } finally { setBusy(false); } }
   async function onDecline(id: string, reason: string) {
     setBusy(true);
-    try { await rpc("decline_submission", { p_id: id, p_reason: reason }); setCases((prev) => { const next = prev ? prev.filter((c) => c.id !== id) : prev; setSelected(next && next.length ? next[0] : null); return next; }); }
+    try {
+      const row = cases?.find((c) => c.id === id);
+      if (row) {
+        const { subject, body } = declineEmail(caseLang(id), row.insured, row.line_of_business, reason);
+        await rpc("enqueue_broker_email", { p_submission_id: id, p_kind: "decline", p_subject: subject, p_body: body });
+      }
+      await rpc("decline_submission", { p_id: id, p_reason: reason });
+      setCases((prev) => { const next = prev ? prev.filter((c) => c.id !== id) : prev; setSelected(next && next.length ? next[0] : null); return next; });
+    }
     catch (e: any) { setError(e?.message ?? "Error"); } finally { setBusy(false); }
   }
 
@@ -346,6 +465,7 @@ export default function SabotajeTerrorismoPage() {
   const back = pick(locale, "Suscripción", "Underwriting", "核保");
 
   const quoting = selected?.uw_stage === "cotizacion";
+  const mailLocale = (selected?.correspondence_lang as string) || "es";
 
   return (
     <div className="dashboard-theme min-h-screen bg-transparent">
@@ -372,13 +492,13 @@ export default function SabotajeTerrorismoPage() {
           <div style={{ display: "flex", gap: 18, alignItems: "flex-start", flexWrap: "wrap" }}>
             <InboxReviewPanel rows={cases as ReviewRow[]} selectedId={selected?.id} onSelect={(r) => setSelected(cases.find((c) => c.id === r.id) ?? null)} />
             <div style={{ flex: 1, minWidth: 320, display: "flex", flexDirection: "column", gap: 14 }}>
-              <CaseDetailPanel row={selected} locale={locale} />
+              <CaseDetailPanel row={selected} locale={locale} busy={busy} onSetLang={onSetLang} />
             </div>
             <div style={{ width: quoting ? 460 : 320, minWidth: 300, display: "flex", flexDirection: "column", gap: 14 }}>
               {selected && quoting && (
                 <>
                   <SlipMarkupWorkspace submissionId={selected.id} locale={locale} row={selected} />
-                  <QuoteForm row={selected} locale={locale} busy={busy} onSave={onSaveQuote} onSendEmail={onSendQuoteEmail} />
+                  <QuoteForm row={selected} locale={locale} mailLocale={mailLocale} busy={busy} onSave={onSaveQuote} onSendEmail={onSendQuoteEmail} />
                 </>
               )}
               <DecisionPanel row={selected} locale={locale} reasons={reasons} busy={busy} onParticipate={onParticipate} onRequestInfo={onRequestInfo} onAssign={onAssign} onDecline={onDecline} />
