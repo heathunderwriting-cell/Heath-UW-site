@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useI18n } from "@/components/providers/LanguageProvider";
 import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
 import { InboxReviewPanel, type ReviewRow } from "@/components/dashboard/InboxReviewPanel";
-import { ClauseSelector } from "@/components/dashboard/ClauseSelector";
+import { SlipMarkupWorkspace } from "@/components/dashboard/SlipMarkupWorkspace";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 
 function pick(locale: string, es: string, en: string, zh: string) {
@@ -241,6 +241,7 @@ function DecisionPanel({ row, locale, reasons, busy, onParticipate, onRequestInf
   const [other, setOther] = useState(""); const [assignee, setAssignee] = useState("");
   useEffect(() => { setMode(null); setOther(""); setAssignee(""); }, [row?.id]);
   const disabled = !row || busy;
+  const quoting = row?.uw_stage === "cotizacion";
   const ActionButton = ({ label, desc, color, border, onClick }: any) => (
     <button type="button" disabled={disabled} onClick={onClick} className="bg-card" style={{ textAlign: "left", width: "100%", border: `1px solid ${border}`, borderRadius: 14, padding: "12px 14px", cursor: disabled ? "default" : "pointer", opacity: disabled ? 0.55 : 1 }}>
       <div style={{ fontSize: "0.9rem", fontWeight: 700, color }}>{label}</div>
@@ -248,7 +249,7 @@ function DecisionPanel({ row, locale, reasons, busy, onParticipate, onRequestInf
     </button>
   );
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 14, width: 320 }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 14, width: "100%" }}>
       <PanelCard>
         <p style={{ fontSize: "0.62rem", fontWeight: 700, letterSpacing: "0.16em", color: "#2f6fb3" }}>{pick(locale, "DECISIÓN", "DECISION", "决策")}</p>
         <h3 className="text-primary" style={{ fontSize: "1.1rem", fontWeight: 700, marginTop: 4 }}>{pick(locale, "Acciones sobre el riesgo", "Actions on this risk", "针对该风险的操作")}</h3>
@@ -256,7 +257,7 @@ function DecisionPanel({ row, locale, reasons, busy, onParticipate, onRequestInf
         {row && <StageBadge stage={row.uw_stage} assigned={row.assigned_to} locale={locale} />}
       </PanelCard>
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-        <ActionButton label={pick(locale, "Participar", "Participate", "参与")} desc={pick(locale, "Avanzar a cotización", "Move to quote", "进入报价")} color={GREEN.fg} border="#bfe4d3" onClick={() => row && onParticipate(row.id)} />
+        {!quoting && <ActionButton label={pick(locale, "Participar", "Participate", "参与")} desc={pick(locale, "Avanzar a cotización", "Move to quote", "进入报价")} color={GREEN.fg} border="#bfe4d3" onClick={() => row && onParticipate(row.id)} />}
         <ActionButton label={pick(locale, "Pedir info", "Request info", "请求信息")} desc={pick(locale, "Solicitar datos faltantes al broker", "Ask the broker for missing data", "向经纪人索取缺失信息")} color={AMBER.fg} border="#ecd6a6" onClick={() => row && onRequestInfo(row.id)} />
         {mode !== "decline" ? (
           <ActionButton label={pick(locale, "Declinar", "Decline", "拒绝")} desc={pick(locale, "Rechazar y notificar al broker", "Decline and notify the broker", "拒绝并通知经纪人")} color={RED.fg} border="#f0c8c2" onClick={() => setMode("decline")} />
@@ -344,6 +345,8 @@ export default function SabotajeTerrorismoPage() {
   const subtitle = pick(locale, "Negocios disponibles para revisión conjunta. Selecciona un caso para ver su slip y decidir.", "Businesses available for joint review. Select a case to see its slip and decide.", "可联合核保的业务。选择案件查看 Slip 并决策。");
   const back = pick(locale, "Suscripción", "Underwriting", "核保");
 
+  const quoting = selected?.uw_stage === "cotizacion";
+
   return (
     <div className="dashboard-theme min-h-screen bg-transparent">
       <div className="mx-auto max-w-[1500px] px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
@@ -368,16 +371,18 @@ export default function SabotajeTerrorismoPage() {
         ) : (
           <div style={{ display: "flex", gap: 18, alignItems: "flex-start", flexWrap: "wrap" }}>
             <InboxReviewPanel rows={cases as ReviewRow[]} selectedId={selected?.id} onSelect={(r) => setSelected(cases.find((c) => c.id === r.id) ?? null)} />
-            <div style={{ flex: 1, minWidth: 340, display: "flex", flexDirection: "column", gap: 14 }}>
+            <div style={{ flex: 1, minWidth: 320, display: "flex", flexDirection: "column", gap: 14 }}>
               <CaseDetailPanel row={selected} locale={locale} />
-              {selected && selected.uw_stage === "cotizacion" && (
+            </div>
+            <div style={{ width: quoting ? 460 : 320, minWidth: 300, display: "flex", flexDirection: "column", gap: 14 }}>
+              {selected && quoting && (
                 <>
+                  <SlipMarkupWorkspace submissionId={selected.id} locale={locale} row={selected} />
                   <QuoteForm row={selected} locale={locale} busy={busy} onSave={onSaveQuote} onSendEmail={onSendQuoteEmail} />
-                  <ClauseSelector submissionId={selected.id} locale={locale} />
                 </>
               )}
+              <DecisionPanel row={selected} locale={locale} reasons={reasons} busy={busy} onParticipate={onParticipate} onRequestInfo={onRequestInfo} onAssign={onAssign} onDecline={onDecline} />
             </div>
-            <DecisionPanel row={selected} locale={locale} reasons={reasons} busy={busy} onParticipate={onParticipate} onRequestInfo={onRequestInfo} onAssign={onAssign} onDecline={onDecline} />
           </div>
         )}
       </div>
