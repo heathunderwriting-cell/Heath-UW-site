@@ -4,11 +4,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { motion, useInView, useReducedMotion } from 'framer-motion';
 import { useI18n } from '@/components/providers/LanguageProvider';
 import type { Locale } from '@/lib/i18n';
-
-/* ──────────────────────────────────────────────────────────────────────────
-   Palette
-   ────────────────────────────────────────────────────────────────────────── */
-const INK = '#060d1f';
+import { CinematicBackground, INK, Kicker, Reveal } from '@/components/marketing/Cinematic';
 
 /* ──────────────────────────────────────────────────────────────────────────
    Copy that is unique to the redesigned landing (kept local, trilingual,
@@ -107,38 +103,6 @@ const SCENARIOS = [
   { insured: 'Logistics & port operations', country: 'Chile', limit: 'USD 10,000,000', line: 'S&T' },
   { insured: 'Commercial real estate group', country: 'Perú', limit: 'USD 15,000,000', line: 'S&T' },
 ];
-
-/* ──────────────────────────────────────────────────────────────────────────
-   Cinematic background: aurora glows + perspective grid + noise + vignette
-   ────────────────────────────────────────────────────────────────────────── */
-function CinematicBackground() {
-  return (
-    <div aria-hidden className="pointer-events-none fixed inset-0 z-0 overflow-hidden" style={{ background: INK }}>
-      {/* aurora blobs */}
-      <div
-        className="home-aurora absolute -top-[20%] left-[8%] h-[60vh] w-[55vw] rounded-full"
-        style={{ background: 'radial-gradient(ellipse at center, rgba(26,112,247,0.30), transparent 65%)' }}
-      />
-      <div
-        className="home-aurora-slow absolute top-[30%] -right-[12%] h-[70vh] w-[50vw] rounded-full"
-        style={{ background: 'radial-gradient(ellipse at center, rgba(34,211,238,0.16), transparent 62%)' }}
-      />
-      <div
-        className="home-aurora absolute bottom-[-25%] left-[28%] h-[55vh] w-[45vw] rounded-full"
-        style={{ background: 'radial-gradient(ellipse at center, rgba(74,158,255,0.14), transparent 60%)', animationDelay: '-6s' }}
-      />
-      {/* fine grid with radial mask */}
-      <div className="home-grid absolute inset-0" />
-      {/* film grain */}
-      <div className="home-noise absolute inset-0 opacity-[0.05]" />
-      {/* vignette to focus the eye */}
-      <div
-        className="absolute inset-0"
-        style={{ background: 'radial-gradient(ellipse 120% 90% at 50% 8%, transparent 40%, rgba(4,8,18,0.85) 100%)' }}
-      />
-    </div>
-  );
-}
 
 /* ──────────────────────────────────────────────────────────────────────────
    Live underwriting console — the product, animated
@@ -281,40 +245,6 @@ function LiveConsole({ locale }: { locale: Locale }) {
       </div>
 
       <p className="mt-4 text-center text-[11px] tracking-wide text-white/30">{x.footer}</p>
-    </div>
-  );
-}
-
-/* ──────────────────────────────────────────────────────────────────────────
-   Shared motion helpers
-   ────────────────────────────────────────────────────────────────────────── */
-const fadeUp = {
-  hidden: { opacity: 0, y: 28 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.21, 0.6, 0.35, 1] as const } },
-};
-
-function Reveal({ children, delay = 0, className }: { children: React.ReactNode; delay?: number; className?: string }) {
-  return (
-    <motion.div
-      className={className}
-      initial="hidden"
-      whileInView="show"
-      viewport={{ once: true, margin: '-80px' }}
-      variants={{
-        hidden: fadeUp.hidden,
-        show: { ...fadeUp.show, transition: { ...fadeUp.show.transition, delay } },
-      }}
-    >
-      {children}
-    </motion.div>
-  );
-}
-
-function Kicker({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="mb-5 flex items-center gap-3">
-      <span className="h-px w-10 bg-gradient-to-r from-cyan-400 to-transparent" />
-      <span className="text-[11px] font-bold tracking-[0.3em] text-cyan-400/80">{children}</span>
     </div>
   );
 }

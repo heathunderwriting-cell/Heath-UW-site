@@ -2,12 +2,16 @@
 
 import Link from "next/link";
 import { useState, type FormEvent } from "react";
-import { Footer } from "@/components/Footer";
-import { ChipBackground } from "@/components/ChipBackground";
 import { useI18n } from "@/components/providers/LanguageProvider";
+import {
+  ArrowIcon,
+  ButtonSheen,
+  CinematicBackground,
+  HeroBadge,
+  Reveal,
+} from "@/components/marketing/Cinematic";
 
 const CONTACT_EMAIL = "heathunderwriting@beaconproductstudio.com";
-const BLUE = "#4a9eff";
 
 export default function ContactPage() {
   const { dict, locale } = useI18n();
@@ -50,73 +54,88 @@ export default function ContactPage() {
   }
 
   const inputCls =
-    "w-full rounded-lg border border-border bg-[#0f2b4e] px-3.5 py-2.5 text-sm text-primary placeholder:text-secondary outline-none transition focus:border-[#4a9eff] focus:ring-2 focus:ring-[#4a9eff]/40";
+    "w-full rounded-lg border border-white/10 bg-[#060d1f]/70 px-4 py-3 text-sm text-white placeholder:text-white/30 outline-none backdrop-blur-sm transition focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-400/25";
 
   return (
-    <>
-      <ChipBackground />
-      <section className="relative z-10 px-6 py-16 md:px-10 md:py-24">
-        <div className="mx-auto max-w-6xl">
-          <span className="inline-flex items-center gap-2 rounded-full border border-[#4a9eff]/40 px-3.5 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#4a9eff]">
-            <span
-              className="h-1.5 w-1.5 rounded-full bg-[#4a9eff]"
-              style={{ boxShadow: "0 0 8px rgba(74,158,255,0.9)" }}
-            />
-            {L.heroKicker}
-          </span>
+    <main className="relative min-h-screen text-[#f0f4ff]">
+      <CinematicBackground />
 
-          <h1 className="mt-5 text-4xl font-semibold tracking-tight text-primary md:text-5xl">{copy.title}</h1>
-          <p className="mt-5 max-w-3xl text-lg leading-relaxed text-secondary md:text-xl">{copy.subtitle}</p>
-          <p className="mt-4 max-w-3xl text-base leading-relaxed text-secondary md:text-lg">{copy.intro}</p>
+      <section className="relative z-10 mx-auto max-w-7xl px-6 pb-28 pt-28 md:px-10 md:pt-36">
+        <Reveal>
+          <HeroBadge>{L.heroKicker}</HeroBadge>
+          <h1 className="mb-6 max-w-3xl text-[clamp(36px,5vw,64px)] font-extrabold leading-[1.05] tracking-[-0.03em]">
+            {copy.title}
+          </h1>
+          <p className="max-w-2xl text-[17px] leading-relaxed text-white/60 md:text-lg">{copy.subtitle}</p>
+          <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-white/45">{copy.intro}</p>
+        </Reveal>
 
-          <div className="mt-12 grid gap-8 lg:grid-cols-[1fr_1.1fr]">
-            {/* Left: contact details */}
+        <div className="mt-14 grid gap-8 lg:grid-cols-[1fr_1.15fr]">
+          {/* Left: contact details */}
+          <Reveal delay={0.1}>
             <div className="flex flex-col gap-4">
               <a
                 href={`mailto:${CONTACT_EMAIL}`}
-                className="group rounded-2xl border border-border bg-card p-5 backdrop-blur-sm transition hover:border-[#4a9eff]"
+                className="group relative overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.02] p-6 backdrop-blur-sm transition-all duration-500 hover:-translate-y-0.5 hover:border-cyan-400/40 hover:bg-white/[0.04]"
               >
-                <div className="text-[11px] font-semibold uppercase tracking-[0.16em] text-secondary">{L.emailLabel}</div>
-                <div className="mt-1.5 break-all text-base font-semibold text-primary transition-colors group-hover:text-[#4a9eff]">
+                <div
+                  aria-hidden
+                  className="absolute -right-10 -top-10 h-28 w-28 rounded-full opacity-0 blur-2xl transition-opacity duration-500 group-hover:opacity-100"
+                  style={{ background: "radial-gradient(circle, rgba(34,211,238,0.2), transparent 70%)" }}
+                />
+                <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-400/70">{L.emailLabel}</div>
+                <div className="mt-2 break-all font-mono text-[15px] font-semibold text-white transition-colors group-hover:text-cyan-300">
                   {CONTACT_EMAIL}
                 </div>
               </a>
-              <div className="rounded-2xl border border-border bg-card p-5 backdrop-blur-sm">
-                <div className="text-base font-semibold text-primary">{L.response}</div>
+
+              <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-6 backdrop-blur-sm">
+                <div className="flex items-center gap-3">
+                  <span className="home-pulse-dot h-2 w-2 rounded-full bg-emerald-400" />
+                  <span className="text-[15px] font-semibold text-white/85">{L.response}</span>
+                </div>
               </div>
-              <div className="rounded-2xl border border-border bg-card p-5 backdrop-blur-sm">
-                <div className="text-base font-semibold text-primary">{L.partnerships}</div>
+
+              <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-6 backdrop-blur-sm">
+                <div className="flex items-center gap-3">
+                  <span className="h-2 w-2 rounded-full bg-cyan-400/70" />
+                  <span className="text-[15px] font-semibold text-white/85">{L.partnerships}</span>
+                </div>
               </div>
+
               <Link
                 href="/underwriting"
-                className="mt-1 inline-flex items-center justify-center self-start rounded-full border border-border bg-card px-6 py-2.5 text-sm font-semibold text-primary transition-colors hover:border-[#4a9eff]"
+                className="mt-1 inline-flex items-center gap-2 self-start rounded-lg border border-white/15 bg-white/[0.03] px-6 py-3 text-sm font-semibold text-white/85 backdrop-blur-sm transition-all duration-300 hover:border-cyan-400/40 hover:text-white"
               >
                 {copy.secondary}
               </Link>
             </div>
+          </Reveal>
 
-            {/* Right: message form (opens visitor's email, pre-filled) */}
+          {/* Right: message form */}
+          <Reveal delay={0.2}>
             <form
               onSubmit={handleSubmit}
-              className="rounded-2xl border border-border bg-card p-6 shadow-soft backdrop-blur-sm md:p-7"
+              className="relative overflow-hidden rounded-2xl border border-white/10 bg-[#0a1730]/80 p-7 shadow-[0_24px_80px_rgba(2,6,18,0.6)] backdrop-blur-xl md:p-9"
             >
-              <h2 className="text-lg font-semibold text-primary">{L.formTitle}</h2>
-              <div className="mt-5 grid gap-4 sm:grid-cols-2">
+              <div aria-hidden className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-cyan-400 via-[#1a70f7] to-transparent" />
+              <h2 className="text-lg font-bold tracking-tight text-white">{L.formTitle}</h2>
+              <div className="mt-6 grid gap-4 sm:grid-cols-2">
                 <label className="block text-sm">
-                  <span className="mb-1.5 block font-medium text-secondary">{L.name}</span>
+                  <span className="mb-2 block text-[12px] font-semibold uppercase tracking-[0.12em] text-white/40">{L.name}</span>
                   <input className={inputCls} value={name} onChange={(e) => setName(e.target.value)} required />
                 </label>
                 <label className="block text-sm">
-                  <span className="mb-1.5 block font-medium text-secondary">{L.email}</span>
+                  <span className="mb-2 block text-[12px] font-semibold uppercase tracking-[0.12em] text-white/40">{L.email}</span>
                   <input type="email" className={inputCls} value={email} onChange={(e) => setEmail(e.target.value)} required />
                 </label>
               </div>
               <label className="mt-4 block text-sm">
-                <span className="mb-1.5 block font-medium text-secondary">{L.company}</span>
+                <span className="mb-2 block text-[12px] font-semibold uppercase tracking-[0.12em] text-white/40">{L.company}</span>
                 <input className={inputCls} value={company} onChange={(e) => setCompany(e.target.value)} />
               </label>
               <label className="mt-4 block text-sm">
-                <span className="mb-1.5 block font-medium text-secondary">{L.message}</span>
+                <span className="mb-2 block text-[12px] font-semibold uppercase tracking-[0.12em] text-white/40">{L.message}</span>
                 <textarea
                   rows={5}
                   className={`${inputCls} resize-y`}
@@ -128,16 +147,30 @@ export default function ContactPage() {
               </label>
               <button
                 type="submit"
-                className="mt-5 inline-flex w-full items-center justify-center rounded-full px-7 py-3 text-sm font-semibold text-[#02091c] transition hover:opacity-90 sm:w-auto"
-                style={{ background: BLUE, boxShadow: "0 0 18px rgba(74,158,255,0.5)" }}
+                className="group relative mt-6 inline-flex w-full items-center justify-center gap-2 overflow-hidden rounded-lg bg-gradient-to-r from-[#1a70f7] to-[#2b8af9] px-8 py-4 text-[15px] font-bold text-white shadow-[0_8px_32px_rgba(26,112,247,0.45)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_12px_44px_rgba(26,112,247,0.65)] sm:w-auto"
               >
-                {copy.primary}
+                <ButtonSheen />
+                <span className="relative">{copy.primary}</span>
+                <ArrowIcon />
               </button>
             </form>
-          </div>
+          </Reveal>
         </div>
       </section>
-      <Footer />
-    </>
+
+      {/* footer strip */}
+      <footer className="relative z-10 border-t border-white/[0.07]">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-6 py-9 md:px-10">
+          <div className="flex items-center gap-3">
+            <span className="text-base font-black tracking-tight">
+              HEA<span className="text-[#4a9eff]">TH</span>
+            </span>
+            <span className="hidden h-3 w-px bg-white/15 sm:block" />
+            <span className="text-[12px] text-white/30">{dict.footer.copyright}</span>
+          </div>
+          <span className="font-mono text-[12px] tracking-wider text-white/30">heathuw.com</span>
+        </div>
+      </footer>
+    </main>
   );
 }
