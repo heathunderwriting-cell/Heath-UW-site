@@ -22,7 +22,7 @@ export function FeatureSection({
   return (
     <section
       className={cn(
-        "relative z-10 border-y border-white/[0.06] bg-[#0c1d3f]/60 px-6 py-20 backdrop-blur-sm md:px-8 md:py-24",
+        "relative z-10 border-y border-white/[0.12] bg-white/[0.04] px-6 py-20 backdrop-blur-sm md:px-8 md:py-24",
         className
       )}
     >
@@ -39,7 +39,7 @@ export function FeatureSection({
             {title}
           </h2>
           {description && (
-            <p className="mt-4 text-lg leading-relaxed text-white/55">{description}</p>
+            <p className="mt-4 text-lg leading-relaxed text-white/[0.68]">{description}</p>
           )}
         </div>
 
@@ -48,7 +48,7 @@ export function FeatureSection({
             {bullets.map((item) => (
               <li
                 key={item}
-                className="flex items-start gap-3 rounded-xl border border-white/[0.08] bg-white/[0.02] px-5 py-4 text-[15px] leading-relaxed text-white/70 backdrop-blur-sm transition-colors duration-300 hover:border-cyan-400/25"
+                className="flex items-start gap-3 rounded-xl border border-white/[0.14] bg-white/[0.06] px-5 py-4 text-[15px] leading-relaxed text-white/[0.78] backdrop-blur-sm transition-colors duration-300 hover:border-cyan-400/25"
               >
                 <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-cyan-400/80" />
                 {item}

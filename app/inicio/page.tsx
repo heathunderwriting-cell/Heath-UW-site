@@ -118,7 +118,7 @@ export default function InicioPage() {
   return (
     <div className="mx-auto max-w-5xl px-6 pb-20 pt-6">
       {/* ── HEADER ── */}
-      <header className="flex items-center justify-between border-b border-white/[0.08] pb-5">
+      <header className="flex items-center justify-between border-b border-white/[0.14] pb-5">
         <div className="text-xl font-black tracking-tight">
           HEA<span className="bg-gradient-to-r from-cyan-300 to-[#1a70f7] bg-clip-text text-transparent">TH</span>
         </div>
@@ -127,7 +127,7 @@ export default function InicioPage() {
           <button
             type="button"
             onClick={handleLogout}
-            className="rounded-lg border border-white/15 bg-white/[0.03] px-5 py-2 text-[13px] font-semibold text-white/70 backdrop-blur-sm transition-all duration-300 hover:border-cyan-400/40 hover:text-white"
+            className="rounded-lg border border-white/20 bg-white/[0.06] px-5 py-2 text-[13px] font-semibold text-white/[0.78] backdrop-blur-sm transition-all duration-300 hover:border-cyan-400/40 hover:text-white"
           >
             {L.logout}
           </button>
@@ -141,7 +141,7 @@ export default function InicioPage() {
           <h1 className="text-[clamp(28px,4vw,44px)] font-extrabold leading-[1.1] tracking-[-0.025em] text-white">
             {L.title}
           </h1>
-          <p className="mt-3 text-[16px] text-white/50">{L.subtitle}</p>
+          <p className="mt-3 text-[16px] text-white/[0.62]">{L.subtitle}</p>
         </section>
       </Reveal>
 
@@ -151,7 +151,7 @@ export default function InicioPage() {
           <Reveal key={m.title} delay={i * 0.08}>
             <Link
               href={m.href}
-              className="group relative block h-full overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.02] p-7 backdrop-blur-sm transition-all duration-500 hover:-translate-y-1.5 hover:border-cyan-400/30 hover:bg-white/[0.04] hover:shadow-[0_24px_60px_rgba(2,6,18,0.5),0_0_40px_rgba(34,211,238,0.07)]"
+              className="group relative block h-full overflow-hidden rounded-2xl border border-white/[0.14] bg-white/[0.06] p-7 backdrop-blur-sm transition-all duration-500 hover:-translate-y-1.5 hover:border-cyan-400/30 hover:bg-white/[0.09] hover:shadow-[0_24px_60px_rgba(2,6,18,0.5),0_0_40px_rgba(34,211,238,0.07)]"
             >
               <div
                 aria-hidden
@@ -164,7 +164,7 @@ export default function InicioPage() {
                     className={`flex h-12 w-12 items-center justify-center rounded-xl border transition-transform duration-500 group-hover:scale-110 ${
                       m.ready
                         ? "border-cyan-400/30 bg-gradient-to-br from-cyan-400/15 to-[#1a70f7]/15 text-cyan-300"
-                        : "border-white/10 bg-white/[0.04] text-white/40"
+                        : "border-white/[0.16] bg-white/[0.07] text-white/[0.52]"
                     }`}
                   >
                     {m.icon}
@@ -180,10 +180,10 @@ export default function InicioPage() {
                   </span>
                 </div>
                 <div className="mt-5 text-lg font-bold tracking-tight text-white">{m.title}</div>
-                <div className="mt-2 text-[14px] leading-relaxed text-white/45">{m.desc}</div>
+                <div className="mt-2 text-[14px] leading-relaxed text-white/[0.58]">{m.desc}</div>
                 <div
                   className={`mt-5 inline-flex items-center gap-1.5 text-[13px] font-semibold transition-colors ${
-                    m.ready ? "text-cyan-300 group-hover:text-cyan-200" : "text-white/30"
+                    m.ready ? "text-cyan-300 group-hover:text-cyan-200" : "text-white/45"
                   }`}
                 >
                   {m.ready ? L.open : L.soon}

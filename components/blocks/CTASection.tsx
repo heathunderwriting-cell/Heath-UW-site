@@ -30,11 +30,11 @@ export function CTASection({
   return (
     <section className={cn("relative z-10 px-6 py-20 md:px-8 md:py-24", className)}>
       <div className="mx-auto max-w-5xl">
-        <div className="relative overflow-hidden rounded-3xl border border-white/10 px-8 py-16 text-center md:px-14 md:py-20">
+        <div className="relative overflow-hidden rounded-3xl border border-white/[0.16] px-8 py-16 text-center md:px-14 md:py-20">
           <div
             aria-hidden
             className="absolute inset-0"
-            style={{ background: "linear-gradient(135deg, #0c1f42 0%, #102a55 50%, #0a1834 100%)" }}
+            style={{ background: "linear-gradient(135deg, #143064 0%, #1a3d7d 50%, #122a55 100%)" }}
           />
           <div
             aria-hidden
@@ -64,7 +64,7 @@ export function CTASection({
               )}
             </h2>
             {description && (
-              <p className="mx-auto mt-5 max-w-xl text-[16px] leading-relaxed text-white/55 md:text-lg">
+              <p className="mx-auto mt-5 max-w-xl text-[16px] leading-relaxed text-white/[0.68] md:text-lg">
                 {description}
               </p>
             )}
@@ -86,7 +86,7 @@ export function CTASection({
               {secondaryHref && secondaryLabel && (
                 <Link
                   href={secondaryHref}
-                  className="inline-flex items-center rounded-lg border border-white/20 bg-white/[0.04] px-8 py-4 text-[15px] font-semibold text-white/85 backdrop-blur-sm transition-all duration-300 hover:border-cyan-400/40 hover:text-white"
+                  className="inline-flex items-center rounded-lg border border-white/20 bg-white/[0.07] px-8 py-4 text-[15px] font-semibold text-white/90 backdrop-blur-sm transition-all duration-300 hover:border-cyan-400/40 hover:text-white"
                 >
                   {secondaryLabel}
                 </Link>

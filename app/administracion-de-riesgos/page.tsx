@@ -29,12 +29,12 @@ export default async function RiesgosPage() {
         <h1 className="mt-5 text-[clamp(26px,3.5vw,38px)] font-extrabold leading-[1.12] tracking-[-0.025em] text-white">
           Administración de riesgos
         </h1>
-        <p className="mt-4 text-[16px] leading-relaxed text-white/50">
+        <p className="mt-4 text-[16px] leading-relaxed text-white/[0.62]">
           Módulo en construcción. Aquí monitorearás y controlarás la exposición. Próximamente.
         </p>
         <Link
           href="/inicio"
-          className="mt-8 inline-block rounded-lg border border-white/15 bg-white/[0.03] px-6 py-3 text-[14px] font-semibold text-cyan-300 backdrop-blur-sm transition-all duration-300 hover:border-cyan-400/40 hover:text-cyan-200"
+          className="mt-8 inline-block rounded-lg border border-white/20 bg-white/[0.06] px-6 py-3 text-[14px] font-semibold text-cyan-300 backdrop-blur-sm transition-all duration-300 hover:border-cyan-400/40 hover:text-cyan-200"
         >
           ← Volver al inicio
         </Link>

@@ -102,7 +102,7 @@ export default function SuscripcionPage() {
       <CinematicBackground />
       <div className="relative z-10 mx-auto max-w-5xl px-6 pb-20 pt-6">
         {/* ── HEADER ── */}
-        <header className="flex items-center justify-between border-b border-white/[0.08] pb-5">
+        <header className="flex items-center justify-between border-b border-white/[0.14] pb-5">
           <div className="text-xl font-black tracking-tight">
             HEA<span className="bg-gradient-to-r from-cyan-300 to-[#1a70f7] bg-clip-text text-transparent">TH</span>
           </div>
@@ -110,7 +110,7 @@ export default function SuscripcionPage() {
             <LanguageSwitcher />
             <Link
               href="/inicio"
-              className="rounded-lg border border-white/15 bg-white/[0.03] px-5 py-2 text-[13px] font-semibold text-cyan-300 backdrop-blur-sm transition-all duration-300 hover:border-cyan-400/40 hover:text-cyan-200"
+              className="rounded-lg border border-white/20 bg-white/[0.06] px-5 py-2 text-[13px] font-semibold text-cyan-300 backdrop-blur-sm transition-all duration-300 hover:border-cyan-400/40 hover:text-cyan-200"
             >
               ← {L.back}
             </Link>
@@ -124,7 +124,7 @@ export default function SuscripcionPage() {
             <h1 className="text-[clamp(28px,4vw,44px)] font-extrabold leading-[1.1] tracking-[-0.025em] text-white">
               {L.title}
             </h1>
-            <p className="mt-3 text-[16px] text-white/50">{L.subtitle}</p>
+            <p className="mt-3 text-[16px] text-white/[0.62]">{L.subtitle}</p>
           </section>
         </Reveal>
 
@@ -134,7 +134,7 @@ export default function SuscripcionPage() {
             <Reveal key={p.title} delay={i * 0.07}>
               <Link
                 href={p.href}
-                className="group relative block h-full overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.02] p-7 backdrop-blur-sm transition-all duration-500 hover:-translate-y-1.5 hover:border-cyan-400/30 hover:bg-white/[0.04] hover:shadow-[0_24px_60px_rgba(2,6,18,0.5),0_0_40px_rgba(34,211,238,0.07)]"
+                className="group relative block h-full overflow-hidden rounded-2xl border border-white/[0.14] bg-white/[0.06] p-7 backdrop-blur-sm transition-all duration-500 hover:-translate-y-1.5 hover:border-cyan-400/30 hover:bg-white/[0.09] hover:shadow-[0_24px_60px_rgba(2,6,18,0.5),0_0_40px_rgba(34,211,238,0.07)]"
               >
                 <div
                   aria-hidden
@@ -146,7 +146,7 @@ export default function SuscripcionPage() {
                     {p.icon}
                   </div>
                   <div className="mt-5 text-lg font-bold tracking-tight text-white">{p.title}</div>
-                  <div className="mt-2 text-[14px] leading-relaxed text-white/45">{p.desc}</div>
+                  <div className="mt-2 text-[14px] leading-relaxed text-white/[0.58]">{p.desc}</div>
                   <div className="mt-5 inline-flex items-center gap-1.5 text-[13px] font-semibold text-cyan-300 transition-colors group-hover:text-cyan-200">
                     {L.open}
                     <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-1">→</span>

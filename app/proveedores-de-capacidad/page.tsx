@@ -40,27 +40,27 @@ function money(amount?: number | null, currency?: string | null) {
 function Stat({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
     <div className="min-w-[180px] flex-1">
-      <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/35">{label}</p>
+      <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/[0.48]">{label}</p>
       <p className="mt-1.5 bg-gradient-to-b from-white to-[#9fc4ff] bg-clip-text font-mono text-2xl font-extrabold text-transparent">
         {value}
       </p>
-      {sub && <p className="mt-0.5 text-[12px] text-white/40">{sub}</p>}
+      {sub && <p className="mt-0.5 text-[12px] text-white/[0.52]">{sub}</p>}
     </div>
   );
 }
 
 function Row({ k, v }: { k: string; v: string }) {
   return (
-    <div className="flex justify-between gap-3 border-b border-white/[0.06] py-2 last:border-0">
-      <span className="text-[12.5px] text-white/40">{k}</span>
-      <span className="text-right text-[13px] font-semibold text-white/85">{v}</span>
+    <div className="flex justify-between gap-3 border-b border-white/[0.12] py-2 last:border-0">
+      <span className="text-[12.5px] text-white/[0.52]">{k}</span>
+      <span className="text-right text-[13px] font-semibold text-white/90">{v}</span>
     </div>
   );
 }
 
 function ProviderCard({ p }: { p: Provider }) {
   return (
-    <div className="group relative overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.02] p-6 backdrop-blur-sm transition-all duration-500 hover:-translate-y-1 hover:border-cyan-400/30 hover:bg-white/[0.04]">
+    <div className="group relative overflow-hidden rounded-2xl border border-white/[0.14] bg-white/[0.06] p-6 backdrop-blur-sm transition-all duration-500 hover:-translate-y-1 hover:border-cyan-400/30 hover:bg-white/[0.09]">
       <div
         aria-hidden
         className="absolute -right-14 -top-14 h-40 w-40 rounded-full opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-100"
@@ -88,8 +88,8 @@ function ProviderCard({ p }: { p: Provider }) {
 
         {p.binder_ref && (
           <div className="mt-4 flex items-center gap-2.5">
-            <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/35">Binder</span>
-            <span className="rounded-md border border-white/10 bg-[#0a1733]/70 px-2.5 py-1 font-mono text-[12px] font-bold tracking-wide text-cyan-200">
+            <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/[0.48]">Binder</span>
+            <span className="rounded-md border border-white/[0.16] bg-[#102448]/70 px-2.5 py-1 font-mono text-[12px] font-bold tracking-wide text-cyan-200">
               {p.binder_ref}
             </span>
           </div>
@@ -112,7 +112,7 @@ function ProviderCard({ p }: { p: Provider }) {
           {p.contact_email && <Row k="Email" v={p.contact_email} />}
         </div>
 
-        {p.notes && <p className="mt-4 text-[12.5px] leading-relaxed text-white/40">{p.notes}</p>}
+        {p.notes && <p className="mt-4 text-[12.5px] leading-relaxed text-white/[0.52]">{p.notes}</p>}
       </div>
     </div>
   );
@@ -152,23 +152,23 @@ export default async function ProveedoresPage() {
             <h1 className="text-[clamp(28px,4vw,44px)] font-extrabold leading-[1.1] tracking-[-0.025em] text-white">
               Proveedores de capacidad
             </h1>
-            <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-white/50">
+            <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-white/[0.62]">
               Mercados que respaldan la capacidad con la que cotizas. Esta es la capacidad disponible por línea y región.
             </p>
           </div>
           <Link
             href="/inicio"
-            className="whitespace-nowrap rounded-lg border border-white/15 bg-white/[0.03] px-5 py-2.5 text-[13px] font-semibold text-cyan-300 backdrop-blur-sm transition-all duration-300 hover:border-cyan-400/40 hover:text-cyan-200"
+            className="whitespace-nowrap rounded-lg border border-white/20 bg-white/[0.06] px-5 py-2.5 text-[13px] font-semibold text-cyan-300 backdrop-blur-sm transition-all duration-300 hover:border-cyan-400/40 hover:text-cyan-200"
           >
             ← Volver al inicio
           </Link>
         </div>
 
         {providers.length === 0 ? (
-          <p className="mt-8 text-[15px] text-white/50">Aún no hay proveedores de capacidad registrados.</p>
+          <p className="mt-8 text-[15px] text-white/[0.62]">Aún no hay proveedores de capacidad registrados.</p>
         ) : (
           <>
-            <div className="mt-6 flex flex-wrap gap-6 rounded-2xl border border-white/[0.08] bg-white/[0.02] px-7 py-6 backdrop-blur-sm">
+            <div className="mt-6 flex flex-wrap gap-6 rounded-2xl border border-white/[0.14] bg-white/[0.06] px-7 py-6 backdrop-blur-sm">
               <Stat label="Capacidad total disponible" value={money(total, currency)} sub={`${providers.length} proveedores`} />
               <Stat label="Línea" value={lines.join(", ") || "—"} />
               <Stat label="Región" value={regions.join(", ") || "—"} />

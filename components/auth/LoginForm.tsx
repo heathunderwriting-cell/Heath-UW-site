@@ -16,9 +16,9 @@ function deriveCompanyFromEmail(email: string) {
 }
 
 const inputClass =
-  "w-full rounded-lg border border-white/10 bg-[#0a1733]/70 px-4 py-3 text-[15px] text-white placeholder:text-white/25 outline-none backdrop-blur-sm transition focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-400/25";
+  "w-full rounded-lg border border-white/[0.16] bg-[#102448]/70 px-4 py-3 text-[15px] text-white placeholder:text-white/40 outline-none backdrop-blur-sm transition focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-400/25";
 
-const labelClass = "mb-2 block text-[12px] font-semibold uppercase tracking-[0.12em] text-white/40";
+const labelClass = "mb-2 block text-[12px] font-semibold uppercase tracking-[0.12em] text-white/[0.52]";
 
 export function LoginForm() {
   const router = useRouter();
@@ -90,7 +90,7 @@ export function LoginForm() {
   return (
     <form
       onSubmit={onSubmit}
-      className="relative w-full max-w-[440px] overflow-hidden rounded-2xl border border-white/10 bg-[#0e2147]/85 p-9 shadow-[0_24px_80px_rgba(2,6,18,0.7)] backdrop-blur-xl md:p-10"
+      className="relative w-full max-w-[440px] overflow-hidden rounded-2xl border border-white/[0.16] bg-[#16305e]/85 p-9 shadow-[0_24px_80px_rgba(2,6,18,0.7)] backdrop-blur-xl md:p-10"
     >
       {/* top gradient accent */}
       <div aria-hidden className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-cyan-400 via-[#1a70f7] to-transparent" />
@@ -103,7 +103,7 @@ export function LoginForm() {
 
       <div className="relative mb-8 text-center">
         <h1 className="text-[26px] font-extrabold tracking-tight text-white">{dict.forms.login.title}</h1>
-        <p className="mt-2.5 text-[14px] leading-relaxed text-white/50">{dict.forms.login.subtitle}</p>
+        <p className="mt-2.5 text-[14px] leading-relaxed text-white/[0.62]">{dict.forms.login.subtitle}</p>
       </div>
 
       <div className="relative flex flex-col gap-5">
@@ -160,7 +160,7 @@ export function LoginForm() {
           <span className="home-sheen absolute inset-0" aria-hidden />
           <span className="relative">{loading ? dict.forms.login.submitting : dict.forms.login.submit}</span>
         </button>
-        <div className="text-center text-[12px] text-white/35">{dict.forms.login.hint}</div>
+        <div className="text-center text-[12px] text-white/[0.48]">{dict.forms.login.hint}</div>
       </div>
     </form>
   );

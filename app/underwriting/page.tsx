@@ -38,17 +38,17 @@ export default function UnderwritingPage() {
           <h1 className="mb-6 max-w-3xl text-[clamp(36px,5vw,64px)] font-extrabold leading-[1.05] tracking-[-0.03em]">
             {copy.title}
           </h1>
-          <p className="max-w-2xl text-[17px] leading-relaxed text-white/60 md:text-lg">{copy.subtitle}</p>
-          <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-white/45">{copy.intro}</p>
+          <p className="max-w-2xl text-[17px] leading-relaxed text-white/70 md:text-lg">{copy.subtitle}</p>
+          <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-white/[0.58]">{copy.intro}</p>
         </Reveal>
       </section>
 
       {/* ── PILLARS ── */}
-      <section className="relative z-10 border-y border-white/[0.06] bg-[#0c1d3f]/60 py-24 backdrop-blur-sm md:py-28">
+      <section className="relative z-10 border-y border-white/[0.12] bg-white/[0.04] py-24 backdrop-blur-sm md:py-28">
         <div className="mx-auto grid max-w-7xl gap-5 px-6 md:grid-cols-3 md:px-10">
           {copy.pillars.map((pillar, i) => (
             <Reveal key={pillar} delay={i * 0.08}>
-              <article className="group relative h-full overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.02] p-8 backdrop-blur-sm transition-all duration-500 hover:-translate-y-1.5 hover:border-cyan-400/30 hover:bg-white/[0.04]">
+              <article className="group relative h-full overflow-hidden rounded-2xl border border-white/[0.14] bg-white/[0.06] p-8 backdrop-blur-sm transition-all duration-500 hover:-translate-y-1.5 hover:border-cyan-400/30 hover:bg-white/[0.09]">
                 <div
                   aria-hidden
                   className="absolute -right-12 -top-12 h-32 w-32 rounded-full opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-100"
@@ -58,7 +58,7 @@ export default function UnderwritingPage() {
                   <div className="mb-5 font-mono text-[13px] font-bold tracking-[0.2em] text-cyan-400/60">
                     {String(i + 1).padStart(2, "0")}
                   </div>
-                  <p className="text-[15px] leading-[1.75] text-white/75">{pillar}</p>
+                  <p className="text-[15px] leading-[1.75] text-white/80">{pillar}</p>
                 </div>
               </article>
             </Reveal>
@@ -69,8 +69,8 @@ export default function UnderwritingPage() {
       {/* ── CTA ── */}
       <section className="relative z-10 px-6 py-24 md:px-10 md:py-28">
         <Reveal className="mx-auto max-w-5xl">
-          <div className="relative overflow-hidden rounded-3xl border border-white/10 px-8 py-14 md:px-14 md:py-16">
-            <div aria-hidden className="absolute inset-0" style={{ background: "linear-gradient(135deg, #0c1f42 0%, #102a55 50%, #0a1834 100%)" }} />
+          <div className="relative overflow-hidden rounded-3xl border border-white/[0.16] px-8 py-14 md:px-14 md:py-16">
+            <div aria-hidden className="absolute inset-0" style={{ background: "linear-gradient(135deg, #143064 0%, #1a3d7d 50%, #122a55 100%)" }} />
             <div
               aria-hidden
               className="absolute inset-0 opacity-80"
