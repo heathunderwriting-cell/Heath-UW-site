@@ -7,8 +7,7 @@ import { useI18n } from "@/components/providers/LanguageProvider";
 import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import { clearMockSession } from "@/lib/mockAuth";
-
-type Locale = "es" | "en" | "zh";
+import { HeroBadge, Reveal } from "@/components/marketing/Cinematic";
 
 function pick(locale: string, es: string, en: string, zh: string) {
   return locale === "es" ? es : locale === "zh" ? zh : en;
@@ -117,126 +116,82 @@ export default function InicioPage() {
   ];
 
   return (
-    <div style={{ maxWidth: 1040, margin: "0 auto", padding: "20px 24px 64px" }}>
-      <header
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          paddingBottom: 18,
-          borderBottom: "1px solid #cdd9ec",
-        }}
-      >
-        <div style={{ fontSize: "1.4rem", fontWeight: 700, color: "#0b1220", letterSpacing: "0.5px" }}>Heath</div>
-        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+    <div className="mx-auto max-w-5xl px-6 pb-20 pt-6">
+      {/* ── HEADER ── */}
+      <header className="flex items-center justify-between border-b border-white/[0.14] pb-5">
+        <div className="text-xl font-black tracking-tight">
+          HEA<span className="bg-gradient-to-r from-cyan-300 to-[#1a70f7] bg-clip-text text-transparent">TH</span>
+        </div>
+        <div className="flex items-center gap-4">
           <LanguageSwitcher />
           <button
             type="button"
             onClick={handleLogout}
-            style={{
-              border: "1px solid #cdd9ec",
-              background: "#ffffff",
-              color: "#475569",
-              borderRadius: 999,
-              padding: "7px 16px",
-              fontSize: "0.85rem",
-              fontWeight: 600,
-              cursor: "pointer",
-            }}
+            className="rounded-lg border border-white/20 bg-white/[0.06] px-5 py-2 text-[13px] font-semibold text-white/[0.78] backdrop-blur-sm transition-all duration-300 hover:border-cyan-400/40 hover:text-white"
           >
             {L.logout}
           </button>
         </div>
       </header>
 
-      <section style={{ padding: "32px 0 24px" }}>
-        <span
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 8,
-            background: "#dbe7fa",
-            borderRadius: 999,
-            padding: "5px 14px",
-            marginBottom: 16,
-          }}
-        >
-          <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#2563eb" }} />
-          <span style={{ fontSize: "0.72rem", letterSpacing: "1.5px", color: "#1d4d80", fontWeight: 600 }}>
-            {L.kicker.toUpperCase()}
-          </span>
-        </span>
-        <h1 style={{ fontSize: "2rem", fontWeight: 700, color: "#0b1220", margin: 0, lineHeight: 1.15 }}>{L.title}</h1>
-        <p style={{ fontSize: "1.05rem", color: "#475569", marginTop: 8 }}>{L.subtitle}</p>
-      </section>
+      {/* ── TITLE ── */}
+      <Reveal>
+        <section className="pb-8 pt-12">
+          <HeroBadge>{L.kicker.toUpperCase()}</HeroBadge>
+          <h1 className="text-[clamp(28px,4vw,44px)] font-extrabold leading-[1.1] tracking-[-0.025em] text-white">
+            {L.title}
+          </h1>
+          <p className="mt-3 text-[16px] text-white/[0.62]">{L.subtitle}</p>
+        </section>
+      </Reveal>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-          gap: 18,
-        }}
-      >
-        {modules.map((m) => (
-          <Link
-            key={m.title}
-            href={m.href}
-            style={{
-              display: "block",
-              background: "#ffffff",
-              border: m.ready ? "1px solid #d9e2f0" : "1px solid #e2e6ec",
-              borderRadius: 16,
-              padding: 22,
-              textDecoration: "none",
-              boxShadow: "0 1px 2px rgba(15,35,70,0.04)",
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
-              <div
-                style={{
-                  width: 46,
-                  height: 46,
-                  borderRadius: 12,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  background: m.ready ? "#e6effb" : "#eef1f5",
-                  color: m.ready ? "#2563eb" : "#64748b",
-                }}
-              >
-                {m.icon}
-              </div>
-              <span
-                style={{
-                  fontSize: "0.66rem",
-                  letterSpacing: "0.5px",
-                  fontWeight: 600,
-                  borderRadius: 999,
-                  padding: "4px 10px",
-                  color: m.ready ? "#0f6e56" : "#8a5a00",
-                  background: m.ready ? "#d6f0e6" : "#f7e8c8",
-                }}
-              >
-                {(m.ready ? L.active : L.dev).toUpperCase()}
-              </span>
-            </div>
-            <div style={{ fontSize: "1.15rem", fontWeight: 600, color: "#0b1220", marginTop: 16 }}>{m.title}</div>
-            <div style={{ fontSize: "0.9rem", color: "#475569", marginTop: 6, lineHeight: 1.5 }}>{m.desc}</div>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: 6,
-                marginTop: 16,
-                fontSize: "0.85rem",
-                fontWeight: 600,
-                color: m.ready ? "#2563eb" : "#94a3b8",
-              }}
+      {/* ── MODULES ── */}
+      <div className="grid gap-5 sm:grid-cols-2">
+        {modules.map((m, i) => (
+          <Reveal key={m.title} delay={i * 0.08}>
+            <Link
+              href={m.href}
+              className="group relative block h-full overflow-hidden rounded-2xl border border-white/[0.14] bg-white/[0.06] p-7 backdrop-blur-sm transition-all duration-500 hover:-translate-y-1.5 hover:border-cyan-400/30 hover:bg-white/[0.09] hover:shadow-[0_24px_60px_rgba(2,6,18,0.5),0_0_40px_rgba(34,211,238,0.07)]"
             >
-              {m.ready ? L.open : L.soon}
-              <span aria-hidden>→</span>
-            </div>
-          </Link>
+              <div
+                aria-hidden
+                className="absolute -right-14 -top-14 h-40 w-40 rounded-full opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-100"
+                style={{ background: "radial-gradient(circle, rgba(34,211,238,0.16), transparent 70%)" }}
+              />
+              <div className="relative">
+                <div className="flex items-start justify-between">
+                  <div
+                    className={`flex h-12 w-12 items-center justify-center rounded-xl border transition-transform duration-500 group-hover:scale-110 ${
+                      m.ready
+                        ? "border-cyan-400/30 bg-gradient-to-br from-cyan-400/15 to-[#1a70f7]/15 text-cyan-300"
+                        : "border-white/[0.16] bg-white/[0.07] text-white/[0.52]"
+                    }`}
+                  >
+                    {m.icon}
+                  </div>
+                  <span
+                    className={`rounded-full border px-3 py-1 text-[10px] font-bold tracking-[0.12em] ${
+                      m.ready
+                        ? "border-emerald-400/30 bg-emerald-400/10 text-emerald-300"
+                        : "border-amber-400/30 bg-amber-400/10 text-amber-300"
+                    }`}
+                  >
+                    {(m.ready ? L.active : L.dev).toUpperCase()}
+                  </span>
+                </div>
+                <div className="mt-5 text-lg font-bold tracking-tight text-white">{m.title}</div>
+                <div className="mt-2 text-[14px] leading-relaxed text-white/[0.58]">{m.desc}</div>
+                <div
+                  className={`mt-5 inline-flex items-center gap-1.5 text-[13px] font-semibold transition-colors ${
+                    m.ready ? "text-cyan-300 group-hover:text-cyan-200" : "text-white/45"
+                  }`}
+                >
+                  {m.ready ? L.open : L.soon}
+                  <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-1">→</span>
+                </div>
+              </div>
+            </Link>
+          </Reveal>
         ))}
       </div>
     </div>

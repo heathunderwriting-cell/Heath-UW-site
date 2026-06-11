@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { ChipBackground } from "@/components/ChipBackground";
+import { CinematicBackground } from "@/components/marketing/Cinematic";
 
 export const dynamic = "force-dynamic";
 
@@ -14,9 +14,9 @@ export default async function InicioLayout({ children }: { children: ReactNode }
     }
   }
   return (
-    <div style={{ position: "relative", minHeight: "100vh", background: "#eaf1fb" }}>
-      <ChipBackground opacity={0.55} tone="light" />
-      <div style={{ position: "relative", zIndex: 1 }}>{children}</div>
+    <div className="relative min-h-screen text-[#f0f4ff]" style={{ background: "#102448" }}>
+      <CinematicBackground bright />
+      <div className="relative z-10">{children}</div>
     </div>
   );
 }

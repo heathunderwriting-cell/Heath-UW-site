@@ -119,29 +119,57 @@ function NeonWorkflow() {
 }
 
 /* ──────────────────────────────────────────────────────────────────────────
-   Cinematic background: aurora glows + neon workflow + masked grid + grain
+   Cinematic background: aurora glows + neon workflow + masked grid + grain.
+   `bright` lifts the whole surface (used by the internal portal).
    ────────────────────────────────────────────────────────────────────────── */
-export function CinematicBackground() {
+export function CinematicBackground({ bright = false }: { bright?: boolean }) {
   return (
-    <div aria-hidden className="pointer-events-none fixed inset-0 z-0 overflow-hidden" style={{ background: INK }}>
+    <div
+      aria-hidden
+      className="pointer-events-none fixed inset-0 z-0 overflow-hidden"
+      style={{ background: bright ? '#102448' : INK }}
+    >
+      {bright && (
+        <div
+          className="absolute inset-x-0 top-0 h-[55vh]"
+          style={{ background: 'linear-gradient(to bottom, rgba(96,150,235,0.16), transparent 80%)' }}
+        />
+      )}
       <div
         className="home-aurora absolute -top-[20%] left-[8%] h-[60vh] w-[55vw] rounded-full"
-        style={{ background: 'radial-gradient(ellipse at center, rgba(26,112,247,0.40), transparent 65%)' }}
+        style={{
+          background: bright
+            ? 'radial-gradient(ellipse at center, rgba(46,128,255,0.5), transparent 65%)'
+            : 'radial-gradient(ellipse at center, rgba(26,112,247,0.40), transparent 65%)',
+        }}
       />
       <div
         className="home-aurora-slow absolute top-[30%] -right-[12%] h-[70vh] w-[50vw] rounded-full"
-        style={{ background: 'radial-gradient(ellipse at center, rgba(34,211,238,0.24), transparent 62%)' }}
+        style={{
+          background: bright
+            ? 'radial-gradient(ellipse at center, rgba(34,211,238,0.32), transparent 62%)'
+            : 'radial-gradient(ellipse at center, rgba(34,211,238,0.24), transparent 62%)',
+        }}
       />
       <div
         className="home-aurora absolute bottom-[-25%] left-[28%] h-[55vh] w-[45vw] rounded-full"
-        style={{ background: 'radial-gradient(ellipse at center, rgba(74,158,255,0.22), transparent 60%)', animationDelay: '-6s' }}
+        style={{
+          background: bright
+            ? 'radial-gradient(ellipse at center, rgba(96,160,255,0.3), transparent 60%)'
+            : 'radial-gradient(ellipse at center, rgba(74,158,255,0.22), transparent 60%)',
+          animationDelay: '-6s',
+        }}
       />
       <NeonWorkflow />
       <div className="home-grid absolute inset-0" />
       <div className="home-noise absolute inset-0 opacity-[0.05]" />
       <div
         className="absolute inset-0"
-        style={{ background: 'radial-gradient(ellipse 120% 90% at 50% 8%, transparent 45%, rgba(6,13,31,0.62) 100%)' }}
+        style={{
+          background: bright
+            ? 'radial-gradient(ellipse 120% 90% at 50% 8%, transparent 55%, rgba(10,22,48,0.42) 100%)'
+            : 'radial-gradient(ellipse 120% 90% at 50% 8%, transparent 45%, rgba(6,13,31,0.62) 100%)',
+        }}
       />
     </div>
   );

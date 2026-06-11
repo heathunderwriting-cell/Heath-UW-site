@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { ChipBackground } from "@/components/ChipBackground";
+import { CinematicBackground } from "@/components/marketing/Cinematic";
 
 export const dynamic = "force-dynamic";
 
@@ -39,60 +39,81 @@ function money(amount?: number | null, currency?: string | null) {
 
 function Stat({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
-    <div style={{ flex: 1, minWidth: 180 }}>
-      <p style={{ fontSize: "0.68rem", letterSpacing: "0.12em", fontWeight: 700, color: "#64748b", textTransform: "uppercase", margin: 0 }}>{label}</p>
-      <p style={{ fontSize: "1.5rem", fontWeight: 700, color: "#0b1220", margin: "4px 0 0" }}>{value}</p>
-      {sub && <p style={{ fontSize: "0.78rem", color: "#475569", margin: "2px 0 0" }}>{sub}</p>}
+    <div className="min-w-[180px] flex-1">
+      <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/[0.48]">{label}</p>
+      <p className="mt-1.5 bg-gradient-to-b from-white to-[#9fc4ff] bg-clip-text font-mono text-2xl font-extrabold text-transparent">
+        {value}
+      </p>
+      {sub && <p className="mt-0.5 text-[12px] text-white/[0.52]">{sub}</p>}
     </div>
   );
 }
 
 function Row({ k, v }: { k: string; v: string }) {
   return (
-    <div style={{ display: "flex", justifyContent: "space-between", gap: 12, padding: "8px 0", borderBottom: "1px solid #eef2f8" }}>
-      <span style={{ fontSize: "0.8rem", color: "#64748b" }}>{k}</span>
-      <span style={{ fontSize: "0.84rem", fontWeight: 600, color: "#0b1220", textAlign: "right" }}>{v}</span>
+    <div className="flex justify-between gap-3 border-b border-white/[0.12] py-2 last:border-0">
+      <span className="text-[12.5px] text-white/[0.52]">{k}</span>
+      <span className="text-right text-[13px] font-semibold text-white/90">{v}</span>
     </div>
   );
 }
 
 function ProviderCard({ p }: { p: Provider }) {
   return (
-    <div style={{ background: "#ffffff", border: "1px solid #d9e2f0", borderRadius: 18, padding: "22px 24px", boxShadow: "0 1px 3px rgba(15,23,42,0.04)" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
-        <div style={{ minWidth: 0 }}>
-          <h3 style={{ fontSize: "1.15rem", fontWeight: 700, color: "#0b1220", margin: 0 }}>{p.name}</h3>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 8 }}>
-            {p.provider_type && <span style={{ fontSize: "0.7rem", fontWeight: 600, color: "#2563eb", background: "#dbe7fa", borderRadius: 999, padding: "3px 10px" }}>{p.provider_type}</span>}
-            {p.status === "active" && <span style={{ fontSize: "0.7rem", fontWeight: 600, color: "#0f6e56", background: "#d6f0e6", borderRadius: 999, padding: "3px 10px" }}>Activo</span>}
-            {p.rating && <span style={{ fontSize: "0.7rem", fontWeight: 600, color: "#8a5a00", background: "#f7e8c8", borderRadius: 999, padding: "3px 10px" }}>{p.rating_agency ? `${p.rating_agency} ${p.rating}` : p.rating}</span>}
+    <div className="group relative overflow-hidden rounded-2xl border border-white/[0.14] bg-white/[0.06] p-6 backdrop-blur-sm transition-all duration-500 hover:-translate-y-1 hover:border-cyan-400/30 hover:bg-white/[0.09]">
+      <div
+        aria-hidden
+        className="absolute -right-14 -top-14 h-40 w-40 rounded-full opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-100"
+        style={{ background: "radial-gradient(circle, rgba(34,211,238,0.14), transparent 70%)" }}
+      />
+      <div className="relative">
+        <h3 className="text-lg font-bold tracking-tight text-white">{p.name}</h3>
+        <div className="mt-2.5 flex flex-wrap gap-1.5">
+          {p.provider_type && (
+            <span className="rounded-full border border-cyan-400/30 bg-cyan-400/10 px-2.5 py-1 text-[10px] font-bold tracking-wide text-cyan-300">
+              {p.provider_type}
+            </span>
+          )}
+          {p.status === "active" && (
+            <span className="rounded-full border border-emerald-400/30 bg-emerald-400/10 px-2.5 py-1 text-[10px] font-bold tracking-wide text-emerald-300">
+              Activo
+            </span>
+          )}
+          {p.rating && (
+            <span className="rounded-full border border-amber-400/30 bg-amber-400/10 px-2.5 py-1 text-[10px] font-bold tracking-wide text-amber-300">
+              {p.rating_agency ? `${p.rating_agency} ${p.rating}` : p.rating}
+            </span>
+          )}
+        </div>
+
+        {p.binder_ref && (
+          <div className="mt-4 flex items-center gap-2.5">
+            <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/[0.48]">Binder</span>
+            <span className="rounded-md border border-white/[0.16] bg-[#102448]/70 px-2.5 py-1 font-mono text-[12px] font-bold tracking-wide text-cyan-200">
+              {p.binder_ref}
+            </span>
           </div>
+        )}
+
+        <div className="mt-4 rounded-xl border border-cyan-400/20 bg-gradient-to-br from-cyan-400/[0.07] to-[#1a70f7]/[0.04] px-4 py-3.5">
+          <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-cyan-300/90">Capacidad por riesgo</p>
+          <p className="mt-1 font-mono text-[26px] font-extrabold tracking-tight text-white">
+            {money(p.capacity_amount, p.currency)}
+          </p>
         </div>
-      </div>
 
-      {p.binder_ref && (
-        <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 14 }}>
-          <span style={{ fontSize: "0.68rem", letterSpacing: "0.1em", fontWeight: 700, color: "#64748b", textTransform: "uppercase" }}>Binder</span>
-          <span style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace", fontSize: "0.82rem", fontWeight: 700, color: "#0b1220", background: "#eef2f8", border: "1px solid #d9e2f0", borderRadius: 8, padding: "3px 10px", letterSpacing: "0.04em" }}>{p.binder_ref}</span>
+        <div className="mt-4">
+          <Row k="Línea" v={p.line_label ?? p.line ?? "—"} />
+          <Row k="Región" v={p.region ?? "—"} />
+          {p.territories && <Row k="Territorios" v={p.territories} />}
+          {p.max_line != null && <Row k="Línea máxima" v={money(p.max_line, p.currency)} />}
+          {p.share_pct != null && <Row k="Participación" v={`${p.share_pct}%`} />}
+          {p.contact_name && <Row k="Contacto" v={p.contact_name} />}
+          {p.contact_email && <Row k="Email" v={p.contact_email} />}
         </div>
-      )}
 
-      <div style={{ marginTop: 14, padding: "14px 16px", background: "#f4f8fd", border: "1px solid #e2ecf8", borderRadius: 14 }}>
-        <p style={{ fontSize: "0.68rem", letterSpacing: "0.12em", fontWeight: 700, color: "#2563eb", textTransform: "uppercase", margin: 0 }}>Capacidad por riesgo</p>
-        <p style={{ fontSize: "1.85rem", fontWeight: 800, color: "#0b1220", margin: "4px 0 0", letterSpacing: "-0.01em" }}>{money(p.capacity_amount, p.currency)}</p>
+        {p.notes && <p className="mt-4 text-[12.5px] leading-relaxed text-white/[0.52]">{p.notes}</p>}
       </div>
-
-      <div style={{ marginTop: 16 }}>
-        <Row k="Línea" v={p.line_label ?? p.line ?? "—"} />
-        <Row k="Región" v={p.region ?? "—"} />
-        {p.territories && <Row k="Territorios" v={p.territories} />}
-        {p.max_line != null && <Row k="Línea máxima" v={money(p.max_line, p.currency)} />}
-        {p.share_pct != null && <Row k="Participación" v={`${p.share_pct}%`} />}
-        {p.contact_name && <Row k="Contacto" v={p.contact_name} />}
-        {p.contact_email && <Row k="Email" v={p.contact_email} />}
-      </div>
-
-      {p.notes && <p style={{ fontSize: "0.78rem", color: "#475569", lineHeight: 1.5, marginTop: 14 }}>{p.notes}</p>}
     </div>
   );
 }
@@ -119,34 +140,44 @@ export default async function ProveedoresPage() {
   const regions = Array.from(new Set(providers.map((p) => p.region).filter(Boolean)));
 
   return (
-    <div style={{ position: "relative", minHeight: "100vh", background: "#eaf1fb" }}>
-      <ChipBackground opacity={0.55} tone="light" />
-      <div style={{ position: "relative", zIndex: 1, maxWidth: 1080, margin: "0 auto", padding: "56px 24px 80px" }}>
-        <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "flex-start", gap: 16, marginBottom: 8 }}>
-          <div style={{ minWidth: 0 }}>
-            <p style={{ fontSize: "0.7rem", letterSpacing: "0.18em", fontWeight: 700, color: "#64748b", textTransform: "uppercase", margin: 0 }}>Heath · Capacidad</p>
-            <h1 style={{ fontSize: "2rem", fontWeight: 700, color: "#0b1220", margin: "6px 0 0" }}>Proveedores de capacidad</h1>
-            <p style={{ fontSize: "1rem", color: "#475569", marginTop: 8, lineHeight: 1.5, maxWidth: 620 }}>
+    <div className="relative min-h-screen text-[#f0f4ff]">
+      <CinematicBackground bright />
+      <div className="relative z-10 mx-auto max-w-6xl px-6 pb-24 pt-14">
+        <div className="mb-2 flex flex-wrap items-start justify-between gap-4">
+          <div className="min-w-0">
+            <div className="mb-4 flex items-center gap-3">
+              <span className="h-px w-10 bg-gradient-to-r from-cyan-400 to-transparent" />
+              <span className="text-[11px] font-bold tracking-[0.3em] text-cyan-400/80">HEATH · CAPACIDAD</span>
+            </div>
+            <h1 className="text-[clamp(28px,4vw,44px)] font-extrabold leading-[1.1] tracking-[-0.025em] text-white">
+              Proveedores de capacidad
+            </h1>
+            <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-white/[0.62]">
               Mercados que respaldan la capacidad con la que cotizas. Esta es la capacidad disponible por línea y región.
             </p>
           </div>
-          <Link href="/inicio" style={{ display: "inline-block", border: "1px solid #cdd9ec", background: "#ffffff", color: "#2563eb", borderRadius: 999, padding: "10px 22px", fontSize: "0.9rem", fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" }}>
+          <Link
+            href="/inicio"
+            className="whitespace-nowrap rounded-lg border border-white/20 bg-white/[0.06] px-5 py-2.5 text-[13px] font-semibold text-cyan-300 backdrop-blur-sm transition-all duration-300 hover:border-cyan-400/40 hover:text-cyan-200"
+          >
             ← Volver al inicio
           </Link>
         </div>
 
         {providers.length === 0 ? (
-          <p style={{ fontSize: "0.95rem", color: "#475569", marginTop: 32 }}>Aún no hay proveedores de capacidad registrados.</p>
+          <p className="mt-8 text-[15px] text-white/[0.62]">Aún no hay proveedores de capacidad registrados.</p>
         ) : (
           <>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 24, background: "#ffffff", border: "1px solid #d9e2f0", borderRadius: 18, padding: "22px 26px", marginTop: 24 }}>
+            <div className="mt-6 flex flex-wrap gap-6 rounded-2xl border border-white/[0.14] bg-white/[0.06] px-7 py-6 backdrop-blur-sm">
               <Stat label="Capacidad total disponible" value={money(total, currency)} sub={`${providers.length} proveedores`} />
               <Stat label="Línea" value={lines.join(", ") || "—"} />
               <Stat label="Región" value={regions.join(", ") || "—"} />
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 20, marginTop: 24 }}>
-              {providers.map((p) => (<ProviderCard key={p.id} p={p} />))}
+            <div className="mt-6 grid gap-5 md:grid-cols-2">
+              {providers.map((p) => (
+                <ProviderCard key={p.id} p={p} />
+              ))}
             </div>
           </>
         )}
