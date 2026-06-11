@@ -40,7 +40,7 @@ export function MarketingPageLayout({
                 </h1>
               )}
               {resolvedSubtitle && (
-                <p className="mt-4 text-lg leading-relaxed text-white/[0.68] md:text-xl">{resolvedSubtitle}</p>
+                <p className="mt-4 text-lg leading-relaxed text-white/55 md:text-xl">{resolvedSubtitle}</p>
               )}
               <div className="mx-auto mt-7 h-px w-24 bg-gradient-to-r from-transparent via-cyan-400/70 to-transparent" />
             </header>

@@ -4,7 +4,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 
 /** Ink navy shared by all redesigned marketing surfaces. */
-export const INK = '#102448';
+export const INK = '#0a1733';
 
 /* ──────────────────────────────────────────────────────────────────────────
    Neon AI workflow layer: glowing nodes connected like an n8n/LLM pipeline,
@@ -119,34 +119,57 @@ function NeonWorkflow() {
 }
 
 /* ──────────────────────────────────────────────────────────────────────────
-   Cinematic background: aurora glows + neon workflow + masked grid + grain
+   Cinematic background: aurora glows + neon workflow + masked grid + grain.
+   `bright` lifts the whole surface (used by the internal portal).
    ────────────────────────────────────────────────────────────────────────── */
-export function CinematicBackground() {
+export function CinematicBackground({ bright = false }: { bright?: boolean }) {
   return (
-    <div aria-hidden className="pointer-events-none fixed inset-0 z-0 overflow-hidden" style={{ background: INK }}>
-      {/* ambient top light to lift the whole surface */}
-      <div
-        className="absolute inset-x-0 top-0 h-[55vh]"
-        style={{ background: 'linear-gradient(to bottom, rgba(96,150,235,0.16), transparent 80%)' }}
-      />
+    <div
+      aria-hidden
+      className="pointer-events-none fixed inset-0 z-0 overflow-hidden"
+      style={{ background: bright ? '#102448' : INK }}
+    >
+      {bright && (
+        <div
+          className="absolute inset-x-0 top-0 h-[55vh]"
+          style={{ background: 'linear-gradient(to bottom, rgba(96,150,235,0.16), transparent 80%)' }}
+        />
+      )}
       <div
         className="home-aurora absolute -top-[20%] left-[8%] h-[60vh] w-[55vw] rounded-full"
-        style={{ background: 'radial-gradient(ellipse at center, rgba(46,128,255,0.5), transparent 65%)' }}
+        style={{
+          background: bright
+            ? 'radial-gradient(ellipse at center, rgba(46,128,255,0.5), transparent 65%)'
+            : 'radial-gradient(ellipse at center, rgba(26,112,247,0.40), transparent 65%)',
+        }}
       />
       <div
         className="home-aurora-slow absolute top-[30%] -right-[12%] h-[70vh] w-[50vw] rounded-full"
-        style={{ background: 'radial-gradient(ellipse at center, rgba(34,211,238,0.32), transparent 62%)' }}
+        style={{
+          background: bright
+            ? 'radial-gradient(ellipse at center, rgba(34,211,238,0.32), transparent 62%)'
+            : 'radial-gradient(ellipse at center, rgba(34,211,238,0.24), transparent 62%)',
+        }}
       />
       <div
         className="home-aurora absolute bottom-[-25%] left-[28%] h-[55vh] w-[45vw] rounded-full"
-        style={{ background: 'radial-gradient(ellipse at center, rgba(96,160,255,0.3), transparent 60%)', animationDelay: '-6s' }}
+        style={{
+          background: bright
+            ? 'radial-gradient(ellipse at center, rgba(96,160,255,0.3), transparent 60%)'
+            : 'radial-gradient(ellipse at center, rgba(74,158,255,0.22), transparent 60%)',
+          animationDelay: '-6s',
+        }}
       />
       <NeonWorkflow />
       <div className="home-grid absolute inset-0" />
-      <div className="home-noise absolute inset-0 opacity-[0.04]" />
+      <div className="home-noise absolute inset-0 opacity-[0.05]" />
       <div
         className="absolute inset-0"
-        style={{ background: 'radial-gradient(ellipse 120% 90% at 50% 8%, transparent 55%, rgba(10,22,48,0.42) 100%)' }}
+        style={{
+          background: bright
+            ? 'radial-gradient(ellipse 120% 90% at 50% 8%, transparent 55%, rgba(10,22,48,0.42) 100%)'
+            : 'radial-gradient(ellipse 120% 90% at 50% 8%, transparent 45%, rgba(6,13,31,0.62) 100%)',
+        }}
       />
     </div>
   );
@@ -214,7 +237,7 @@ export const primaryButtonClass =
   'group relative inline-flex items-center gap-2 overflow-hidden rounded-lg bg-gradient-to-r from-[#1a70f7] to-[#2b8af9] px-8 py-4 text-[15px] font-bold text-white shadow-[0_8px_32px_rgba(26,112,247,0.45)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_12px_44px_rgba(26,112,247,0.65)]';
 
 export const secondaryButtonClass =
-  'inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/[0.06] px-8 py-4 text-[15px] font-semibold text-white/90 backdrop-blur-sm transition-all duration-300 hover:border-cyan-400/40 hover:bg-cyan-400/[0.06] hover:text-white';
+  'inline-flex items-center gap-2 rounded-lg border border-white/15 bg-white/[0.03] px-8 py-4 text-[15px] font-semibold text-white/85 backdrop-blur-sm transition-all duration-300 hover:border-cyan-400/40 hover:bg-cyan-400/[0.06] hover:text-white';
 
 export function ButtonSheen() {
   return <span className="home-sheen absolute inset-0" aria-hidden />;
@@ -234,4 +257,4 @@ export function ArrowIcon() {
 
 /** Glass card class used across the redesigned marketing pages. */
 export const glassCardClass =
-  'rounded-2xl border border-white/[0.14] bg-white/[0.06] backdrop-blur-sm transition-all duration-500 hover:border-cyan-400/30 hover:bg-white/[0.09]';
+  'rounded-2xl border border-white/[0.08] bg-white/[0.02] backdrop-blur-sm transition-all duration-500 hover:border-cyan-400/30 hover:bg-white/[0.04]';

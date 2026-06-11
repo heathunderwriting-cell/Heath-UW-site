@@ -50,16 +50,16 @@ export default function CompanyPage() {
             <h1 className="mb-6 max-w-4xl text-[clamp(36px,5vw,64px)] font-extrabold leading-[1.05] tracking-[-0.03em]">
               {d.subtitle}
             </h1>
-            <p className="max-w-2xl text-[17px] leading-relaxed text-white/[0.68] md:text-lg">{d.intro}</p>
+            <p className="max-w-2xl text-[17px] leading-relaxed text-white/55 md:text-lg">{d.intro}</p>
           </Reveal>
         </section>
 
         {/* ── AI BANNER ── */}
         <Reveal>
-          <div className="border-y border-white/[0.12] bg-gradient-to-r from-cyan-400/[0.03] via-cyan-400/[0.08] to-cyan-400/[0.03] backdrop-blur-sm">
+          <div className="border-y border-white/[0.07] bg-gradient-to-r from-cyan-400/[0.03] via-cyan-400/[0.08] to-cyan-400/[0.03] backdrop-blur-sm">
             <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-10 gap-y-3 px-6 py-5 md:px-10">
               {c.banner.map(([label, sub]) => (
-                <div key={label} className="flex items-center gap-2.5 text-[13px] text-white/[0.62]">
+                <div key={label} className="flex items-center gap-2.5 text-[13px] text-white/50">
                   <span className="text-[9px] text-cyan-400">✦</span>
                   <strong className="font-bold text-cyan-300">{label}</strong>
                   <span>— {sub}</span>
@@ -80,7 +80,7 @@ export default function CompanyPage() {
               { ...c.vision, gold: true },
             ].map(({ eyebrow, gold, title, body }, i) => (
               <Reveal key={eyebrow} delay={i * 0.1}>
-                <div className="group relative h-full overflow-hidden rounded-2xl border border-white/[0.14] bg-white/[0.06] p-9 backdrop-blur-sm transition-all duration-500 hover:-translate-y-1 hover:bg-white/[0.09] md:p-10">
+                <div className="group relative h-full overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.02] p-9 backdrop-blur-sm transition-all duration-500 hover:-translate-y-1 hover:bg-white/[0.04] md:p-10">
                   <div
                     aria-hidden
                     className="absolute inset-x-0 top-0 h-[3px]"
@@ -97,7 +97,7 @@ export default function CompanyPage() {
                     {eyebrow}
                   </div>
                   <h2 className="mb-4 text-2xl font-bold tracking-tight text-white">{title}</h2>
-                  <p className="text-[15px] leading-[1.8] text-white/[0.68]">{body}</p>
+                  <p className="text-[15px] leading-[1.8] text-white/55">{body}</p>
                 </div>
               </Reveal>
             ))}
@@ -105,7 +105,7 @@ export default function CompanyPage() {
         </section>
 
         {/* ── WHO WE ARE ── */}
-        <section className="border-y border-white/[0.12] bg-white/[0.04] py-24 backdrop-blur-sm md:py-28">
+        <section className="border-y border-white/[0.06] bg-[#0c1d3f]/60 py-24 backdrop-blur-sm md:py-28">
           <div className="mx-auto max-w-7xl px-6 md:px-10">
             <Reveal>
               <Kicker>{c.whoEyebrow}</Kicker>
@@ -116,10 +116,10 @@ export default function CompanyPage() {
             </Reveal>
             <div className="grid items-start gap-12 lg:grid-cols-[1.2fr_1fr]">
               <Reveal delay={0.1}>
-                <div className="relative rounded-2xl border border-white/[0.14] bg-white/[0.06] p-8 backdrop-blur-sm md:p-10">
+                <div className="relative rounded-2xl border border-white/[0.08] bg-white/[0.02] p-8 backdrop-blur-sm md:p-10">
                   <div aria-hidden className="absolute left-0 top-8 h-[calc(100%-4rem)] w-[3px] rounded-full bg-gradient-to-b from-cyan-400 to-transparent" />
                   {c.whoParagraphs.map((text, i) => (
-                    <p key={i} className="mb-4 text-[15px] leading-[1.85] text-white/70 last:mb-0">
+                    <p key={i} className="mb-4 text-[15px] leading-[1.85] text-white/60 last:mb-0">
                       {text}
                     </p>
                   ))}
@@ -128,11 +128,11 @@ export default function CompanyPage() {
               <div className="flex flex-col gap-5">
                 {c.whoStats.map(([num, label], i) => (
                   <Reveal key={num} delay={0.15 + i * 0.08}>
-                    <div className="rounded-2xl border border-white/[0.14] bg-white/[0.06] px-7 py-6 backdrop-blur-sm transition-all duration-500 hover:border-cyan-400/30">
+                    <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] px-7 py-6 backdrop-blur-sm transition-all duration-500 hover:border-cyan-400/30">
                       <div className="bg-gradient-to-b from-white to-[#9fc4ff] bg-clip-text font-mono text-3xl font-extrabold text-transparent">
                         {num}
                       </div>
-                      <div className="mt-1.5 text-[13px] text-white/[0.58]">{label}</div>
+                      <div className="mt-1.5 text-[13px] text-white/45">{label}</div>
                     </div>
                   </Reveal>
                 ))}
@@ -156,7 +156,7 @@ export default function CompanyPage() {
                 <AIPill>{c.techPillLabel}</AIPill>
               </div>
             </div>
-            <p className="mb-14 max-w-2xl text-[15px] leading-[1.75] text-white/[0.68]">{c.techIntro}</p>
+            <p className="mb-14 max-w-2xl text-[15px] leading-[1.75] text-white/55">{c.techIntro}</p>
           </Reveal>
 
           {/* Tech cards */}
@@ -167,7 +167,7 @@ export default function CompanyPage() {
                   className={`group h-full rounded-2xl border p-8 backdrop-blur-sm transition-all duration-500 hover:-translate-y-1.5 ${
                     highlight
                       ? 'border-cyan-400/40 bg-gradient-to-br from-cyan-400/[0.08] to-white/[0.02] shadow-[0_0_36px_rgba(34,211,238,0.1)]'
-                      : 'border-white/[0.14] bg-white/[0.06] hover:border-cyan-400/25 hover:bg-white/[0.09]'
+                      : 'border-white/[0.08] bg-white/[0.02] hover:border-cyan-400/25 hover:bg-white/[0.04]'
                   }`}
                 >
                   <div
@@ -178,7 +178,7 @@ export default function CompanyPage() {
                     {icon}
                   </div>
                   <h3 className="mb-2.5 text-base font-bold text-white">{title}</h3>
-                  <p className="text-[13.5px] leading-[1.7] text-white/[0.58]">{desc}</p>
+                  <p className="text-[13.5px] leading-[1.7] text-white/45">{desc}</p>
                   <span className="mt-4 inline-block rounded-full border border-cyan-400/25 bg-cyan-400/[0.07] px-3 py-1 text-[11px] text-cyan-300/90">
                     {tag}
                   </span>
@@ -203,12 +203,12 @@ export default function CompanyPage() {
                 <GradientSpan>{c.whyTitleHighlight}</GradientSpan>
                 {c.whyTitlePost}
               </h3>
-              <p className="mb-8 max-w-3xl text-[14.5px] leading-[1.8] text-white/[0.68]">{c.whyBody}</p>
+              <p className="mb-8 max-w-3xl text-[14.5px] leading-[1.8] text-white/55">{c.whyBody}</p>
               <div className="grid gap-4 md:grid-cols-3">
                 {c.aiWorkflows.map(({ title, desc }) => (
-                  <div key={title} className="rounded-xl border border-cyan-400/20 bg-[#102448]/50 px-5 py-4 backdrop-blur-sm">
+                  <div key={title} className="rounded-xl border border-cyan-400/20 bg-[#0a1733]/50 px-5 py-4 backdrop-blur-sm">
                     <strong className="mb-1 block text-[13px] font-bold text-cyan-300">{title}</strong>
-                    <span className="text-[12.5px] leading-relaxed text-white/[0.58]">{desc}</span>
+                    <span className="text-[12.5px] leading-relaxed text-white/45">{desc}</span>
                   </div>
                 ))}
               </div>
@@ -217,7 +217,7 @@ export default function CompanyPage() {
 
           {/* Pipeline */}
           <Reveal delay={0.1}>
-            <div className="mt-8 rounded-2xl border border-white/[0.14] bg-white/[0.06] p-9 backdrop-blur-sm md:p-10">
+            <div className="mt-8 rounded-2xl border border-white/[0.08] bg-white/[0.02] p-9 backdrop-blur-sm md:p-10">
               <div className="mb-9 text-[12px] font-bold uppercase tracking-[0.1em] text-cyan-300">{c.pipelineLabel}</div>
               <div className="flex flex-wrap items-start">
                 {c.pipelineSteps.map((step, i) => (
@@ -228,7 +228,7 @@ export default function CompanyPage() {
                     <div className="mx-auto mb-2.5 flex h-9 w-9 items-center justify-center rounded-full border-[1.5px] border-cyan-400/70 bg-cyan-400/10 font-mono text-[12px] font-bold text-cyan-300 shadow-[0_0_14px_rgba(34,211,238,0.25)]">
                       {i + 1}
                     </div>
-                    <div className="whitespace-pre-line text-[12px] leading-snug text-white/[0.58]">{step}</div>
+                    <div className="whitespace-pre-line text-[12px] leading-snug text-white/45">{step}</div>
                   </div>
                 ))}
               </div>
@@ -237,7 +237,7 @@ export default function CompanyPage() {
         </section>
 
         {/* ── VALUES ── */}
-        <section className="border-y border-white/[0.12] bg-white/[0.04] py-24 backdrop-blur-sm md:py-28">
+        <section className="border-y border-white/[0.06] bg-[#0c1d3f]/60 py-24 backdrop-blur-sm md:py-28">
           <div className="mx-auto max-w-7xl px-6 md:px-10">
             <Reveal>
               <Kicker>{c.valuesEyebrow}</Kicker>
@@ -253,12 +253,12 @@ export default function CompanyPage() {
                     className={`h-full rounded-2xl border p-7 backdrop-blur-sm transition-all duration-500 hover:-translate-y-1.5 ${
                       highlight
                         ? 'border-cyan-400/35 bg-cyan-400/[0.05]'
-                        : 'border-white/[0.14] bg-white/[0.06] hover:border-cyan-400/25'
+                        : 'border-white/[0.08] bg-white/[0.02] hover:border-cyan-400/25'
                     }`}
                   >
                     <div className="mb-4 font-mono text-[13px] font-bold tracking-[0.2em] text-cyan-400/60">{num}</div>
                     <h3 className="mb-2.5 text-[15px] font-bold text-white">{title}</h3>
-                    <p className="text-[13px] leading-[1.7] text-white/[0.58]">{desc}</p>
+                    <p className="text-[13px] leading-[1.7] text-white/45">{desc}</p>
                   </div>
                 </Reveal>
               ))}
@@ -275,16 +275,16 @@ export default function CompanyPage() {
               <GradientSpan>{c.govTitleHighlight}</GradientSpan>
               {c.govTitlePost}
             </h2>
-            <p className="mb-12 max-w-2xl text-[15px] leading-[1.75] text-white/[0.68]">{c.govIntro}</p>
+            <p className="mb-12 max-w-2xl text-[15px] leading-[1.75] text-white/55">{c.govIntro}</p>
           </Reveal>
           <div className="grid gap-6 md:grid-cols-2">
             {c.govItems.map(({ title, items }, i) => (
               <Reveal key={title} delay={i * 0.1}>
-                <div className="h-full rounded-2xl border border-white/[0.14] bg-white/[0.06] p-8 backdrop-blur-sm transition-all duration-500 hover:border-cyan-400/25 md:p-9">
+                <div className="h-full rounded-2xl border border-white/[0.08] bg-white/[0.02] p-8 backdrop-blur-sm transition-all duration-500 hover:border-cyan-400/25 md:p-9">
                   <h3 className="mb-5 text-base font-bold text-white">{title}</h3>
                   <ul className="flex flex-col gap-3">
                     {items.map((item) => (
-                      <li key={item} className="flex items-start gap-2.5 text-[14px] leading-relaxed text-white/[0.68]">
+                      <li key={item} className="flex items-start gap-2.5 text-[14px] leading-relaxed text-white/55">
                         <span className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full bg-cyan-400/70" />
                         {item}
                       </li>
@@ -299,8 +299,8 @@ export default function CompanyPage() {
         {/* ── CTA ── */}
         <section className="px-6 pb-28 md:px-10 md:pb-32">
           <Reveal className="mx-auto max-w-5xl">
-            <div className="relative overflow-hidden rounded-3xl border border-white/[0.16] px-8 py-14 md:px-14 md:py-16">
-              <div aria-hidden className="absolute inset-0" style={{ background: 'linear-gradient(135deg, #143064 0%, #1a3d7d 50%, #122a55 100%)' }} />
+            <div className="relative overflow-hidden rounded-3xl border border-white/10 px-8 py-14 md:px-14 md:py-16">
+              <div aria-hidden className="absolute inset-0" style={{ background: 'linear-gradient(135deg, #0c1f42 0%, #102a55 50%, #0a1834 100%)' }} />
               <div
                 aria-hidden
                 className="absolute inset-0 opacity-80"
@@ -319,7 +319,7 @@ export default function CompanyPage() {
                     {c.ctaTitlePre}
                     <GradientSpan>{c.ctaTitleHighlight}</GradientSpan>
                   </h2>
-                  <p className="max-w-md text-[15px] leading-relaxed text-white/[0.68]">{c.ctaBody}</p>
+                  <p className="max-w-md text-[15px] leading-relaxed text-white/55">{c.ctaBody}</p>
                 </div>
                 <Link href="/contact" className={primaryButtonClass}>
                   <ButtonSheen />

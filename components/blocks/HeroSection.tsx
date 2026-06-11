@@ -42,7 +42,7 @@ export function HeroSection({
             {title}
           </h1>
           {subtitle && (
-            <p className="mt-5 text-lg leading-relaxed text-white/[0.68] md:text-xl">{subtitle}</p>
+            <p className="mt-5 text-lg leading-relaxed text-white/55 md:text-xl">{subtitle}</p>
           )}
           {children}
         </div>

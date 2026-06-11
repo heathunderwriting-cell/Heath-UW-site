@@ -142,19 +142,19 @@ function LiveConsole({ locale }: { locale: Locale }) {
         className="absolute -inset-6 rounded-3xl opacity-60 blur-2xl"
         style={{ background: 'radial-gradient(ellipse at 50% 30%, rgba(26,112,247,0.35), transparent 70%)' }}
       />
-      <div className="relative overflow-hidden rounded-2xl border border-white/[0.16] bg-[#16305e]/90 shadow-[0_24px_80px_rgba(2,6,18,0.7)] backdrop-blur-xl">
+      <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-[#0e2147]/90 shadow-[0_24px_80px_rgba(2,6,18,0.7)] backdrop-blur-xl">
         {/* scanline sweep */}
         <div aria-hidden className="home-scanline pointer-events-none absolute inset-0" />
 
         {/* title bar */}
-        <div className="flex items-center justify-between border-b border-white/[0.12] px-6 py-4">
+        <div className="flex items-center justify-between border-b border-white/[0.07] px-6 py-4">
           <div className="flex items-center gap-3">
             <div className="flex gap-1.5">
               <span className="h-2.5 w-2.5 rounded-full bg-white/10" />
               <span className="h-2.5 w-2.5 rounded-full bg-white/10" />
               <span className="h-2.5 w-2.5 rounded-full bg-white/10" />
             </div>
-            <span className="font-mono text-[10px] font-bold tracking-[0.25em] text-white/[0.52]">{x.title}</span>
+            <span className="font-mono text-[10px] font-bold tracking-[0.25em] text-white/40">{x.title}</span>
           </div>
           <span className="flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-3 py-1 text-[10px] font-bold tracking-widest text-emerald-400">
             <span className="home-pulse-dot h-1.5 w-1.5 rounded-full bg-emerald-400" />
@@ -186,7 +186,7 @@ function LiveConsole({ locale }: { locale: Locale }) {
                 </div>
                 <span
                   className={`font-mono text-[12.5px] leading-relaxed transition-colors duration-500 ${
-                    done ? 'text-white/[0.68]' : active ? 'text-white' : 'text-white/40'
+                    done ? 'text-white/55' : active ? 'text-white' : 'text-white/25'
                   }`}
                 >
                   {label}
@@ -199,7 +199,7 @@ function LiveConsole({ locale }: { locale: Locale }) {
 
         {/* extracted fields */}
         <div
-          className={`mx-6 mb-5 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-white/[0.12] bg-white/[0.06] transition-all duration-700 ${
+          className={`mx-6 mb-5 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-white/[0.07] bg-white/[0.06] transition-all duration-700 ${
             showFields ? 'opacity-100' : 'opacity-30'
           }`}
         >
@@ -211,8 +211,8 @@ function LiveConsole({ locale }: { locale: Locale }) {
               [x.fields.line, data.line],
             ] as const
           ).map(([k, v]) => (
-            <div key={k} className="bg-[#16305e] px-4 py-3">
-              <div className="mb-1 text-[9px] font-bold uppercase tracking-[0.2em] text-white/45">{k}</div>
+            <div key={k} className="bg-[#0e2147] px-4 py-3">
+              <div className="mb-1 text-[9px] font-bold uppercase tracking-[0.2em] text-white/30">{k}</div>
               <div className={`truncate font-mono text-[12px] transition-colors duration-500 ${showFields ? 'text-cyan-200/90' : 'text-white/20'}`}>
                 {showFields ? v : '— — —'}
               </div>
@@ -221,14 +221,14 @@ function LiveConsole({ locale }: { locale: Locale }) {
         </div>
 
         {/* decision row */}
-        <div className="flex items-center justify-between border-t border-white/[0.12] px-6 py-4">
-          <span className="text-[10px] font-bold tracking-[0.25em] text-white/[0.48]">{x.decisionLabel}</span>
+        <div className="flex items-center justify-between border-t border-white/[0.07] px-6 py-4">
+          <span className="text-[10px] font-bold tracking-[0.25em] text-white/35">{x.decisionLabel}</span>
           <div className="flex items-center gap-3">
             <span
               className={`rounded-md border px-3 py-1.5 font-mono text-[11px] font-bold tracking-wider transition-all duration-700 ${
                 showDecision
                   ? 'border-emerald-400/40 bg-emerald-400/10 text-emerald-300 shadow-[0_0_18px_rgba(52,211,153,0.25)]'
-                  : 'border-white/[0.16] bg-white/[0.06] text-white/20'
+                  : 'border-white/10 bg-white/[0.03] text-white/20'
               }`}
             >
               {showDecision ? x.decision : '· · ·'}
@@ -244,7 +244,7 @@ function LiveConsole({ locale }: { locale: Locale }) {
         </div>
       </div>
 
-      <p className="mt-4 text-center text-[11px] tracking-wide text-white/45">{x.footer}</p>
+      <p className="mt-4 text-center text-[11px] tracking-wide text-white/30">{x.footer}</p>
     </div>
   );
 }
@@ -265,7 +265,7 @@ function Stat({ value, label, index }: { value: string; label: string; index: nu
         <div className="bg-gradient-to-b from-white to-[#9fc4ff] bg-clip-text font-mono text-3xl font-extrabold tracking-tight text-transparent md:text-4xl">
           {value}
         </div>
-        <div className="mt-2 text-[11px] font-medium uppercase tracking-[0.18em] text-white/[0.48]">{label}</div>
+        <div className="mt-2 text-[11px] font-medium uppercase tracking-[0.18em] text-white/35">{label}</div>
       </motion.div>
     </div>
   );
@@ -339,7 +339,7 @@ export default function HomeClient() {
               initial={{ opacity: 0, y: 22 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.22 }}
-              className="mb-10 max-w-xl text-[17px] leading-relaxed text-white/[0.68] md:text-lg"
+              className="mb-10 max-w-xl text-[17px] leading-relaxed text-white/55 md:text-lg"
             >
               {d.hero.subtitle}
             </motion.p>
@@ -362,7 +362,7 @@ export default function HomeClient() {
               </a>
               <a
                 href="#model"
-                className="inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/[0.06] px-8 py-4 text-[15px] font-semibold text-white/90 backdrop-blur-sm transition-all duration-300 hover:border-cyan-400/40 hover:bg-cyan-400/[0.06] hover:text-white"
+                className="inline-flex items-center gap-2 rounded-lg border border-white/15 bg-white/[0.03] px-8 py-4 text-[15px] font-semibold text-white/85 backdrop-blur-sm transition-all duration-300 hover:border-cyan-400/40 hover:bg-cyan-400/[0.06] hover:text-white"
               >
                 {d.hero.secondaryCta}
               </a>
@@ -386,13 +386,13 @@ export default function HomeClient() {
           transition={{ delay: 1.2, duration: 1 }}
           className="pointer-events-none mt-14 hidden items-center justify-center gap-3 md:flex"
         >
-          <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-white/40">{x.scroll}</span>
+          <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-white/25">{x.scroll}</span>
           <span className="home-scroll-line block h-8 w-px bg-gradient-to-b from-cyan-400/60 to-transparent" />
         </motion.div>
       </section>
 
       {/* ════════ STATS ════════ */}
-      <section className="relative z-10 border-y border-white/[0.12] bg-white/[0.015] backdrop-blur-sm">
+      <section className="relative z-10 border-y border-white/[0.07] bg-white/[0.015] backdrop-blur-sm">
         <div className="mx-auto grid max-w-6xl grid-cols-2 divide-x divide-white/[0.06] px-6 md:grid-cols-4">
           {x.stats.map((s, i) => (
             <Stat key={s.label} value={s.value} label={s.label} index={i} />
@@ -406,7 +406,7 @@ export default function HomeClient() {
           <div className="home-marquee flex w-max items-center gap-10">
             {[...marqueeItems, ...marqueeItems].map((item, i) => (
               <span key={i} className="flex items-center gap-10 whitespace-nowrap">
-                <span className="text-[12px] font-bold uppercase tracking-[0.3em] text-white/40">{item}</span>
+                <span className="text-[12px] font-bold uppercase tracking-[0.3em] text-white/25">{item}</span>
                 <span className="h-1 w-1 rounded-full bg-cyan-400/40" />
               </span>
             ))}
@@ -431,16 +431,16 @@ export default function HomeClient() {
             </div>
           </Reveal>
           <Reveal delay={0.15}>
-            <div className="relative rounded-2xl border border-white/[0.14] bg-white/[0.06] p-8 backdrop-blur-sm md:p-10">
+            <div className="relative rounded-2xl border border-white/[0.08] bg-white/[0.02] p-8 backdrop-blur-sm md:p-10">
               <div aria-hidden className="absolute left-0 top-8 h-[calc(100%-4rem)] w-[3px] rounded-full bg-gradient-to-b from-cyan-400 to-transparent" />
-              <p className="text-[17px] leading-[1.85] text-white/75">{d.whoWeAre.body}</p>
+              <p className="text-[17px] leading-[1.85] text-white/65">{d.whoWeAre.body}</p>
             </div>
           </Reveal>
         </div>
       </section>
 
       {/* ════════ THE HEATH MODEL ════════ */}
-      <section id="model" className="relative z-10 border-y border-white/[0.12] bg-white/[0.04] py-28 backdrop-blur-sm md:py-36">
+      <section id="model" className="relative z-10 border-y border-white/[0.06] bg-[#0c1d3f]/60 py-28 backdrop-blur-sm md:py-36">
         <div className="mx-auto max-w-7xl px-6 md:px-10">
           <Reveal>
             <Kicker>{x.modelKicker}</Kicker>
@@ -451,7 +451,7 @@ export default function HomeClient() {
           <div className="grid gap-5 md:grid-cols-2">
             {(d.model.pillars as readonly { title: string; body: string }[]).map((pillar, idx) => (
               <Reveal key={pillar.title} delay={idx * 0.08}>
-                <div className="group relative h-full overflow-hidden rounded-2xl border border-white/[0.14] bg-white/[0.06] p-8 transition-all duration-500 hover:-translate-y-1.5 hover:border-cyan-400/30 hover:bg-white/[0.09] hover:shadow-[0_24px_60px_rgba(2,6,18,0.6),0_0_40px_rgba(34,211,238,0.08)] md:p-10">
+                <div className="group relative h-full overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.02] p-8 transition-all duration-500 hover:-translate-y-1.5 hover:border-cyan-400/30 hover:bg-white/[0.04] hover:shadow-[0_24px_60px_rgba(2,6,18,0.6),0_0_40px_rgba(34,211,238,0.08)] md:p-10">
                   {/* hover glow */}
                   <div
                     aria-hidden
@@ -470,7 +470,7 @@ export default function HomeClient() {
                       )}
                     </div>
                     <h3 className="mb-3 text-lg font-bold tracking-tight text-white md:text-xl">{pillar.title}</h3>
-                    <p className="text-[14.5px] leading-[1.75] text-white/[0.58]">{pillar.body}</p>
+                    <p className="text-[14.5px] leading-[1.75] text-white/45">{pillar.body}</p>
                   </div>
                 </div>
               </Reveal>
@@ -490,7 +490,7 @@ export default function HomeClient() {
         <div className="grid gap-5 md:grid-cols-3">
           {(d.edge.items as readonly { title: string; body: string }[]).map((item, idx) => (
             <Reveal key={item.title} delay={idx * 0.1}>
-              <div className="group relative h-full rounded-2xl border border-white/[0.14] bg-white/[0.06] p-8 transition-all duration-500 hover:-translate-y-1.5 hover:border-[#4a9eff]/35 hover:bg-white/[0.09] hover:shadow-[0_24px_60px_rgba(2,6,18,0.6)]">
+              <div className="group relative h-full rounded-2xl border border-white/[0.08] bg-white/[0.02] p-8 transition-all duration-500 hover:-translate-y-1.5 hover:border-[#4a9eff]/35 hover:bg-white/[0.04] hover:shadow-[0_24px_60px_rgba(2,6,18,0.6)]">
                 <div className="mb-6 flex h-11 w-11 items-center justify-center rounded-xl border border-cyan-400/25 bg-gradient-to-br from-cyan-400/15 to-[#1a70f7]/15 transition-transform duration-500 group-hover:scale-110">
                   {idx === 0 && (
                     <svg viewBox="0 0 24 24" className="h-5 w-5 text-cyan-300" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
@@ -511,7 +511,7 @@ export default function HomeClient() {
                   )}
                 </div>
                 <h3 className="mb-3 text-lg font-bold tracking-tight text-white">{item.title}</h3>
-                <p className="text-[14.5px] leading-[1.75] text-white/[0.58]">{item.body}</p>
+                <p className="text-[14.5px] leading-[1.75] text-white/45">{item.body}</p>
               </div>
             </Reveal>
           ))}
@@ -521,9 +521,9 @@ export default function HomeClient() {
       {/* ════════ FINAL CTA ════════ */}
       <section id="contact" className="relative z-10 px-6 pb-28 md:px-10 md:pb-36">
         <Reveal className="mx-auto max-w-5xl">
-          <div className="relative overflow-hidden rounded-3xl border border-white/[0.16] px-8 py-20 text-center md:px-16 md:py-24">
+          <div className="relative overflow-hidden rounded-3xl border border-white/10 px-8 py-20 text-center md:px-16 md:py-24">
             {/* panel background */}
-            <div aria-hidden className="absolute inset-0" style={{ background: 'linear-gradient(135deg, #143064 0%, #1a3d7d 50%, #122a55 100%)' }} />
+            <div aria-hidden className="absolute inset-0" style={{ background: 'linear-gradient(135deg, #0c1f42 0%, #102a55 50%, #0a1834 100%)' }} />
             <div
               aria-hidden
               className="absolute inset-0 opacity-80"
@@ -541,7 +541,7 @@ export default function HomeClient() {
               <h2 className="mx-auto mb-6 max-w-3xl text-[clamp(28px,4vw,52px)] font-extrabold leading-[1.1] tracking-[-0.025em]">
                 {d.finalCta.title}
               </h2>
-              <p className="mx-auto mb-12 max-w-xl text-[16px] leading-relaxed text-white/[0.68] md:text-[17px]">
+              <p className="mx-auto mb-12 max-w-xl text-[16px] leading-relaxed text-white/55 md:text-[17px]">
                 {d.finalCta.body}
               </p>
               <div className="flex flex-wrap items-center justify-center gap-4">
@@ -557,7 +557,7 @@ export default function HomeClient() {
                 </a>
                 <a
                   href="#about"
-                  className="inline-flex items-center rounded-lg border border-white/20 bg-white/[0.07] px-9 py-4 text-[15px] font-semibold text-white/90 backdrop-blur-sm transition-all duration-300 hover:border-cyan-400/40 hover:text-white"
+                  className="inline-flex items-center rounded-lg border border-white/20 bg-white/[0.04] px-9 py-4 text-[15px] font-semibold text-white/85 backdrop-blur-sm transition-all duration-300 hover:border-cyan-400/40 hover:text-white"
                 >
                   {d.finalCta.secondary}
                 </a>
@@ -568,16 +568,16 @@ export default function HomeClient() {
       </section>
 
       {/* ════════ FOOTER ════════ */}
-      <footer className="relative z-10 border-t border-white/[0.12]">
+      <footer className="relative z-10 border-t border-white/[0.07]">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-6 py-9 md:px-10">
           <div className="flex items-center gap-3">
             <span className="text-base font-black tracking-tight">
               HEA<span className="text-[#4a9eff]">TH</span>
             </span>
             <span className="hidden h-3 w-px bg-white/15 sm:block" />
-            <span className="text-[12px] text-white/45">{dict.footer.copyright}</span>
+            <span className="text-[12px] text-white/30">{dict.footer.copyright}</span>
           </div>
-          <span className="font-mono text-[12px] tracking-wider text-white/45">heathuw.com</span>
+          <span className="font-mono text-[12px] tracking-wider text-white/30">heathuw.com</span>
         </div>
       </footer>
     </div>

@@ -99,7 +99,7 @@ export default function SuscripcionPage() {
 
   return (
     <div className="relative min-h-screen text-[#f0f4ff]">
-      <CinematicBackground />
+      <CinematicBackground bright />
       <div className="relative z-10 mx-auto max-w-5xl px-6 pb-20 pt-6">
         {/* ── HEADER ── */}
         <header className="flex items-center justify-between border-b border-white/[0.14] pb-5">

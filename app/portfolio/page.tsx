@@ -44,7 +44,7 @@ function LineCard({
         className={`group relative overflow-hidden rounded-2xl border transition-all duration-500 ${
           open
             ? 'border-cyan-400/40 shadow-[0_0_0_1px_rgba(34,211,238,0.15),0_28px_70px_rgba(2,6,18,0.7)]'
-            : 'border-white/[0.14] shadow-[0_12px_40px_rgba(2,6,18,0.45)] hover:-translate-y-1 hover:border-cyan-400/25'
+            : 'border-white/[0.08] shadow-[0_12px_40px_rgba(2,6,18,0.45)] hover:-translate-y-1 hover:border-cyan-400/25'
         }`}
       >
         {/* image layer */}
@@ -82,7 +82,7 @@ function LineCard({
             </span>
           </div>
 
-          <p className="mt-5 max-w-2xl text-[15px] leading-relaxed text-white/75">{line.summary}</p>
+          <p className="mt-5 max-w-2xl text-[15px] leading-relaxed text-white/65">{line.summary}</p>
 
           <button
             onClick={() => setOpen(!open)}
@@ -97,14 +97,14 @@ function LineCard({
           </button>
 
           {open && (
-            <div className="mt-8 grid gap-10 border-t border-white/[0.14] pt-8 md:grid-cols-2">
+            <div className="mt-8 grid gap-10 border-t border-white/[0.08] pt-8 md:grid-cols-2">
               <div>
-                <p className="mb-2.5 text-[11px] font-bold uppercase tracking-[0.18em] text-white/[0.48]">{copy.theRisk}</p>
-                <p className="mb-7 text-[14px] leading-[1.75] text-white/75">{line.riskDescription}</p>
-                <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.18em] text-white/[0.48]">{copy.coverageScope}</p>
+                <p className="mb-2.5 text-[11px] font-bold uppercase tracking-[0.18em] text-white/35">{copy.theRisk}</p>
+                <p className="mb-7 text-[14px] leading-[1.75] text-white/65">{line.riskDescription}</p>
+                <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.18em] text-white/35">{copy.coverageScope}</p>
                 <ul className="space-y-2.5">
                   {line.coverScope.map((item, i) => (
-                    <li key={i} className="flex items-start gap-2.5 text-[14px] leading-snug text-white/70">
+                    <li key={i} className="flex items-start gap-2.5 text-[14px] leading-snug text-white/60">
                       <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-cyan-400/70" />
                       {item}
                     </li>
@@ -112,17 +112,17 @@ function LineCard({
                 </ul>
               </div>
               <div>
-                <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.18em] text-white/[0.48]">{copy.structuresLabel}</p>
+                <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.18em] text-white/35">{copy.structuresLabel}</p>
                 <ul className="mb-7 space-y-2.5">
                   {line.structures.map((item, i) => (
-                    <li key={i} className="flex items-start gap-2.5 text-[14px] leading-snug text-white/70">
+                    <li key={i} className="flex items-start gap-2.5 text-[14px] leading-snug text-white/60">
                       <span className="shrink-0 font-bold text-cyan-400/80">—</span>
                       {item}
                     </li>
                   ))}
                 </ul>
-                <p className="mb-2.5 text-[11px] font-bold uppercase tracking-[0.18em] text-white/[0.48]">{copy.targetMarkets}</p>
-                <p className="text-[14px] leading-[1.75] text-white/75">{line.markets}</p>
+                <p className="mb-2.5 text-[11px] font-bold uppercase tracking-[0.18em] text-white/35">{copy.targetMarkets}</p>
+                <p className="text-[14px] leading-[1.75] text-white/65">{line.markets}</p>
               </div>
             </div>
           )}
@@ -149,14 +149,14 @@ export default function PortfolioPage() {
           <h1 className="mb-6 max-w-3xl text-[clamp(36px,5vw,64px)] font-extrabold leading-[1.05] tracking-[-0.03em]">
             {d.subtitle}
           </h1>
-          <p className="max-w-2xl text-[17px] leading-relaxed text-white/[0.68] md:text-lg">{d.intro}</p>
+          <p className="max-w-2xl text-[17px] leading-relaxed text-white/55 md:text-lg">{d.intro}</p>
         </Reveal>
         <Reveal delay={0.15}>
           <div className="mt-10 flex flex-wrap gap-2.5">
             {lines.map((l) => (
               <span
                 key={l.id}
-                className="rounded-md border border-white/[0.16] bg-white/[0.06] px-4 py-2 text-[11px] font-bold tracking-[0.12em] text-white/[0.58] backdrop-blur-sm"
+                className="rounded-md border border-white/10 bg-white/[0.03] px-4 py-2 text-[11px] font-bold tracking-[0.12em] text-white/45 backdrop-blur-sm"
               >
                 {l.label}
               </span>
@@ -175,8 +175,8 @@ export default function PortfolioPage() {
       {/* ── CTA ── */}
       <section className="relative z-10 px-6 pb-28 md:px-10">
         <Reveal className="mx-auto max-w-5xl">
-          <div className="relative overflow-hidden rounded-3xl border border-white/[0.16] px-8 py-16 md:px-14 md:py-20">
-            <div aria-hidden className="absolute inset-0" style={{ background: 'linear-gradient(135deg, #143064 0%, #1a3d7d 50%, #122a55 100%)' }} />
+          <div className="relative overflow-hidden rounded-3xl border border-white/10 px-8 py-16 md:px-14 md:py-20">
+            <div aria-hidden className="absolute inset-0" style={{ background: 'linear-gradient(135deg, #0c1f42 0%, #102a55 50%, #0a1834 100%)' }} />
             <div
               aria-hidden
               className="absolute inset-0 opacity-80"
@@ -194,7 +194,7 @@ export default function PortfolioPage() {
                     {copy.ctaTitleHighlight}
                   </span>
                 </h2>
-                <p className="max-w-lg text-[15px] leading-relaxed text-white/[0.68]">{copy.ctaText}</p>
+                <p className="max-w-lg text-[15px] leading-relaxed text-white/55">{copy.ctaText}</p>
               </div>
               <div className="flex flex-wrap gap-4">
                 <Link href="/contact" className={primaryButtonClass}>

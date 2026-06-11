@@ -3,17 +3,17 @@
 @tailwind utilities;
 
 :root {
-  --background: #102448;
-  --background-secondary: #13294f;
-  --card: #16305e;
+  --background: #0a1733;
+  --background-secondary: #0c1d3f;
+  --card: #0e2147;
   --primary: #f0f4ff;
   --secondary: #8ba4c0;
-  --muted: #16305e;
+  --muted: #11264e;
   --accent: #1a70f7;
   --intelligence: #22d3ee;
   --positive: #10b981;
   --risk: #ef4444;
-  --border: #2a4a7f;
+  --border: #1d3a66;
 }
 
 body {
@@ -75,8 +75,8 @@ body {
 
 .home-grid {
   background-image:
-    linear-gradient(to right, rgba(116, 176, 255, 0.13) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(116, 176, 255, 0.13) 1px, transparent 1px);
+    linear-gradient(to right, rgba(74, 158, 255, 0.1) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(74, 158, 255, 0.1) 1px, transparent 1px);
   background-size: 56px 56px;
   mask-image: radial-gradient(ellipse 90% 70% at 50% 30%, black 20%, transparent 75%);
   -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 30%, black 20%, transparent 75%);

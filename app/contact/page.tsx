@@ -54,7 +54,7 @@ export default function ContactPage() {
   }
 
   const inputCls =
-    "w-full rounded-lg border border-white/[0.16] bg-[#102448]/70 px-4 py-3 text-sm text-white placeholder:text-white/45 outline-none backdrop-blur-sm transition focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-400/25";
+    "w-full rounded-lg border border-white/10 bg-[#0a1733]/70 px-4 py-3 text-sm text-white placeholder:text-white/30 outline-none backdrop-blur-sm transition focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-400/25";
 
   return (
     <main className="relative min-h-screen text-[#f0f4ff]">
@@ -66,8 +66,8 @@ export default function ContactPage() {
           <h1 className="mb-6 max-w-3xl text-[clamp(36px,5vw,64px)] font-extrabold leading-[1.05] tracking-[-0.03em]">
             {copy.title}
           </h1>
-          <p className="max-w-2xl text-[17px] leading-relaxed text-white/70 md:text-lg">{copy.subtitle}</p>
-          <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-white/[0.58]">{copy.intro}</p>
+          <p className="max-w-2xl text-[17px] leading-relaxed text-white/60 md:text-lg">{copy.subtitle}</p>
+          <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-white/45">{copy.intro}</p>
         </Reveal>
 
         <div className="mt-14 grid gap-8 lg:grid-cols-[1fr_1.15fr]">
@@ -76,7 +76,7 @@ export default function ContactPage() {
             <div className="flex flex-col gap-4">
               <a
                 href={`mailto:${CONTACT_EMAIL}`}
-                className="group relative overflow-hidden rounded-2xl border border-white/[0.14] bg-white/[0.06] p-6 backdrop-blur-sm transition-all duration-500 hover:-translate-y-0.5 hover:border-cyan-400/40 hover:bg-white/[0.09]"
+                className="group relative overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.02] p-6 backdrop-blur-sm transition-all duration-500 hover:-translate-y-0.5 hover:border-cyan-400/40 hover:bg-white/[0.04]"
               >
                 <div
                   aria-hidden
@@ -89,23 +89,23 @@ export default function ContactPage() {
                 </div>
               </a>
 
-              <div className="rounded-2xl border border-white/[0.14] bg-white/[0.06] p-6 backdrop-blur-sm">
+              <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-6 backdrop-blur-sm">
                 <div className="flex items-center gap-3">
                   <span className="home-pulse-dot h-2 w-2 rounded-full bg-emerald-400" />
-                  <span className="text-[15px] font-semibold text-white/90">{L.response}</span>
+                  <span className="text-[15px] font-semibold text-white/85">{L.response}</span>
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-white/[0.14] bg-white/[0.06] p-6 backdrop-blur-sm">
+              <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-6 backdrop-blur-sm">
                 <div className="flex items-center gap-3">
                   <span className="h-2 w-2 rounded-full bg-cyan-400/70" />
-                  <span className="text-[15px] font-semibold text-white/90">{L.partnerships}</span>
+                  <span className="text-[15px] font-semibold text-white/85">{L.partnerships}</span>
                 </div>
               </div>
 
               <Link
                 href="/underwriting"
-                className="mt-1 inline-flex items-center gap-2 self-start rounded-lg border border-white/20 bg-white/[0.06] px-6 py-3 text-sm font-semibold text-white/90 backdrop-blur-sm transition-all duration-300 hover:border-cyan-400/40 hover:text-white"
+                className="mt-1 inline-flex items-center gap-2 self-start rounded-lg border border-white/15 bg-white/[0.03] px-6 py-3 text-sm font-semibold text-white/85 backdrop-blur-sm transition-all duration-300 hover:border-cyan-400/40 hover:text-white"
               >
                 {copy.secondary}
               </Link>
@@ -116,26 +116,26 @@ export default function ContactPage() {
           <Reveal delay={0.2}>
             <form
               onSubmit={handleSubmit}
-              className="relative overflow-hidden rounded-2xl border border-white/[0.16] bg-[#16305e]/80 p-7 shadow-[0_24px_80px_rgba(2,6,18,0.6)] backdrop-blur-xl md:p-9"
+              className="relative overflow-hidden rounded-2xl border border-white/10 bg-[#0e2147]/80 p-7 shadow-[0_24px_80px_rgba(2,6,18,0.6)] backdrop-blur-xl md:p-9"
             >
               <div aria-hidden className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-cyan-400 via-[#1a70f7] to-transparent" />
               <h2 className="text-lg font-bold tracking-tight text-white">{L.formTitle}</h2>
               <div className="mt-6 grid gap-4 sm:grid-cols-2">
                 <label className="block text-sm">
-                  <span className="mb-2 block text-[12px] font-semibold uppercase tracking-[0.12em] text-white/[0.52]">{L.name}</span>
+                  <span className="mb-2 block text-[12px] font-semibold uppercase tracking-[0.12em] text-white/40">{L.name}</span>
                   <input className={inputCls} value={name} onChange={(e) => setName(e.target.value)} required />
                 </label>
                 <label className="block text-sm">
-                  <span className="mb-2 block text-[12px] font-semibold uppercase tracking-[0.12em] text-white/[0.52]">{L.email}</span>
+                  <span className="mb-2 block text-[12px] font-semibold uppercase tracking-[0.12em] text-white/40">{L.email}</span>
                   <input type="email" className={inputCls} value={email} onChange={(e) => setEmail(e.target.value)} required />
                 </label>
               </div>
               <label className="mt-4 block text-sm">
-                <span className="mb-2 block text-[12px] font-semibold uppercase tracking-[0.12em] text-white/[0.52]">{L.company}</span>
+                <span className="mb-2 block text-[12px] font-semibold uppercase tracking-[0.12em] text-white/40">{L.company}</span>
                 <input className={inputCls} value={company} onChange={(e) => setCompany(e.target.value)} />
               </label>
               <label className="mt-4 block text-sm">
-                <span className="mb-2 block text-[12px] font-semibold uppercase tracking-[0.12em] text-white/[0.52]">{L.message}</span>
+                <span className="mb-2 block text-[12px] font-semibold uppercase tracking-[0.12em] text-white/40">{L.message}</span>
                 <textarea
                   rows={5}
                   className={`${inputCls} resize-y`}
@@ -159,16 +159,16 @@ export default function ContactPage() {
       </section>
 
       {/* footer strip */}
-      <footer className="relative z-10 border-t border-white/[0.12]">
+      <footer className="relative z-10 border-t border-white/[0.07]">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-6 py-9 md:px-10">
           <div className="flex items-center gap-3">
             <span className="text-base font-black tracking-tight">
               HEA<span className="text-[#4a9eff]">TH</span>
             </span>
             <span className="hidden h-3 w-px bg-white/15 sm:block" />
-            <span className="text-[12px] text-white/45">{dict.footer.copyright}</span>
+            <span className="text-[12px] text-white/30">{dict.footer.copyright}</span>
           </div>
-          <span className="font-mono text-[12px] tracking-wider text-white/45">heathuw.com</span>
+          <span className="font-mono text-[12px] tracking-wider text-white/30">heathuw.com</span>
         </div>
       </footer>
     </main>

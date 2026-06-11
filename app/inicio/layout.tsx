@@ -15,7 +15,7 @@ export default async function InicioLayout({ children }: { children: ReactNode }
   }
   return (
     <div className="relative min-h-screen text-[#f0f4ff]" style={{ background: "#102448" }}>
-      <CinematicBackground />
+      <CinematicBackground bright />
       <div className="relative z-10">{children}</div>
     </div>
   );

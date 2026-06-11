@@ -141,7 +141,7 @@ export default async function ProveedoresPage() {
 
   return (
     <div className="relative min-h-screen text-[#f0f4ff]">
-      <CinematicBackground />
+      <CinematicBackground bright />
       <div className="relative z-10 mx-auto max-w-6xl px-6 pb-24 pt-14">
         <div className="mb-2 flex flex-wrap items-start justify-between gap-4">
           <div className="min-w-0">

@@ -11,7 +11,7 @@ export default function IniciarSesionPage() {
 
   return (
     <main className="relative min-h-screen text-[#f0f4ff]">
-      <CinematicBackground />
+      <CinematicBackground bright />
       <div className="relative z-10 flex min-h-screen flex-col items-center justify-center px-6 pb-16 pt-28">
         {/* wordmark */}
         <div className="mb-8 text-center">

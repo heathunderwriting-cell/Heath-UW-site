@@ -30,7 +30,7 @@ export default function MesaDeTrabajoPage() {
           </Link>
           <Link
             href="/"
-            className="inline-flex items-center justify-center rounded-lg border border-white/20 bg-white/[0.06] px-7 py-3.5 text-sm font-semibold text-white/90 backdrop-blur-sm transition-all duration-300 hover:border-cyan-400/40 hover:text-white active:scale-[0.98]"
+            className="inline-flex items-center justify-center rounded-lg border border-white/15 bg-white/[0.03] px-7 py-3.5 text-sm font-semibold text-white/85 backdrop-blur-sm transition-all duration-300 hover:border-cyan-400/40 hover:text-white active:scale-[0.98]"
           >
             {dict.pages.mesa.secondary}
           </Link>
@@ -42,9 +42,9 @@ export default function MesaDeTrabajoPage() {
 
 function FeatureCard({ title, description }: { title: string; description: string }) {
   return (
-    <div className="rounded-2xl border border-white/[0.14] bg-white/[0.06] p-5 backdrop-blur-sm transition-all duration-500 hover:-translate-y-0.5 hover:border-cyan-400/30">
+    <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-5 backdrop-blur-sm transition-all duration-500 hover:-translate-y-0.5 hover:border-cyan-400/30">
       <div className="text-sm font-bold text-white">{title}</div>
-      <div className="mt-2 text-sm leading-relaxed text-white/[0.62]">{description}</div>
+      <div className="mt-2 text-sm leading-relaxed text-white/50">{description}</div>
     </div>
   );
 }

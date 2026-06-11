@@ -15,7 +15,7 @@ export default async function RiesgosPage() {
   }
   return (
     <div className="relative min-h-screen text-[#f0f4ff]">
-      <CinematicBackground />
+      <CinematicBackground bright />
       <div className="relative z-10 mx-auto max-w-xl px-6 py-28 text-center">
         <div className="mx-auto mb-7 flex h-16 w-16 items-center justify-center rounded-2xl border border-cyan-400/30 bg-gradient-to-br from-cyan-400/15 to-[#1a70f7]/15 text-cyan-300 shadow-[0_0_30px_rgba(34,211,238,0.15)]">
           <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
