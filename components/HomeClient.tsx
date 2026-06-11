@@ -142,7 +142,7 @@ function LiveConsole({ locale }: { locale: Locale }) {
         className="absolute -inset-6 rounded-3xl opacity-60 blur-2xl"
         style={{ background: 'radial-gradient(ellipse at 50% 30%, rgba(26,112,247,0.35), transparent 70%)' }}
       />
-      <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-[#0a1730]/90 shadow-[0_24px_80px_rgba(2,6,18,0.7)] backdrop-blur-xl">
+      <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-[#0e2147]/90 shadow-[0_24px_80px_rgba(2,6,18,0.7)] backdrop-blur-xl">
         {/* scanline sweep */}
         <div aria-hidden className="home-scanline pointer-events-none absolute inset-0" />
 
@@ -211,7 +211,7 @@ function LiveConsole({ locale }: { locale: Locale }) {
               [x.fields.line, data.line],
             ] as const
           ).map(([k, v]) => (
-            <div key={k} className="bg-[#0a1730] px-4 py-3">
+            <div key={k} className="bg-[#0e2147] px-4 py-3">
               <div className="mb-1 text-[9px] font-bold uppercase tracking-[0.2em] text-white/30">{k}</div>
               <div className={`truncate font-mono text-[12px] transition-colors duration-500 ${showFields ? 'text-cyan-200/90' : 'text-white/20'}`}>
                 {showFields ? v : '— — —'}
@@ -440,7 +440,7 @@ export default function HomeClient() {
       </section>
 
       {/* ════════ THE HEATH MODEL ════════ */}
-      <section id="model" className="relative z-10 border-y border-white/[0.06] bg-[#081226]/70 py-28 backdrop-blur-sm md:py-36">
+      <section id="model" className="relative z-10 border-y border-white/[0.06] bg-[#0c1d3f]/60 py-28 backdrop-blur-sm md:py-36">
         <div className="mx-auto max-w-7xl px-6 md:px-10">
           <Reveal>
             <Kicker>{x.modelKicker}</Kicker>

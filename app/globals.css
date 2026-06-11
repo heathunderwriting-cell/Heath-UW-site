@@ -75,11 +75,55 @@ body {
 
 .home-grid {
   background-image:
-    linear-gradient(to right, rgba(74, 158, 255, 0.07) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(74, 158, 255, 0.07) 1px, transparent 1px);
+    linear-gradient(to right, rgba(74, 158, 255, 0.1) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(74, 158, 255, 0.1) 1px, transparent 1px);
   background-size: 56px 56px;
   mask-image: radial-gradient(ellipse 90% 70% at 50% 30%, black 20%, transparent 75%);
   -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 30%, black 20%, transparent 75%);
+}
+
+/* Neon workflow traces: marching dashes that read as data in motion */
+@keyframes homeFlowDash {
+  to {
+    stroke-dashoffset: -64;
+  }
+}
+
+.home-flow-line {
+  stroke-dasharray: 7 9;
+  animation: homeFlowDash 1.6s linear infinite;
+}
+
+@keyframes homeNodePulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.25;
+  }
+}
+
+.home-node-pulse {
+  animation: homeNodePulse 2.4s ease-in-out infinite;
+}
+
+@keyframes homeCoreRing {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.2;
+    transform: scale(1.18);
+  }
+}
+
+.home-core-ring {
+  animation: homeCoreRing 3.6s ease-in-out infinite;
+  transform-origin: 640px 410px;
+  transform-box: view-box;
 }
 
 .home-noise {

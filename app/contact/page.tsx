@@ -54,7 +54,7 @@ export default function ContactPage() {
   }
 
   const inputCls =
-    "w-full rounded-lg border border-white/10 bg-[#060d1f]/70 px-4 py-3 text-sm text-white placeholder:text-white/30 outline-none backdrop-blur-sm transition focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-400/25";
+    "w-full rounded-lg border border-white/10 bg-[#0a1733]/70 px-4 py-3 text-sm text-white placeholder:text-white/30 outline-none backdrop-blur-sm transition focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-400/25";
 
   return (
     <main className="relative min-h-screen text-[#f0f4ff]">
@@ -116,7 +116,7 @@ export default function ContactPage() {
           <Reveal delay={0.2}>
             <form
               onSubmit={handleSubmit}
-              className="relative overflow-hidden rounded-2xl border border-white/10 bg-[#0a1730]/80 p-7 shadow-[0_24px_80px_rgba(2,6,18,0.6)] backdrop-blur-xl md:p-9"
+              className="relative overflow-hidden rounded-2xl border border-white/10 bg-[#0e2147]/80 p-7 shadow-[0_24px_80px_rgba(2,6,18,0.6)] backdrop-blur-xl md:p-9"
             >
               <div aria-hidden className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-cyan-400 via-[#1a70f7] to-transparent" />
               <h2 className="text-lg font-bold tracking-tight text-white">{L.formTitle}</h2>

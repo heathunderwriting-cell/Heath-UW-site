@@ -105,7 +105,7 @@ export default function CompanyPage() {
         </section>
 
         {/* ── WHO WE ARE ── */}
-        <section className="border-y border-white/[0.06] bg-[#081226]/70 py-24 backdrop-blur-sm md:py-28">
+        <section className="border-y border-white/[0.06] bg-[#0c1d3f]/60 py-24 backdrop-blur-sm md:py-28">
           <div className="mx-auto max-w-7xl px-6 md:px-10">
             <Reveal>
               <Kicker>{c.whoEyebrow}</Kicker>
@@ -206,7 +206,7 @@ export default function CompanyPage() {
               <p className="mb-8 max-w-3xl text-[14.5px] leading-[1.8] text-white/55">{c.whyBody}</p>
               <div className="grid gap-4 md:grid-cols-3">
                 {c.aiWorkflows.map(({ title, desc }) => (
-                  <div key={title} className="rounded-xl border border-cyan-400/20 bg-[#060d1f]/50 px-5 py-4 backdrop-blur-sm">
+                  <div key={title} className="rounded-xl border border-cyan-400/20 bg-[#0a1733]/50 px-5 py-4 backdrop-blur-sm">
                     <strong className="mb-1 block text-[13px] font-bold text-cyan-300">{title}</strong>
                     <span className="text-[12.5px] leading-relaxed text-white/45">{desc}</span>
                   </div>
@@ -237,7 +237,7 @@ export default function CompanyPage() {
         </section>
 
         {/* ── VALUES ── */}
-        <section className="border-y border-white/[0.06] bg-[#081226]/70 py-24 backdrop-blur-sm md:py-28">
+        <section className="border-y border-white/[0.06] bg-[#0c1d3f]/60 py-24 backdrop-blur-sm md:py-28">
           <div className="mx-auto max-w-7xl px-6 md:px-10">
             <Reveal>
               <Kicker>{c.valuesEyebrow}</Kicker>

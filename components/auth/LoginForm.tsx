@@ -16,7 +16,7 @@ function deriveCompanyFromEmail(email: string) {
 }
 
 const inputClass =
-  "w-full rounded-lg border border-white/10 bg-[#060d1f]/70 px-4 py-3 text-[15px] text-white placeholder:text-white/25 outline-none backdrop-blur-sm transition focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-400/25";
+  "w-full rounded-lg border border-white/10 bg-[#0a1733]/70 px-4 py-3 text-[15px] text-white placeholder:text-white/25 outline-none backdrop-blur-sm transition focus:border-cyan-400/60 focus:ring-2 focus:ring-cyan-400/25";
 
 const labelClass = "mb-2 block text-[12px] font-semibold uppercase tracking-[0.12em] text-white/40";
 
@@ -90,7 +90,7 @@ export function LoginForm() {
   return (
     <form
       onSubmit={onSubmit}
-      className="relative w-full max-w-[440px] overflow-hidden rounded-2xl border border-white/10 bg-[#0a1730]/85 p-9 shadow-[0_24px_80px_rgba(2,6,18,0.7)] backdrop-blur-xl md:p-10"
+      className="relative w-full max-w-[440px] overflow-hidden rounded-2xl border border-white/10 bg-[#0e2147]/85 p-9 shadow-[0_24px_80px_rgba(2,6,18,0.7)] backdrop-blur-xl md:p-10"
     >
       {/* top gradient accent */}
       <div aria-hidden className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-cyan-400 via-[#1a70f7] to-transparent" />
