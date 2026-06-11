@@ -13,6 +13,7 @@ import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { Text } from "@/components/ui/Text";
 import { useI18n } from "@/components/providers/LanguageProvider";
+import { CinematicBackground } from "@/components/marketing/Cinematic";
 import { ROUTES } from "@/lib/routes/marketing";
 
 export default function SectoresPage() {
@@ -20,10 +21,11 @@ export default function SectoresPage() {
   const s = dict.pages.sectores;
 
   return (
-    <>
+    <main className="relative min-h-screen text-[#f0f4ff]">
+      <CinematicBackground />
       <HeroSection kicker={s.heroKicker} title={s.title} subtitle={s.subtitle} />
 
-      <Section>
+      <Section className="relative z-10">
         <Container>
           <Text size="lg" className="mx-auto max-w-3xl text-center">
             {s.intro}
@@ -59,11 +61,11 @@ export default function SectoresPage() {
         secondaryLabel={s.cta.secondary}
       />
 
-      <Section background="subtle" density="compact">
+      <Section density="compact" className="relative z-10">
         <Container size="prose" className="text-center">
           <Link
             href={ROUTES.home}
-            className="text-sm font-medium text-accent hover:underline"
+            className="text-sm font-medium text-cyan-300 transition-colors hover:text-cyan-200"
           >
             {dict.marketingLayout.backHome}
           </Link>
@@ -71,6 +73,6 @@ export default function SectoresPage() {
       </Section>
 
       <Footer />
-    </>
+    </main>
   );
 }

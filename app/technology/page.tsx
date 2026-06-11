@@ -2,56 +2,110 @@
 
 import { Footer } from "@/components/Footer";
 import { useI18n } from "@/components/providers/LanguageProvider";
+import {
+  ArrowIcon,
+  ButtonSheen,
+  CinematicBackground,
+  HeroBadge,
+  Reveal,
+  primaryButtonClass,
+} from "@/components/marketing/Cinematic";
 
 export default function TechnologyPage() {
   const { dict, locale } = useI18n();
   const copy = dict.pagesV2.technology;
 
+  const L = {
+    kicker: locale === "es" ? "Tecnología" : locale === "zh" ? "技术" : "Technology",
+    enables:
+      locale === "es"
+        ? "Nuestra plataforma propietaria habilita:"
+        : locale === "zh"
+        ? "我们的自研平台可实现："
+        : "Our proprietary platform enables:",
+    closing:
+      locale === "es"
+        ? "La tecnología en Heath potencia criterio técnico y control de riesgo."
+        : locale === "zh"
+        ? "Heath 的技术强化核保判断与风险控制。"
+        : "Technology at Heath amplifies underwriting judgment and risk control.",
+  };
+
   return (
-    <>
-      <section className="border-b border-border bg-background px-6 py-16 md:px-10 md:py-24">
-        <div className="mx-auto max-w-5xl">
-          <h1 className="text-4xl font-semibold tracking-tight text-primary md:text-5xl">{copy.title}</h1>
-          <p className="mt-5 text-lg leading-relaxed text-secondary md:text-xl">{copy.subtitle}</p>
-          <p className="mt-8 max-w-4xl text-base leading-relaxed text-secondary md:text-lg">{copy.intro}</p>
-        </div>
+    <main className="relative min-h-screen text-[#f0f4ff]">
+      <CinematicBackground />
+
+      {/* ── HERO ── */}
+      <section className="relative z-10 mx-auto max-w-7xl px-6 pb-16 pt-28 md:px-10 md:pt-36">
+        <Reveal>
+          <HeroBadge>{L.kicker}</HeroBadge>
+          <h1 className="mb-6 max-w-3xl text-[clamp(36px,5vw,64px)] font-extrabold leading-[1.05] tracking-[-0.03em]">
+            {copy.title}
+          </h1>
+          <p className="max-w-2xl text-[17px] leading-relaxed text-white/60 md:text-lg">{copy.subtitle}</p>
+          <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-white/45">{copy.intro}</p>
+        </Reveal>
       </section>
 
-      <section className="bg-backgroundSecondary px-6 py-14 md:px-10 md:py-20">
-        <div className="mx-auto max-w-5xl">
-          <h2 className="text-2xl font-semibold tracking-tight text-primary md:text-3xl">
-            {locale === "es"
-              ? "Nuestra plataforma propietaria habilita:"
-              : locale === "zh"
-                ? "我们的自研平台可实现："
-              : "Our proprietary platform enables:"}
-          </h2>
-          <div className="mt-8 grid gap-4 md:grid-cols-2">
-            {copy.capabilities.map((capability) => (
-              <article key={capability} className="rounded-2xl border border-border bg-background p-6 shadow-soft">
-                <p className="text-sm leading-relaxed text-primary md:text-base">{capability}</p>
-              </article>
+      {/* ── CAPABILITIES ── */}
+      <section className="relative z-10 border-y border-white/[0.06] bg-[#0c1d3f]/60 py-24 backdrop-blur-sm md:py-28">
+        <div className="mx-auto max-w-7xl px-6 md:px-10">
+          <Reveal>
+            <h2 className="mb-12 max-w-2xl text-[clamp(24px,3vw,38px)] font-extrabold leading-[1.15] tracking-[-0.02em]">
+              {L.enables}
+            </h2>
+          </Reveal>
+          <div className="grid gap-5 md:grid-cols-2">
+            {copy.capabilities.map((capability, i) => (
+              <Reveal key={capability} delay={i * 0.06}>
+                <article className="group relative h-full overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.02] p-7 backdrop-blur-sm transition-all duration-500 hover:-translate-y-1 hover:border-cyan-400/30 hover:bg-white/[0.04] md:p-8">
+                  <div
+                    aria-hidden
+                    className="absolute -right-12 -top-12 h-32 w-32 rounded-full opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-100"
+                    style={{ background: "radial-gradient(circle, rgba(34,211,238,0.16), transparent 70%)" }}
+                  />
+                  <div className="relative flex items-start gap-4">
+                    <span className="mt-0.5 font-mono text-[13px] font-bold tracking-[0.2em] text-cyan-400/60">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <p className="text-[15px] leading-[1.75] text-white/75">{capability}</p>
+                  </div>
+                </article>
+              </Reveal>
             ))}
           </div>
         </div>
       </section>
-      <section className="bg-background px-6 pb-16 md:px-10 md:pb-24">
-        <div className="mx-auto flex max-w-5xl flex-wrap gap-3 rounded-2xl border border-border bg-backgroundSecondary p-6 md:items-center md:justify-between md:p-8">
-          <p className="text-sm font-medium text-primary md:text-base">
-            {locale === "es"
-              ? "La tecnología en Heath potencia criterio técnico y control de riesgo."
-              : locale === "zh"
-                ? "Heath 的技术强化核保判断与风险控制。"
-                : "Technology at Heath amplifies underwriting judgment and risk control."}
-          </p>
-          <div className="flex flex-wrap gap-3">
-            <a href="mailto:sales@heathuw.com" className="rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-white">
-              {dict.nav.cta}
-            </a>
+
+      {/* ── CTA ── */}
+      <section className="relative z-10 px-6 py-24 md:px-10 md:py-28">
+        <Reveal className="mx-auto max-w-5xl">
+          <div className="relative overflow-hidden rounded-3xl border border-white/10 px-8 py-14 md:px-14 md:py-16">
+            <div aria-hidden className="absolute inset-0" style={{ background: "linear-gradient(135deg, #0c1f42 0%, #102a55 50%, #0a1834 100%)" }} />
+            <div
+              aria-hidden
+              className="absolute inset-0 opacity-80"
+              style={{
+                background:
+                  "radial-gradient(ellipse 70% 60% at 50% 0%, rgba(26,112,247,0.35), transparent 60%), radial-gradient(ellipse 50% 50% at 85% 100%, rgba(34,211,238,0.18), transparent 60%)",
+              }}
+            />
+            <div className="home-grid absolute inset-0 opacity-60" aria-hidden />
+            <div className="relative flex flex-wrap items-center justify-between gap-8">
+              <p className="max-w-xl text-[clamp(20px,2.4vw,28px)] font-extrabold leading-snug tracking-[-0.02em]">
+                {L.closing}
+              </p>
+              <a href="mailto:sales@heathuw.com" className={primaryButtonClass}>
+                <ButtonSheen />
+                <span className="relative">{dict.nav.cta}</span>
+                <ArrowIcon />
+              </a>
+            </div>
           </div>
-        </div>
+        </Reveal>
       </section>
+
       <Footer />
-    </>
+    </main>
   );
 }

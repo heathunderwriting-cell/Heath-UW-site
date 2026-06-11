@@ -8,6 +8,7 @@ import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { Text } from "@/components/ui/Text";
 import { useI18n } from "@/components/providers/LanguageProvider";
+import { CinematicBackground } from "@/components/marketing/Cinematic";
 import { ROUTES } from "@/lib/routes/marketing";
 
 type IndustryDetailClientProps = {
@@ -24,20 +25,21 @@ export function IndustryDetailClient({ slug }: IndustryDetailClientProps) {
   }
 
   return (
-    <>
+    <main className="relative min-h-screen text-[#f0f4ff]">
+      <CinematicBackground />
       <HeroSection
         kicker={copy.upcomingTitle}
         title={industry.title}
         subtitle={industry.description}
       />
 
-      <Section>
+      <Section className="relative z-10">
         <Container size="prose">
           <Text className="text-center">{copy.upcomingBody}</Text>
           <div className="mt-10 text-center">
             <Link
               href={ROUTES.industries.list}
-              className="text-sm font-medium text-accent hover:underline"
+              className="text-sm font-medium text-cyan-300 transition-colors hover:text-cyan-200"
             >
               {copy.backLink}
             </Link>
@@ -46,6 +48,6 @@ export function IndustryDetailClient({ slug }: IndustryDetailClientProps) {
       </Section>
 
       <Footer />
-    </>
+    </main>
   );
 }

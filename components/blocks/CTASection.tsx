@@ -1,10 +1,6 @@
 import type { ReactNode } from "react";
-import { Button } from "@/components/ui/Button";
-import { Container } from "@/components/ui/Container";
-import { Heading } from "@/components/ui/Heading";
-import { Text } from "@/components/ui/Text";
+import Link from "next/link";
 import { cn } from "@/lib/cn";
-import { typography } from "@/styles/design-system";
 
 type CTASectionProps = {
   kicker?: string;
@@ -32,63 +28,74 @@ export function CTASection({
   className,
 }: CTASectionProps) {
   return (
-    <section
-      className={cn(
-        "relative overflow-hidden border-y border-border bg-background px-6 py-24 md:px-8 md:py-32",
-        className
-      )}
-    >
-      <div className="pointer-events-none absolute inset-0 bg-hero-glow opacity-90" aria-hidden />
-      <div
-        className="pointer-events-none absolute -left-24 top-1/2 h-64 w-64 -translate-y-1/2 rounded-full bg-accent/20 blur-3xl"
-        aria-hidden
-      />
-      <div
-        className="pointer-events-none absolute -right-24 top-1/4 h-56 w-56 rounded-full bg-intelligence/20 blur-3xl"
-        aria-hidden
-      />
-      <div
-        className="pointer-events-none absolute bottom-0 left-1/2 h-px w-[min(90%,48rem)] -translate-x-1/2 bg-gradient-to-r from-transparent via-border to-transparent"
-        aria-hidden
-      />
+    <section className={cn("relative z-10 px-6 py-20 md:px-8 md:py-24", className)}>
+      <div className="mx-auto max-w-5xl">
+        <div className="relative overflow-hidden rounded-3xl border border-white/10 px-8 py-16 text-center md:px-14 md:py-20">
+          <div
+            aria-hidden
+            className="absolute inset-0"
+            style={{ background: "linear-gradient(135deg, #0c1f42 0%, #102a55 50%, #0a1834 100%)" }}
+          />
+          <div
+            aria-hidden
+            className="absolute inset-0 opacity-80"
+            style={{
+              background:
+                "radial-gradient(ellipse 70% 60% at 50% 0%, rgba(26,112,247,0.35), transparent 60%), radial-gradient(ellipse 50% 50% at 85% 100%, rgba(34,211,238,0.18), transparent 60%)",
+            }}
+          />
+          <div className="home-grid absolute inset-0 opacity-60" aria-hidden />
 
-      <Container size="prose" className="relative text-center">
-        {kicker && (
-          <p
-            className={cn(
-              typography.sizes.xs,
-              "font-bold uppercase tracking-[0.22em] text-intelligence"
+          <div className="relative">
+            {kicker && (
+              <div className="mb-6 inline-flex items-center gap-2.5 rounded-full border border-cyan-400/25 bg-cyan-400/[0.07] px-4 py-1.5">
+                <span className="text-[10px] font-bold uppercase tracking-[0.28em] text-cyan-300/90">{kicker}</span>
+              </div>
             )}
-          >
-            {kicker}
-          </p>
-        )}
-        <Heading as="h2" variant="h2" className="mt-4 lg:leading-[1.1]">
-          {title}
-          {titleAccent && (
-            <>
-              {" "}
-              <span className="text-accent">{titleAccent}</span>
-            </>
-          )}
-        </Heading>
-        {description && (
-          <Text size="lg" className="mt-6 md:text-xl">
-            {description}
-          </Text>
-        )}
-        <div className="mt-12 flex flex-wrap items-center justify-center gap-4">
-          <Button href={primaryHref} variant="primary" size="lg">
-            {primaryLabel}
-          </Button>
-          {secondaryHref && secondaryLabel && (
-            <Button href={secondaryHref} variant="secondary" size="lg">
-              {secondaryLabel}
-            </Button>
-          )}
+            <h2 className="mx-auto max-w-3xl text-[clamp(26px,3.5vw,44px)] font-extrabold leading-[1.12] tracking-[-0.025em] text-white">
+              {title}
+              {titleAccent && (
+                <>
+                  {" "}
+                  <span className="bg-gradient-to-r from-cyan-300 to-[#4a9eff] bg-clip-text text-transparent">
+                    {titleAccent}
+                  </span>
+                </>
+              )}
+            </h2>
+            {description && (
+              <p className="mx-auto mt-5 max-w-xl text-[16px] leading-relaxed text-white/55 md:text-lg">
+                {description}
+              </p>
+            )}
+            <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
+              <Link
+                href={primaryHref}
+                className="group relative inline-flex items-center gap-2 overflow-hidden rounded-lg bg-gradient-to-r from-[#1a70f7] to-[#2b8af9] px-8 py-4 text-[15px] font-bold text-white shadow-[0_8px_32px_rgba(26,112,247,0.45)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_12px_44px_rgba(26,112,247,0.65)]"
+              >
+                <span className="home-sheen absolute inset-0" aria-hidden />
+                <span className="relative">{primaryLabel}</span>
+                <svg
+                  className="relative h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
+                  viewBox="0 0 16 16"
+                  fill="none"
+                >
+                  <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </Link>
+              {secondaryHref && secondaryLabel && (
+                <Link
+                  href={secondaryHref}
+                  className="inline-flex items-center rounded-lg border border-white/20 bg-white/[0.04] px-8 py-4 text-[15px] font-semibold text-white/85 backdrop-blur-sm transition-all duration-300 hover:border-cyan-400/40 hover:text-white"
+                >
+                  {secondaryLabel}
+                </Link>
+              )}
+            </div>
+            {children}
+          </div>
         </div>
-        {children}
-      </Container>
+      </div>
     </section>
   );
 }
