@@ -4,6 +4,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { useI18n } from "@/components/providers/LanguageProvider";
 import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
+import { CinematicBackground, HeroBadge, Reveal } from "@/components/marketing/Cinematic";
 
 function pick(locale: string, es: string, en: string, zh: string) {
   return locale === "es" ? es : locale === "zh" ? zh : en;
@@ -97,101 +98,64 @@ export default function SuscripcionPage() {
   ];
 
   return (
-    <div style={{ maxWidth: 1040, margin: "0 auto", padding: "20px 24px 64px" }}>
-      <header
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          paddingBottom: 18,
-          borderBottom: "1px solid #cdd9ec",
-        }}
-      >
-        <div style={{ fontSize: "1.4rem", fontWeight: 700, color: "#0b1220", letterSpacing: "0.5px" }}>Heath</div>
-        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-          <LanguageSwitcher />
-          <Link
-            href="/inicio"
-            style={{
-              border: "1px solid #cdd9ec",
-              background: "#ffffff",
-              color: "#2563eb",
-              borderRadius: 999,
-              padding: "7px 16px",
-              fontSize: "0.85rem",
-              fontWeight: 600,
-              textDecoration: "none",
-            }}
-          >
-            ← {L.back}
-          </Link>
-        </div>
-      </header>
-
-      <section style={{ padding: "32px 0 24px" }}>
-        <span
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 8,
-            background: "#dbe7fa",
-            borderRadius: 999,
-            padding: "5px 14px",
-            marginBottom: 16,
-          }}
-        >
-          <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#2563eb" }} />
-          <span style={{ fontSize: "0.72rem", letterSpacing: "1.5px", color: "#1d4d80", fontWeight: 600 }}>
-            {L.kicker.toUpperCase()}
-          </span>
-        </span>
-        <h1 style={{ fontSize: "2rem", fontWeight: 700, color: "#0b1220", margin: 0, lineHeight: 1.15 }}>{L.title}</h1>
-        <p style={{ fontSize: "1.05rem", color: "#475569", marginTop: 8 }}>{L.subtitle}</p>
-      </section>
-
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-          gap: 18,
-        }}
-      >
-        {products.map((p) => (
-          <Link
-            key={p.title}
-            href={p.href}
-            style={{
-              display: "block",
-              background: "#ffffff",
-              border: "1px solid #d9e2f0",
-              borderRadius: 16,
-              padding: 22,
-              textDecoration: "none",
-              boxShadow: "0 1px 2px rgba(15,35,70,0.04)",
-            }}
-          >
-            <div
-              style={{
-                width: 46,
-                height: 46,
-                borderRadius: 12,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                background: "#e6effb",
-                color: "#2563eb",
-              }}
+    <div className="relative min-h-screen text-[#f0f4ff]">
+      <CinematicBackground />
+      <div className="relative z-10 mx-auto max-w-5xl px-6 pb-20 pt-6">
+        {/* ── HEADER ── */}
+        <header className="flex items-center justify-between border-b border-white/[0.08] pb-5">
+          <div className="text-xl font-black tracking-tight">
+            HEA<span className="bg-gradient-to-r from-cyan-300 to-[#1a70f7] bg-clip-text text-transparent">TH</span>
+          </div>
+          <div className="flex items-center gap-4">
+            <LanguageSwitcher />
+            <Link
+              href="/inicio"
+              className="rounded-lg border border-white/15 bg-white/[0.03] px-5 py-2 text-[13px] font-semibold text-cyan-300 backdrop-blur-sm transition-all duration-300 hover:border-cyan-400/40 hover:text-cyan-200"
             >
-              {p.icon}
-            </div>
-            <div style={{ fontSize: "1.15rem", fontWeight: 600, color: "#0b1220", marginTop: 16 }}>{p.title}</div>
-            <div style={{ fontSize: "0.9rem", color: "#475569", marginTop: 6, lineHeight: 1.5 }}>{p.desc}</div>
-            <div style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 16, fontSize: "0.85rem", fontWeight: 600, color: "#2563eb" }}>
-              {L.open}
-              <span aria-hidden>→</span>
-            </div>
-          </Link>
-        ))}
+              ← {L.back}
+            </Link>
+          </div>
+        </header>
+
+        {/* ── TITLE ── */}
+        <Reveal>
+          <section className="pb-8 pt-12">
+            <HeroBadge>{L.kicker.toUpperCase()}</HeroBadge>
+            <h1 className="text-[clamp(28px,4vw,44px)] font-extrabold leading-[1.1] tracking-[-0.025em] text-white">
+              {L.title}
+            </h1>
+            <p className="mt-3 text-[16px] text-white/50">{L.subtitle}</p>
+          </section>
+        </Reveal>
+
+        {/* ── PRODUCTS ── */}
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {products.map((p, i) => (
+            <Reveal key={p.title} delay={i * 0.07}>
+              <Link
+                href={p.href}
+                className="group relative block h-full overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.02] p-7 backdrop-blur-sm transition-all duration-500 hover:-translate-y-1.5 hover:border-cyan-400/30 hover:bg-white/[0.04] hover:shadow-[0_24px_60px_rgba(2,6,18,0.5),0_0_40px_rgba(34,211,238,0.07)]"
+              >
+                <div
+                  aria-hidden
+                  className="absolute -right-14 -top-14 h-40 w-40 rounded-full opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-100"
+                  style={{ background: "radial-gradient(circle, rgba(34,211,238,0.16), transparent 70%)" }}
+                />
+                <div className="relative">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-cyan-400/30 bg-gradient-to-br from-cyan-400/15 to-[#1a70f7]/15 text-cyan-300 transition-transform duration-500 group-hover:scale-110">
+                    {p.icon}
+                  </div>
+                  <div className="mt-5 text-lg font-bold tracking-tight text-white">{p.title}</div>
+                  <div className="mt-2 text-[14px] leading-relaxed text-white/45">{p.desc}</div>
+                  <div className="mt-5 inline-flex items-center gap-1.5 text-[13px] font-semibold text-cyan-300 transition-colors group-hover:text-cyan-200">
+                    {L.open}
+                    <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-1">→</span>
+                  </div>
+                </div>
+              </Link>
+            </Reveal>
+          ))}
+        </div>
       </div>
     </div>
   );
