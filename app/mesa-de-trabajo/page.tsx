@@ -23,13 +23,14 @@ export default function MesaDeTrabajoPage() {
         <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
           <Link
             href="/iniciar-sesion?redirect=/dashboard"
-            className="inline-flex items-center justify-center rounded-full bg-accent px-7 py-3.5 text-sm font-semibold text-white shadow-accent-glow transition-all hover:brightness-105 active:scale-[0.98]"
+            className="group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-lg bg-gradient-to-r from-[#1a70f7] to-[#2b8af9] px-7 py-3.5 text-sm font-bold text-white shadow-[0_8px_32px_rgba(26,112,247,0.45)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_12px_44px_rgba(26,112,247,0.65)] active:scale-[0.98]"
           >
-            {dict.pages.mesa.primary}
+            <span className="home-sheen absolute inset-0" aria-hidden />
+            <span className="relative">{dict.pages.mesa.primary}</span>
           </Link>
           <Link
             href="/"
-            className="inline-flex items-center justify-center rounded-full border border-border bg-white px-7 py-3.5 text-sm font-semibold text-primary shadow-soft transition-all hover:border-intelligence/25 hover:shadow-card active:scale-[0.98]"
+            className="inline-flex items-center justify-center rounded-lg border border-white/15 bg-white/[0.03] px-7 py-3.5 text-sm font-semibold text-white/85 backdrop-blur-sm transition-all duration-300 hover:border-cyan-400/40 hover:text-white active:scale-[0.98]"
           >
             {dict.pages.mesa.secondary}
           </Link>
@@ -41,9 +42,9 @@ export default function MesaDeTrabajoPage() {
 
 function FeatureCard({ title, description }: { title: string; description: string }) {
   return (
-    <div className="rounded-2xl border border-border bg-card/95 p-5 shadow-card-lift ring-1 ring-primary/[0.03]">
-      <div className="text-sm font-bold text-primary">{title}</div>
-      <div className="mt-2 text-sm text-secondary">{description}</div>
+    <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-5 backdrop-blur-sm transition-all duration-500 hover:-translate-y-0.5 hover:border-cyan-400/30">
+      <div className="text-sm font-bold text-white">{title}</div>
+      <div className="mt-2 text-sm leading-relaxed text-white/50">{description}</div>
     </div>
   );
 }
