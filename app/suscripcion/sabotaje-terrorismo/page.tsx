@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useI18n } from "@/components/providers/LanguageProvider";
 import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
 import { InboxReviewPanel, type ReviewRow } from "@/components/dashboard/InboxReviewPanel";
-import { SlipMarkupWorkspace } from "@/components/dashboard/SlipMarkupWorkspace";
+import { SlipPreview, ClauseAccordion, useSlipClauses } from "@/components/dashboard/SlipMarkupWorkspace";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 
 function pick(locale: string, es: string, en: string, zh: string) {
@@ -299,11 +299,63 @@ return (
 );
 }
 
-function QuoteForm({ row, locale, mailLocale, busy, onSave, onSendEmail }: {
+function QField({ label, value, set, ph }: { label: string; value: string; set: (v: string) => void; ph?: string }) {
+return (
+<div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+<label style={{ fontSize: "0.72rem", color: "#64748b", fontWeight: 600 }}>{label}</label>
+<input value={value} onChange={(e) => set(e.target.value)} placeholder={ph} className="bg-card text-primary" style={{ border: "1px solid #d9e2f0", borderRadius: 8, padding: "8px 10px", fontSize: "0.82rem", outline: "none", width: "100%" }} />
+</div>
+);
+}
+
+const WB_STEPS = 4;
+
+function Stepper({ step, setStep, locale }: { step: number; setStep: (n: number) => void; locale: string }) {
+const labels = [
+pick(locale, "Slip", "Slip", "Slip"),
+pick(locale, "Marcar cláusulas", "Mark clauses", "标注条款"),
+pick(locale, "Línea y términos", "Line & terms", "额度与条款"),
+pick(locale, "Cotizar", "Quote", "报价"),
+];
+return (
+<div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap", marginBottom: 16 }}>
+{labels.map((s, i) => {
+const n = i + 1; const active = n === step; const done = n < step;
+return (
+<span key={n} style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+{i > 0 && <span style={{ color: "#cbd5e1", fontSize: "0.8rem" }}>›</span>}
+<button type="button" onClick={() => setStep(n)}
+style={{ fontSize: "0.74rem", fontWeight: active ? 700 : 600, padding: "6px 12px", borderRadius: 999, cursor: "pointer",
+border: active ? "none" : "1px solid #d9e2f0",
+background: active ? BLUE.bg : "transparent", color: active ? BLUE.fg : "#64748b" }}>
+{done ? "✓ " : ""}{n} · {s}
+</button>
+</span>
+);
+})}
+</div>
+);
+}
+
+function WbNav({ step, setStep, locale, primaryLabel }: { step: number; setStep: (n: number) => void; locale: string; primaryLabel?: string }) {
+return (
+<div style={{ display: "flex", gap: 8, marginTop: 14 }}>
+{step > 1 && <button type="button" onClick={() => setStep(step - 1)} style={{ flex: 1, fontSize: "0.78rem", fontWeight: 700, padding: "8px 14px", borderRadius: 999, border: "1px solid #d9e2f0", background: "transparent", color: "#64748b", cursor: "pointer" }}>← {pick(locale, "Atrás", "Back", "上一步")}</button>}
+{step < WB_STEPS && <button type="button" onClick={() => setStep(step + 1)} style={{ flex: 1.4, fontSize: "0.78rem", fontWeight: 700, padding: "8px 14px", borderRadius: 999, border: "none", background: BLUE.fg, color: "#fff", cursor: "pointer" }}>{primaryLabel ?? pick(locale, "Siguiente", "Next", "下一步")} →</button>}
+</div>
+);
+}
+
+function SlipWorkbench({ row, locale, mailLocale, busy, onBack, onSetLang, onSaveQuote, onSendEmail }: {
 row: CaseRow; locale: string; mailLocale: string; busy: boolean;
-onSave: (id: string, q: any) => Promise<void>;
+onBack: () => void;
+onSetLang: (id: string, lang: string) => void;
+onSaveQuote: (id: string, q: any) => Promise<void>;
 onSendEmail: (id: string, subject: string, body: string) => Promise<void>;
 }) {
+const [step, setStep] = useState(1);
+const { clauses, checked, expanded, flash, loading, saving, saved, error, toggle, expand, save } = useSlipClauses(row.id);
+
 const [participation, setParticipation] = useState("");
 const [premium, setPremium] = useState("");
 const [rate, setRate] = useState("");
@@ -312,20 +364,23 @@ const [deductible, setDeductible] = useState("");
 const [capacity, setCapacity] = useState("");
 const [validity, setValidity] = useState("");
 const [terms, setTerms] = useState("");
-const [saved, setSaved] = useState(false);
-const [confirming, setConfirming] = useState(false);
+const [qSaved, setQSaved] = useState(false);
 const [queued, setQueued] = useState(false);
 
-useEffect(() => { setParticipation(""); setPremium(""); setRate(""); setCommission(""); setDeductible(""); setCapacity(""); setValidity(""); setTerms(""); setSaved(false); setConfirming(false); setQueued(false); }, [row.id]);
+useEffect(() => {
+setStep(1); setParticipation(""); setPremium(""); setRate(""); setCommission("");
+setDeductible(""); setCapacity(""); setValidity(""); setTerms(""); setQSaved(false); setQueued(false);
+}, [row.id]);
 
 const cur = row.currency || "USD";
-async function save() {
-await onSave(row.id, {
+async function saveQuote() {
+await onSaveQuote(row.id, {
 p_participation: num(participation), p_premium: num(premium), p_rate: num(rate), p_commission: num(commission),
 p_deductible: deductible || null, p_capacity: num(capacity), p_validity: validity || null, p_terms: terms || null,
 });
-setSaved(true);
+setQSaved(true);
 }
+
 const emailSubject = `${pick(mailLocale, "Cotización", "Quote", "报价")} – ${row.insured}`;
 const emailBody =
 `${pick(mailLocale, "Estimados,", "Dear team,", "您好，")}
@@ -344,63 +399,123 @@ ${terms ? `\n${pick(mailLocale, "Condiciones:", "Conditions:", "条件：")} ${t
 ${pick(mailLocale, "Quedamos atentos a sus comentarios.", "We remain at your disposal.", "期待您的回复。")}
 Heath Underwriting`;
 
-const inputStyle = { border: "1px solid #d9e2f0", borderRadius: 8, padding: "8px 10px", fontSize: "0.82rem", outline: "none", width: "100%" } as const;
-const Field = ({ label, value, set, ph }: any) => (
-<div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-<label style={{ fontSize: "0.72rem", color: "#64748b", fontWeight: 600 }}>{label}</label>
-<input value={value} onChange={(e) => { set(e.target.value); setSaved(false); }} placeholder={ph} className="bg-card text-primary" style={inputStyle} />
-</div>
-);
+const slipRow = { insured: row.insured ?? "—", broker_name: row.broker_name, line_of_business: row.line_of_business, country: row.country, currency: row.currency, insured_limit: row.insured_limit };
 
 return (
+<div>
+<div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
+<div style={{ minWidth: 0 }}>
+<button type="button" onClick={onBack} style={{ fontSize: "0.78rem", fontWeight: 600, padding: "6px 12px", borderRadius: 999, border: "1px solid #d9e2f0", background: "transparent", color: "#64748b", cursor: "pointer", marginBottom: 8 }}>← {pick(locale, "Volver a casos", "Back to cases", "返回列表")}</button>
+<h2 className="text-primary" style={{ fontSize: "1.3rem", fontWeight: 700 }}>{row.insured}</h2>
+<p className="text-secondary" style={{ fontSize: "0.84rem", marginTop: 2 }}>{[row.broker_name, row.country, row.line_of_business].filter(Boolean).join(" · ")}</p>
+<StageBadge stage={row.uw_stage} assigned={row.assigned_to} locale={locale} />
+</div>
+<LangToggle value={row.correspondence_lang ?? "es"} locale={locale} busy={busy} onChange={(lang) => onSetLang(row.id, lang)} />
+</div>
+
+<Stepper step={step} setStep={setStep} locale={locale} />
+
+<div style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr", gap: 18, alignItems: "start" }}>
+<div style={{ position: "sticky", top: 16 }}>
+{loading ? (
+<PanelCard><p className="text-secondary" style={{ fontSize: "0.82rem" }}>{pick(locale, "Cargando slip…", "Loading slip…", "加载中…")}</p></PanelCard>
+) : (
+<SlipPreview clauses={clauses} checked={checked} flash={flash} row={slipRow} locale={locale} />
+)}
+</div>
+
+<div>
+{step === 1 && (
 <PanelCard>
-<h3 className="text-primary" style={{ fontSize: "0.95rem", fontWeight: 700, marginBottom: 2 }}>{pick(locale, "Cotización", "Quote", "报价")}</h3>
-<p className="text-secondary" style={{ fontSize: "0.74rem", marginBottom: 12 }}>{pick(locale, "Términos de participación para este riesgo.", "Participation terms for this risk.", "该风险的参与条款。")}</p>
+<p style={{ fontSize: "0.62rem", fontWeight: 700, letterSpacing: "0.16em", color: "#2f6fb3" }}>{pick(locale, "PASO 1 · REVISAR SLIP", "STEP 1 · REVIEW SLIP", "步骤 1 · 审阅 SLIP")}</p>
+<h3 className="text-primary" style={{ fontSize: "0.95rem", fontWeight: 700, margin: "4px 0 10px" }}>{pick(locale, "Datos y completitud", "Details & readiness", "信息与齐备度")}</h3>
+<KV k={pick(locale, "País", "Country", "国家")} v={row.country ?? "—"} />
+<KV k={pick(locale, "Moneda", "Currency", "货币")} v={row.currency ?? "USD"} />
+<KV k={pick(locale, "Límite asegurado", "Insured limit", "保额")} v={fmtMoney(row.insured_limit, row.currency) ?? "—"} />
+<div style={{ marginTop: 8 }}>
+<StatusRow label={pick(locale, "Slip recibido", "Slip received", "已收到 Slip")} state={row.slip} note={row.slip === "met" ? pick(locale, "Sí", "Yes", "是") : pick(locale, "Falta", "Missing", "缺失")} />
+<StatusRow label={pick(locale, "SOV / valores", "SOV / values", "标的清单")} state={row.sov ?? "missing"} note={row.sov === "met" ? pick(locale, "Sí", "Yes", "是") : pick(locale, "Falta", "Missing", "缺失")} />
+<StatusRow label={pick(locale, "Siniestralidad", "Loss data", "理赔数据")} state={row.loss} note={row.loss === "met" ? pick(locale, "Sí", "Yes", "是") : pick(locale, "Falta", "Missing", "缺失")} />
+<StatusRow label="OFAC" state={row.ofac} note={row.ofac === "clear" ? pick(locale, "Limpio", "Clear", "通过") : row.ofac === "review" ? pick(locale, "Revisar", "Review", "待审") : pick(locale, "Alerta", "Hit", "命中")} />
+</div>
+<WbNav step={step} setStep={setStep} locale={locale} primaryLabel={pick(locale, "Marcar cláusulas", "Mark clauses", "标注条款")} />
+</PanelCard>
+)}
+
+{step === 2 && (
+<PanelCard>
+<p style={{ fontSize: "0.62rem", fontWeight: 700, letterSpacing: "0.16em", color: "#2f6fb3" }}>{pick(locale, "PASO 2 · MARCAR CLÁUSULAS", "STEP 2 · MARK CLAUSES", "步骤 2 · 标注条款")}</p>
+<h3 className="text-primary" style={{ fontSize: "0.95rem", fontWeight: 700, margin: "4px 0 2px" }}>{pick(locale, "Intervención del slip", "Slip markup", "Slip 标注")}</h3>
+<p className="text-secondary" style={{ fontSize: "0.72rem", marginBottom: 12 }}>{pick(locale, "Marca lo que se otorga y tacha lo que no. El slip se actualiza en vivo.", "Tick what is granted, strike what is not. The slip updates live.", "勾选承保项，划除不承保项。Slip 实时更新。")}</p>
+{loading ? (
+<p className="text-secondary" style={{ fontSize: "0.8rem" }}>{pick(locale, "Cargando…", "Loading…", "加载中…")}</p>
+) : (
+<ClauseAccordion clauses={clauses} checked={checked} expanded={expanded} onToggle={toggle} onExpand={expand} locale={locale} />
+)}
+<div style={{ display: "flex", gap: 10, alignItems: "center", marginTop: 14 }}>
+<button type="button" disabled={saving || loading} onClick={save} style={{ border: "none", background: "#2f6fb3", color: "#fff", fontSize: "0.76rem", fontWeight: 700, padding: "8px 14px", borderRadius: 999, cursor: saving ? "default" : "pointer", opacity: saving ? 0.6 : 1 }}>{saving ? pick(locale, "Guardando…", "Saving…", "保存中…") : pick(locale, "Guardar cláusulas", "Save clauses", "保存条款")}</button>
+{saved && <span style={{ fontSize: "0.74rem", color: GREEN.fg }}>✓ {pick(locale, "Guardadas", "Saved", "已保存")}</span>}
+{error && <span style={{ fontSize: "0.74rem", color: RED.fg }}>{error}</span>}
+</div>
+<WbNav step={step} setStep={setStep} locale={locale} primaryLabel={pick(locale, "Línea y términos", "Line & terms", "额度与条款")} />
+</PanelCard>
+)}
+
+{step === 3 && (
+<PanelCard>
+<p style={{ fontSize: "0.62rem", fontWeight: 700, letterSpacing: "0.16em", color: "#2f6fb3" }}>{pick(locale, "PASO 3 · LÍNEA Y TÉRMINOS", "STEP 3 · LINE & TERMS", "步骤 3 · 额度与条款")}</p>
+<h3 className="text-primary" style={{ fontSize: "0.95rem", fontWeight: 700, margin: "4px 0 10px" }}>{pick(locale, "Participación y términos", "Participation & terms", "参与与条款")}</h3>
 <BinderCapNote row={row} locale={locale} />
 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-<Field label={`${pick(locale, "Participación", "Participation", "参与比例")} (%)`} value={participation} set={setParticipation} ph="21" />
-<Field label={`${pick(locale, "Prima", "Premium", "保费")} (${cur})`} value={premium} set={setPremium} ph="50000" />
-<Field label={`${pick(locale, "Tasa", "Rate", "费率")} (%)`} value={rate} set={setRate} ph="0.35" />
-<Field label={`${pick(locale, "Comisión", "Commission", "佣金")} (%)`} value={commission} set={setCommission} ph="10" />
-<Field label={pick(locale, "Deducible", "Deductible", "免赔额")} value={deductible} set={setDeductible} ph="USD 25.000" />
-<Field label={`${pick(locale, "Capacidad", "Capacity", "承保能力")} (${cur})`} value={capacity} set={setCapacity} ph="2000000" />
-<Field label={pick(locale, "Vigencia", "Validity", "有效期")} value={validity} set={setValidity} ph="12 meses" />
-<Field label={pick(locale, "Condiciones", "Conditions", "条件")} value={terms} set={setTerms} ph={pick(locale, "Notas / condiciones", "Notes / conditions", "备注/条件")} />
+<QField label={`${pick(locale, "Participación", "Participation", "参与比例")} (%)`} value={participation} set={(v) => { setParticipation(v); setQSaved(false); }} ph="21" />
+<QField label={`${pick(locale, "Prima", "Premium", "保费")} (${cur})`} value={premium} set={(v) => { setPremium(v); setQSaved(false); }} ph="50000" />
+<QField label={`${pick(locale, "Tasa", "Rate", "费率")} (%)`} value={rate} set={(v) => { setRate(v); setQSaved(false); }} ph="0.35" />
+<QField label={`${pick(locale, "Comisión", "Commission", "佣金")} (%)`} value={commission} set={(v) => { setCommission(v); setQSaved(false); }} ph="10" />
+<QField label={pick(locale, "Deducible", "Deductible", "免赔额")} value={deductible} set={(v) => { setDeductible(v); setQSaved(false); }} ph="USD 25.000" />
+<QField label={`${pick(locale, "Capacidad", "Capacity", "承保能力")} (${cur})`} value={capacity} set={(v) => { setCapacity(v); setQSaved(false); }} ph="2000000" />
+<QField label={pick(locale, "Vigencia", "Validity", "有效期")} value={validity} set={(v) => { setValidity(v); setQSaved(false); }} ph="12 meses" />
+<QField label={pick(locale, "Condiciones", "Conditions", "条件")} value={terms} set={(v) => { setTerms(v); setQSaved(false); }} ph={pick(locale, "Notas / condiciones", "Notes / conditions", "备注/条件")} />
 </div>
-<div style={{ display: "flex", gap: 8, marginTop: 14, alignItems: "center", flexWrap: "wrap" }}>
-<button type="button" disabled={busy} onClick={save} style={{ border: "none", background: GREEN.fg, color: "#fff", fontSize: "0.78rem", fontWeight: 700, padding: "8px 14px", borderRadius: 999, cursor: "pointer" }}>{pick(locale, "Guardar cotización", "Save quote", "保存报价")}</button>
-{saved && !confirming && (
-<button type="button" disabled={busy} onClick={() => setConfirming(true)} style={{ border: `1px solid ${BLUE.fg}`, background: "transparent", color: BLUE.fg, fontSize: "0.78rem", fontWeight: 700, padding: "8px 14px", borderRadius: 999, cursor: "pointer" }}>{pick(locale, "Enviar cotización al broker", "Send quote to broker", "发送报价给经纪人")}</button>
+<div style={{ display: "flex", gap: 10, alignItems: "center", marginTop: 14 }}>
+<button type="button" disabled={busy} onClick={saveQuote} style={{ border: "none", background: GREEN.fg, color: "#fff", fontSize: "0.78rem", fontWeight: 700, padding: "8px 14px", borderRadius: 999, cursor: "pointer" }}>{pick(locale, "Guardar cotización", "Save quote", "保存报价")}</button>
+{qSaved && <span style={{ fontSize: "0.74rem", color: GREEN.fg }}>✓ {pick(locale, "Guardada", "Saved", "已保存")}</span>}
+</div>
+<WbNav step={step} setStep={setStep} locale={locale} primaryLabel={pick(locale, "Cotizar", "Quote", "报价")} />
+</PanelCard>
 )}
-{saved && !confirming && <span style={{ fontSize: "0.74rem", color: GREEN.fg }}>✓ {pick(locale, "Guardada", "Saved", "已保存")}</span>}
-{queued && <span style={{ fontSize: "0.74rem", color: BLUE.fg }}>✓ {pick(locale, "Correo en cola para envío", "Email queued to send", "邮件已加入发送队列")}</span>}
-</div>
-{confirming && (
-<div style={{ marginTop: 12, border: "1px solid #d9e2f0", borderRadius: 12, padding: 12 }}>
-<p style={{ fontSize: "0.74rem", fontWeight: 700, color: "#2f6fb3", marginBottom: 6 }}>{pick(locale, "Vista previa del correo al broker", "Preview of the broker email", "经纪人邮件预览")} · {(mailLocale || "es").toUpperCase()}</p>
+
+{step === 4 && (
+<PanelCard>
+<p style={{ fontSize: "0.62rem", fontWeight: 700, letterSpacing: "0.16em", color: "#2f6fb3" }}>{pick(locale, "PASO 4 · COTIZAR", "STEP 4 · QUOTE", "步骤 4 · 报价")}</p>
+<h3 className="text-primary" style={{ fontSize: "0.95rem", fontWeight: 700, margin: "4px 0 2px" }}>{pick(locale, "Enviar cotización al broker", "Send quote to broker", "向经纪人发送报价")}</h3>
+<p className="text-secondary" style={{ fontSize: "0.72rem", marginBottom: 10 }}>{pick(locale, "Vista previa del correo", "Email preview", "邮件预览")} · {(mailLocale || "es").toUpperCase()}</p>
+<div style={{ border: "1px solid #d9e2f0", borderRadius: 12, padding: 12 }}>
 <p className="text-primary" style={{ fontSize: "0.78rem", fontWeight: 600 }}>{emailSubject}</p>
 <pre className="text-secondary" style={{ whiteSpace: "pre-wrap", fontSize: "0.74rem", marginTop: 6, fontFamily: "inherit" }}>{emailBody}</pre>
-<div style={{ display: "flex", gap: 8, marginTop: 8 }}>
-<button type="button" disabled={busy} onClick={async () => { await onSendEmail(row.id, emailSubject, emailBody); setQueued(true); setConfirming(false); }} style={{ border: "none", background: BLUE.fg, color: "#fff", fontSize: "0.74rem", fontWeight: 700, padding: "6px 12px", borderRadius: 999, cursor: "pointer" }}>{pick(locale, "Confirmar y poner en cola", "Confirm & queue", "确认并入队")}</button>
-<button type="button" onClick={() => setConfirming(false)} style={{ border: "1px solid #d9e2f0", background: "transparent", color: "#64748b", fontSize: "0.74rem", fontWeight: 700, padding: "6px 12px", borderRadius: 999, cursor: "pointer" }}>{pick(locale, "Cancelar", "Cancel", "取消")}</button>
+</div>
+<div style={{ display: "flex", gap: 10, alignItems: "center", marginTop: 12 }}>
+<button type="button" disabled={busy} onClick={async () => { await onSendEmail(row.id, emailSubject, emailBody); setQueued(true); }} style={{ border: "none", background: BLUE.fg, color: "#fff", fontSize: "0.78rem", fontWeight: 700, padding: "8px 14px", borderRadius: 999, cursor: "pointer" }}>{pick(locale, "Enviar cotización al broker", "Send quote to broker", "发送报价")}</button>
+{queued && <span style={{ fontSize: "0.74rem", color: BLUE.fg }}>✓ {pick(locale, "Correo en cola para envío", "Email queued to send", "邮件已加入发送队列")}</span>}
 </div>
 <p className="text-secondary" style={{ fontSize: "0.68rem", marginTop: 8 }}>{pick(locale, "El envío se hace respondiendo el hilo del broker en Gmail (vía n8n).", "Sending replies to the broker's Gmail thread (via n8n).", "通过 n8n 回复经纪人的 Gmail 邮件线程发送。")}</p>
-</div>
-)}
+<WbNav step={step} setStep={setStep} locale={locale} />
 </PanelCard>
+)}
+</div>
+</div>
+</div>
 );
 }
 
-function DecisionPanel({ row, locale, reasons, busy, onParticipate, onRequestInfo, onAssign, onDecline }: {
-row: CaseRow | null; locale: string; reasons: DeclineReason[]; busy: boolean;
-onParticipate: (id: string) => void; onRequestInfo: (id: string) => void; onAssign: (id: string, name: string) => void; onDecline: (id: string, reason: string) => void;
+function DecisionPanel({ row, locale, reasons, busy, quoting, onParticipate, onOpenWorkbench, onRequestInfo, onAssign, onDecline }: {
+row: CaseRow | null; locale: string; reasons: DeclineReason[]; busy: boolean; quoting: boolean;
+onParticipate: (id: string) => void; onOpenWorkbench: (id: string) => void; onRequestInfo: (id: string) => void; onAssign: (id: string, name: string) => void; onDecline: (id: string, reason: string) => void;
 }) {
 const [mode, setMode] = useState<null | "decline" | "assign">(null);
 const [code, setCode] = useState(reasons[0]?.code ?? "fuera_apetito");
 const [other, setOther] = useState(""); const [assignee, setAssignee] = useState("");
 useEffect(() => { setMode(null); setOther(""); setAssignee(""); }, [row?.id]);
 const disabled = !row || busy;
-const quoting = row?.uw_stage === "cotizacion";
 const ml = (row?.correspondence_lang ?? "es").toUpperCase();
 const ActionButton = ({ label, desc, color, border, onClick }: any) => (
 <button type="button" disabled={disabled} onClick={onClick} className="bg-card" style={{ textAlign: "left", width: "100%", border: `1px solid ${border}`, borderRadius: 14, padding: "12px 14px", cursor: disabled ? "default" : "pointer", opacity: disabled ? 0.55 : 1 }}>
@@ -418,7 +533,11 @@ return (
 {row && <p className="text-secondary" style={{ fontSize: "0.68rem", marginTop: 8 }}>{pick(locale, "Los correos al broker se redactan en", "Broker emails are written in", "致经纪人的邮件语言为")} <strong>{ml}</strong></p>}
 </PanelCard>
 <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-{!quoting && <ActionButton label={pick(locale, "Participar", "Participate", "参与")} desc={pick(locale, "Avanzar a cotización", "Move to quote", "进入报价")} color={GREEN.fg} border="#bfe4d3" onClick={() => row && onParticipate(row.id)} />}
+{quoting ? (
+<ActionButton label={pick(locale, "Abrir workbench del slip", "Open slip workbench", "打开 Slip 工作台")} desc={pick(locale, "Marcar cláusulas y cotizar", "Mark clauses and quote", "标注条款并报价")} color={GREEN.fg} border="#bfe4d3" onClick={() => row && onOpenWorkbench(row.id)} />
+) : (
+<ActionButton label={pick(locale, "Participar", "Participate", "参与")} desc={pick(locale, "Avanzar a cotización", "Move to quote", "进入报价")} color={GREEN.fg} border="#bfe4d3" onClick={() => row && onParticipate(row.id)} />
+)}
 <ActionButton label={pick(locale, "Pedir info", "Request info", "请求信息")} desc={pick(locale, "Solicitar datos faltantes al broker", "Ask the broker for missing data", "向经纪人索取缺失信息")} color={AMBER.fg} border="#ecd6a6" onClick={() => row && onRequestInfo(row.id)} />
 {mode !== "decline" ? (
 <ActionButton label={pick(locale, "Declinar", "Decline", "拒绝")} desc={pick(locale, "Rechazar y notificar al broker", "Decline and notify the broker", "拒绝并通知经纪人")} color={RED.fg} border="#f0c8c2" onClick={() => setMode("decline")} />
@@ -460,6 +579,7 @@ const [selected, setSelected] = useState<CaseRow | null>(null);
 const [reasons, setReasons] = useState<DeclineReason[]>(DEFAULT_REASONS);
 const [busy, setBusy] = useState(false);
 const [error, setError] = useState<string | null>(null);
+const [workbenchId, setWorkbenchId] = useState<string | null>(null);
 
 useEffect(() => {
 let active = true;
@@ -498,7 +618,7 @@ setBusy(true);
 try { await rpc("set_correspondence_lang", { p_id: id, p_lang: lang }); patchCase(id, { correspondence_lang: lang }); }
 catch (e: any) { setError(e?.message ?? "Error"); } finally { setBusy(false); }
 }
-async function onParticipate(id: string) { setBusy(true); try { await rpc("case_action", { p_id: id, p_stage: "cotizacion" }); patchCase(id, { uw_stage: "cotizacion" }); } catch (e: any) { setError(e?.message ?? "Error"); } finally { setBusy(false); } }
+async function onParticipate(id: string) { setBusy(true); try { await rpc("case_action", { p_id: id, p_stage: "cotizacion" }); patchCase(id, { uw_stage: "cotizacion" }); setWorkbenchId(id); } catch (e: any) { setError(e?.message ?? "Error"); } finally { setBusy(false); } }
 async function onRequestInfo(id: string) {
 setBusy(true);
 try {
@@ -527,6 +647,7 @@ const { subject, body } = declineEmail(caseLang(id), row.insured, row.line_of_bu
 await rpc("enqueue_broker_email", { p_submission_id: id, p_kind: "decline", p_subject: subject, p_body: body });
 }
 await rpc("decline_submission", { p_id: id, p_reason: reason });
+setWorkbenchId(null);
 setCases((prev) => { const next = prev ? prev.filter((c) => c.id !== id) : prev; setSelected(next && next.length ? next[0] : null); return next; });
 }
 catch (e: any) { setError(e?.message ?? "Error"); } finally { setBusy(false); }
@@ -539,6 +660,7 @@ const back = pick(locale, "Suscripción", "Underwriting", "核保");
 
 const quoting = selected?.uw_stage === "cotizacion";
 const mailLocale = (selected?.correspondence_lang as string) || "es";
+const inWorkbench = !!(selected && workbenchId && selected.id === workbenchId && quoting);
 
 return (
 <div className="dashboard-theme min-h-screen bg-transparent">
@@ -561,20 +683,16 @@ return (
 <p className="text-sm text-secondary">{pick(locale, "Cargando…", "Loading…", "加载中…")}</p>
 ) : cases.length === 0 ? (
 <p className="text-sm text-secondary">{pick(locale, "Aún no hay negocios disponibles para revisión en esta línea.", "No businesses available for review in this line yet.", "该险种暂无可核保的业务。")}</p>
+) : inWorkbench && selected ? (
+<SlipWorkbench row={selected} locale={locale} mailLocale={mailLocale} busy={busy} onBack={() => setWorkbenchId(null)} onSetLang={onSetLang} onSaveQuote={onSaveQuote} onSendEmail={onSendQuoteEmail} />
 ) : (
 <div style={{ display: "flex", gap: 18, alignItems: "flex-start", flexWrap: "wrap" }}>
 <InboxReviewPanel rows={cases as ReviewRow[]} selectedId={selected?.id} onSelect={(r) => setSelected(cases.find((c) => c.id === r.id) ?? null)} />
 <div style={{ flex: 1, minWidth: 320, display: "flex", flexDirection: "column", gap: 14 }}>
 <CaseDetailPanel row={selected} locale={locale} busy={busy} onSetLang={onSetLang} />
 </div>
-<div style={{ width: quoting ? 460 : 320, minWidth: 300, display: "flex", flexDirection: "column", gap: 14 }}>
-{selected && quoting && (
-<>
-<SlipMarkupWorkspace submissionId={selected.id} locale={locale} row={selected} />
-<QuoteForm row={selected} locale={locale} mailLocale={mailLocale} busy={busy} onSave={onSaveQuote} onSendEmail={onSendQuoteEmail} />
-</>
-)}
-<DecisionPanel row={selected} locale={locale} reasons={reasons} busy={busy} onParticipate={onParticipate} onRequestInfo={onRequestInfo} onAssign={onAssign} onDecline={onDecline} />
+<div style={{ width: 320, minWidth: 300, display: "flex", flexDirection: "column", gap: 14 }}>
+<DecisionPanel row={selected} locale={locale} reasons={reasons} busy={busy} quoting={quoting} onParticipate={onParticipate} onOpenWorkbench={(id) => setWorkbenchId(id)} onRequestInfo={onRequestInfo} onAssign={onAssign} onDecline={onDecline} />
 </div>
 </div>
 )}
