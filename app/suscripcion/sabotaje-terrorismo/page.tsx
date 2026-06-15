@@ -299,6 +299,83 @@ return (
 );
 }
 
+function TechnicalRatePanel({ submissionId, locale }: { submissionId: string; locale: string }) {
+const [opts, setOpts] = useState<{ occupancy: string; label: string }[]>([]);
+const [occ, setOcc] = useState<string>("");
+const [res, setRes] = useState<any>(null);
+const [loading, setLoading] = useState(false);
+const [err, setErr] = useState<string | null>(null);
+
+useEffect(() => {
+let active = true;
+(async () => {
+try {
+const supabase = createSupabaseBrowserClient();
+const [o, s, pr] = await Promise.all([
+supabase.from("occupancy_relativities").select("occupancy,label").order("sort_order", { ascending: true }),
+supabase.from("submissions").select("occupancy_class").eq("id", submissionId).maybeSingle(),
+supabase.from("submission_pricing").select("*").eq("submission_id", submissionId).maybeSingle(),
+]);
+if (!active) return;
+if (o.data) setOpts(o.data as any);
+if (s.data && (s.data as any).occupancy_class) setOcc((s.data as any).occupancy_class);
+if (pr.data) setRes(pr.data);
+} catch (e: any) { if (active) setErr(e?.message ?? "Error"); }
+})();
+return () => { active = false; };
+}, [submissionId]);
+
+async function compute() {
+setLoading(true); setErr(null);
+try {
+const supabase = createSupabaseBrowserClient();
+const { data, error } = await supabase.functions.invoke("compute-technical-rate", { body: { submission_id: submissionId, occupancy: occ || null } });
+if (error) throw error;
+if (data && (data as any).ok) setRes(data); else throw new Error((data as any)?.error || "Error de cálculo");
+} catch (e: any) { setErr(e?.message ?? "Error"); } finally { setLoading(false); }
+}
+
+const ratePct = res?.technical_rate != null ? (res.technical_rate * 100).toFixed(3) : null;
+const slipPct = res?.slip_rate != null ? (res.slip_rate * 100).toFixed(3) : null;
+const adq = res?.adequacy != null ? Number(res.adequacy) : null;
+const adqTone = adq == null ? BLUE : adq > 1.15 ? RED : adq < 0.9 ? AMBER : GREEN;
+
+return (
+<div style={{ border: "1px solid #d9e2f0", borderRadius: 12, padding: "12px 14px", marginBottom: 14, background: "#f8fbfe" }}>
+<p style={{ fontSize: "0.62rem", fontWeight: 700, letterSpacing: "0.14em", color: "#2f6fb3", margin: 0 }}>{pick(locale, "NOTA TÉCNICA · TASA ACTUARIAL", "TECHNICAL NOTE · ACTUARIAL RATE", "技术费率")}</p>
+<div style={{ display: "flex", gap: 8, alignItems: "flex-end", margin: "8px 0" }}>
+<div style={{ flex: 1 }}>
+<label style={{ fontSize: "0.7rem", color: "#64748b", fontWeight: 600 }}>{pick(locale, "Tipo de inmueble / ocupación", "Occupancy / target type", "标的类型")}</label>
+<select value={occ} onChange={(e) => setOcc(e.target.value)} className="bg-card text-primary" style={{ width: "100%", border: "1px solid #d9e2f0", borderRadius: 8, padding: "7px 10px", fontSize: "0.8rem" }}>
+<option value="">{pick(locale, "— selecciona —", "— select —", "— 选择 —")}</option>
+{opts.map((o) => (<option key={o.occupancy} value={o.occupancy}>{o.label}</option>))}
+</select>
+</div>
+<button type="button" disabled={loading} onClick={compute} style={{ border: "none", background: "#2f6fb3", color: "#fff", fontSize: "0.76rem", fontWeight: 700, padding: "8px 14px", borderRadius: 999, cursor: loading ? "default" : "pointer", opacity: loading ? 0.6 : 1 }}>{loading ? pick(locale, "Calculando…", "Computing…", "计算中…") : pick(locale, "Calcular tasa técnica", "Compute technical rate", "计算费率")}</button>
+</div>
+{err && <p style={{ fontSize: "0.72rem", color: RED.fg }}>{err}</p>}
+{res && (
+<div style={{ marginTop: 6 }}>
+<div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.74rem", padding: "2px 0", color: "#64748b" }}><span>{pick(locale, "Pérdida esperada E[L]", "Expected loss E[L]", "预期损失")}</span><span>{fmtMoney(Math.round(res.expected_loss), "USD")}</span></div>
+<div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.74rem", padding: "2px 0", color: "#64748b" }}><span>{pick(locale, "Margen de capital (SII 6%)", "Capital margin (SII 6%)", "资本边际")}</span><span>{fmtMoney(Math.round(res.capital_margin), "USD")}</span></div>
+<div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.74rem", padding: "2px 0" }}><span style={{ color: "#64748b" }}>{pick(locale, "Prima técnica bruta", "Gross technical premium", "技术毛保费")}</span><span style={{ fontWeight: 600 }}>{fmtMoney(Math.round(res.gross_premium), "USD")}</span></div>
+<div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 8, padding: "8px 10px", borderRadius: 8, background: BLUE.bg }}>
+<span style={{ fontSize: "0.78rem", fontWeight: 700, color: BLUE.fg }}>{pick(locale, "Tasa técnica", "Technical rate", "技术费率")}</span>
+<span style={{ fontSize: "1rem", fontWeight: 700, color: BLUE.fg }}>{ratePct}%</span>
+</div>
+{adq != null && (
+<div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 6, padding: "6px 10px", borderRadius: 8, background: adqTone.bg, color: adqTone.fg, fontSize: "0.74rem", fontWeight: 600 }}>
+<span>Slip: {slipPct}% · {pick(locale, "técnica", "technical", "技术")}: {ratePct}%</span>
+<span>{adq.toFixed(2)}× {adq > 1.15 ? pick(locale, "subtasado", "under-priced", "偏低") : adq < 0.9 ? pick(locale, "holgado", "ample", "充裕") : pick(locale, "adecuado", "adequate", "充足")}</span>
+</div>
+)}
+<p style={{ fontSize: "0.66rem", color: "#94a3b8", marginTop: 6 }}>λ {Number(res.lambda).toFixed(4)} · {pick(locale, "país", "country", "国家")} {res.inputs?.country_factor} · {pick(locale, "ocupación", "occupancy", "标的")} {res.inputs?.occupancy_freq_rel} · SRCC {res.inputs?.srcc_modifier}</p>
+</div>
+)}
+</div>
+);
+}
+
 function QField({ label, value, set, ph }: { label: string; value: string; set: (v: string) => void; ph?: string }) {
 return (
 <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
@@ -466,6 +543,7 @@ return (
 <p style={{ fontSize: "0.62rem", fontWeight: 700, letterSpacing: "0.16em", color: "#2f6fb3" }}>{pick(locale, "PASO 3 · LÍNEA Y TÉRMINOS", "STEP 3 · LINE & TERMS", "步骤 3 · 额度与条款")}</p>
 <h3 className="text-primary" style={{ fontSize: "0.95rem", fontWeight: 700, margin: "4px 0 10px" }}>{pick(locale, "Participación y términos", "Participation & terms", "参与与条款")}</h3>
 <BinderCapNote row={row} locale={locale} />
+<TechnicalRatePanel submissionId={row.id} locale={locale} />
 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
 <QField label={`${pick(locale, "Participación", "Participation", "参与比例")} (%)`} value={participation} set={(v) => { setParticipation(v); setQSaved(false); }} ph="21" />
 <QField label={`${pick(locale, "Prima", "Premium", "保费")} (${cur})`} value={premium} set={(v) => { setPremium(v); setQSaved(false); }} ph="50000" />
