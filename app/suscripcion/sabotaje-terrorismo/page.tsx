@@ -304,6 +304,7 @@ const [opts, setOpts] = useState<{ occupancy: string; label: string }[]>([]);
 const [occ, setOcc] = useState<string>("");
 const [res, setRes] = useState<any>(null);
 const [loading, setLoading] = useState(false);
+const [noteBusy, setNoteBusy] = useState(false);
 const [err, setErr] = useState<string | null>(null);
 
 useEffect(() => {
@@ -333,6 +334,16 @@ const { data, error } = await supabase.functions.invoke("compute-technical-rate"
 if (error) throw error;
 if (data && (data as any).ok) setRes(data); else throw new Error((data as any)?.error || "Error de cálculo");
 } catch (e: any) { setErr(e?.message ?? "Error"); } finally { setLoading(false); }
+}
+
+async function genNote() {
+setNoteBusy(true); setErr(null);
+try {
+const supabase = createSupabaseBrowserClient();
+const { data, error } = await supabase.functions.invoke("technical-note-pdf", { body: { submission_id: submissionId } });
+if (error) throw error;
+if (data && (data as any).ok && (data as any).url) window.open((data as any).url, "_blank"); else throw new Error((data as any)?.error || "Error generando la nota");
+} catch (e: any) { setErr(e?.message ?? "Error"); } finally { setNoteBusy(false); }
 }
 
 const ratePct = res?.technical_rate != null ? (res.technical_rate * 100).toFixed(3) : null;
@@ -370,6 +381,7 @@ return (
 </div>
 )}
 <p style={{ fontSize: "0.66rem", color: "#94a3b8", marginTop: 6 }}>λ {Number(res.lambda).toFixed(4)} · {pick(locale, "país", "country", "国家")} {res.inputs?.country_factor} · {pick(locale, "ocupación", "occupancy", "标的")} {res.inputs?.occupancy_freq_rel} · SRCC {res.inputs?.srcc_modifier}</p>
+<button type="button" disabled={noteBusy} onClick={genNote} style={{ marginTop: 8, border: `1px solid ${BLUE.fg}`, background: "transparent", color: BLUE.fg, fontSize: "0.74rem", fontWeight: 700, padding: "7px 12px", borderRadius: 999, cursor: noteBusy ? "default" : "pointer" }}>{noteBusy ? pick(locale, "Generando…", "Generating…", "生成中…") : pick(locale, "Generar nota técnica (PDF)", "Generate technical note (PDF)", "生成技术说明 (PDF)")}</button>
 </div>
 )}
 </div>
