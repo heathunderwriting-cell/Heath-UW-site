@@ -222,6 +222,13 @@ const ofacTone = ofacStatus.includes("clear") || ofacStatus.includes("limpio") ?
 : ofacStatus.includes("hit") || ofacStatus.includes("coincid") ? RED
 : ofacStatus.includes("review") || ofacStatus.includes("revis") ? AMBER : null;
 const has = Boolean(data && (data.summary || redFlags.length || company.length || unrest.length));
+let confidence = 0;
+confidence += Math.min(company.length, 4) / 4 * 45;
+if (data?.summary) confidence += 25;
+if (ofacStatus) confidence += 15;
+confidence += Math.min(unrest.length, 4) / 4 * 15;
+confidence = Math.round(confidence);
+const confTone = confidence >= 70 ? GREEN : confidence >= 40 ? AMBER : RED;
 
 function newsList(items: any[]) {
 if (!items.length) return <p style={{ fontSize: "0.72rem", color: "#94a3b8", margin: 0 }}>{pick(locale, "Sin noticias recientes.", "No recent news.", "暂无近期新闻。")}</p>;
@@ -249,6 +256,18 @@ return (
 )}
 {ofacTone && (
 <span style={{ display: "inline-block", marginTop: 8, fontSize: "0.7rem", fontWeight: 600, padding: "3px 9px", borderRadius: 8, background: ofacTone.bg, color: ofacTone.fg }}>OFAC: {data.ofac.status}</span>
+)}
+{has && (
+<div style={{ marginTop: 10 }}>
+<div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+<span style={{ fontSize: "0.66rem", fontWeight: 700, letterSpacing: "0.08em", color: "#64748b" }}>{pick(locale, "CONFIANZA DE LA INFORMACIÓN", "INFORMATION CONFIDENCE", "信息置信度")}</span>
+<span style={{ fontSize: "0.95rem", fontWeight: 700, color: confTone.fg }}>{confidence}%</span>
+</div>
+<div style={{ marginTop: 5, height: 7, borderRadius: 999, background: "#e8eef6", overflow: "hidden" }}>
+<div style={{ width: `${confidence}%`, height: "100%", background: confTone.fg, borderRadius: 999, transition: "width .45s ease" }} />
+</div>
+<p style={{ fontSize: "0.64rem", color: "#94a3b8", marginTop: 4 }}>{pick(locale, "Según cobertura de noticias del asegurado, resumen y verificación OFAC.", "Based on insured news coverage, summary and OFAC check.", "基于被保险人新闻覆盖、摘要与 OFAC 核查。")}</p>
+</div>
 )}
 {data?.summary && (
 <div style={{ marginTop: 10 }}>
@@ -309,6 +328,7 @@ return (
 </div>
 </div>
 </PanelCard>
+<IntelligencePanel submissionId={String(row.id)} locale={locale} />
 <PanelCard>
 <h3 className="text-primary" style={{ fontSize: "0.9rem", fontWeight: 700, marginBottom: 6 }}>{pick(locale, "Datos del riesgo", "Risk details", "风险信息")}</h3>
 <KV k={pick(locale, "Asegurado", "Insured", "被保险人")} v={row.insured} />
@@ -328,7 +348,6 @@ return (
 <StatusRow label="OFAC" state={row.ofac} note={row.ofac === "clear" ? pick(locale, "Limpio", "Clear", "通过") : row.ofac === "review" ? pick(locale, "Revisar", "Review", "待审") : pick(locale, "Alerta", "Hit", "命中")} />
 <p className="text-secondary" style={{ fontSize: "0.72rem", marginTop: 10 }}>{pick(locale, "La extracción automática de campos del slip se conectará próximamente.", "Automatic slip field extraction will be connected soon.", "Slip 字段的自动提取即将接入。")}</p>
 </PanelCard>
-<IntelligencePanel submissionId={String(row.id)} locale={locale} />
 </div>
 );
 }
