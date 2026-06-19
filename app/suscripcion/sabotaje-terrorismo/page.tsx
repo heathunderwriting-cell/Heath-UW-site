@@ -195,7 +195,7 @@ try {
 const supabase = createSupabaseBrowserClient();
 const { data: row } = await supabase
 .from("submission_intelligence")
-.select("unrest,company,ofac,summary,red_flags,fetched_at")
+.select("unrest,company,ofac,summary,red_flags,domain,website,logo,cover,videos,fetched_at")
 .eq("submission_id", submissionId)
 .maybeSingle();
 if (active && row) setData(row);
@@ -221,12 +221,17 @@ const ofacStatus: string = (data?.ofac?.status ?? "").toLowerCase();
 const ofacTone = ofacStatus.includes("clear") || ofacStatus.includes("limpio") ? GREEN
 : ofacStatus.includes("hit") || ofacStatus.includes("coincid") ? RED
 : ofacStatus.includes("review") || ofacStatus.includes("revis") ? AMBER : null;
-const has = Boolean(data && (data.summary || redFlags.length || company.length || unrest.length));
+const website: string | null = data?.website ?? null;
+const logo: string | null = data?.logo ?? null;
+const cover: string | null = data?.cover ?? null;
+const videos: any[] = data?.videos ?? [];
+const has = Boolean(data && (data.summary || redFlags.length || company.length || unrest.length || website || videos.length));
 let confidence = 0;
-confidence += Math.min(company.length, 4) / 4 * 45;
-if (data?.summary) confidence += 25;
+confidence += Math.min(company.length, 4) / 4 * 40;
+if (data?.summary) confidence += 20;
 if (ofacStatus) confidence += 15;
-confidence += Math.min(unrest.length, 4) / 4 * 15;
+confidence += Math.min(unrest.length, 4) / 4 * 10;
+if (website) confidence += 15;
 confidence = Math.round(confidence);
 const confTone = confidence >= 70 ? GREEN : confidence >= 40 ? AMBER : RED;
 
@@ -250,6 +255,16 @@ return (
 <p style={{ fontSize: "0.62rem", fontWeight: 700, letterSpacing: "0.14em", color: "#2f6fb3", margin: 0 }}>{pick(locale, "INTELIGENCIA · DUE DILIGENCE", "INTELLIGENCE · DUE DILIGENCE", "情报·尽职调查")}</p>
 <button type="button" disabled={loading} onClick={search} style={{ border: "none", background: "#2f6fb3", color: "#fff", fontSize: "0.74rem", fontWeight: 700, padding: "7px 13px", borderRadius: 999, cursor: loading ? "default" : "pointer", opacity: loading ? 0.6 : 1 }}>{loading ? pick(locale, "Buscando…", "Searching…", "搜索中…") : has ? pick(locale, "Actualizar", "Refresh", "刷新") : pick(locale, "Buscar inteligencia", "Run intelligence", "运行情报")}</button>
 </div>
+{(logo || website) && (
+<div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 10 }}>
+{logo && (
+<img src={logo} alt="" width={36} height={36} style={{ width: 36, height: 36, borderRadius: 8, objectFit: "contain", border: "1px solid #e8eef6", background: "#fff" }} onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }} />
+)}
+{website && (
+<a href={website} target="_blank" rel="noopener noreferrer" style={{ fontSize: "0.8rem", fontWeight: 600, color: "#2f6fb3", textDecoration: "none", wordBreak: "break-all" }}>{website.replace(/^https?:\/\//, "")}</a>
+)}
+</div>
+)}
 {err && <p style={{ fontSize: "0.72rem", color: RED.fg, marginTop: 6 }}>{err}</p>}
 {!has && !loading && !err && (
 <p style={{ fontSize: "0.72rem", color: "#94a3b8", marginTop: 8 }}>{pick(locale, "Genera un análisis de noticias, banderas rojas y resumen de due diligence para este asegurado.", "Generate a news analysis, red flags and due-diligence summary for this insured.", "为此被保险人生成新闻分析、风险提示与尽职调查摘要。")}</p>
@@ -266,7 +281,12 @@ return (
 <div style={{ marginTop: 5, height: 7, borderRadius: 999, background: "#e8eef6", overflow: "hidden" }}>
 <div style={{ width: `${confidence}%`, height: "100%", background: confTone.fg, borderRadius: 999, transition: "width .45s ease" }} />
 </div>
-<p style={{ fontSize: "0.64rem", color: "#94a3b8", marginTop: 4 }}>{pick(locale, "Según cobertura de noticias del asegurado, resumen y verificación OFAC.", "Based on insured news coverage, summary and OFAC check.", "基于被保险人新闻覆盖、摘要与 OFAC 核查。")}</p>
+<p style={{ fontSize: "0.64rem", color: "#94a3b8", marginTop: 4 }}>{pick(locale, "Según cobertura de noticias, sitio web, resumen y verificación OFAC.", "Based on news coverage, website, summary and OFAC check.", "基于被保险人新闻覆盖、摘要与 OFAC 核查。")}</p>
+</div>
+)}
+{cover && (
+<div style={{ marginTop: 10 }}>
+<img src={cover} alt="" style={{ width: "100%", maxHeight: 160, objectFit: "cover", borderRadius: 10, border: "1px solid #e8eef6", display: "block" }} onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }} />
 </div>
 )}
 {data?.summary && (
@@ -298,6 +318,22 @@ return (
 <div style={{ marginTop: 10 }}>
 <p style={{ fontSize: "0.66rem", fontWeight: 700, letterSpacing: "0.08em", color: "#64748b", margin: "0 0 6px" }}>{pick(locale, "COYUNTURA DEL PAÍS", "COUNTRY UNREST", "国别动态")}</p>
 {newsList(unrest)}
+</div>
+)}
+{videos.length > 0 && (
+<div style={{ marginTop: 10 }}>
+<p style={{ fontSize: "0.66rem", fontWeight: 700, letterSpacing: "0.08em", color: "#64748b", margin: "0 0 6px" }}>{pick(locale, "VIDEOS (YOUTUBE)", "VIDEOS (YOUTUBE)", "视频 (YOUTUBE)")}</p>
+<div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+{videos.map((v, i) => (
+<a key={i} href={v.url} target="_blank" rel="noopener noreferrer" style={{ display: "block", border: "1px solid #d9e2f0", borderRadius: 8, overflow: "hidden", textDecoration: "none", background: "#fff" }}>
+{v.thumbnail && <img src={v.thumbnail} alt="" style={{ width: "100%", height: 84, objectFit: "cover", display: "block" }} />}
+<div style={{ padding: "5px 7px" }}>
+<span style={{ display: "block", fontSize: "0.68rem", fontWeight: 600, color: "#1f2a44", lineHeight: 1.25, maxHeight: "2.5em", overflow: "hidden" }}>{v.title}</span>
+<span style={{ display: "block", fontSize: "0.6rem", color: "#94a3b8", marginTop: 2 }}>{v.channel}</span>
+</div>
+</a>
+))}
+</div>
 </div>
 )}
 {data?.fetched_at && (
