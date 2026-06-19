@@ -183,6 +183,111 @@ style={{ border: "none", background: on ? "#2f6fb3" : "transparent", color: on ?
 );
 }
 
+function IntelligencePanel({ submissionId, locale }: { submissionId: string; locale: string }) {
+const [data, setData] = useState<any>(null);
+const [loading, setLoading] = useState(false);
+const [err, setErr] = useState<string | null>(null);
+
+useEffect(() => {
+let active = true;
+(async () => {
+try {
+const supabase = createSupabaseBrowserClient();
+const { data: row } = await supabase
+.from("submission_intelligence")
+.select("unrest,company,ofac,summary,red_flags,fetched_at")
+.eq("submission_id", submissionId)
+.maybeSingle();
+if (active && row) setData(row);
+} catch { /* sin caché: el usuario puede buscar manualmente */ }
+})();
+return () => { active = false; };
+}, [submissionId]);
+
+async function search() {
+setLoading(true); setErr(null);
+try {
+const supabase = createSupabaseBrowserClient();
+const { data: res, error } = await supabase.functions.invoke("business-intelligence", { body: { submission_id: submissionId } });
+if (error) throw error;
+if (res && (res as any).ok) setData(res); else throw new Error((res as any)?.error || "Error");
+} catch (e: any) { setErr(e?.message ?? "Error"); } finally { setLoading(false); }
+}
+
+const company: any[] = data?.company ?? [];
+const unrest: any[] = data?.unrest ?? [];
+const redFlags: string[] = data?.red_flags ?? [];
+const ofacStatus: string = (data?.ofac?.status ?? "").toLowerCase();
+const ofacTone = ofacStatus.includes("clear") || ofacStatus.includes("limpio") ? GREEN
+: ofacStatus.includes("hit") || ofacStatus.includes("coincid") ? RED
+: ofacStatus.includes("review") || ofacStatus.includes("revis") ? AMBER : null;
+const has = Boolean(data && (data.summary || redFlags.length || company.length || unrest.length));
+
+function newsList(items: any[]) {
+if (!items.length) return <p style={{ fontSize: "0.72rem", color: "#94a3b8", margin: 0 }}>{pick(locale, "Sin noticias recientes.", "No recent news.", "暂无近期新闻。")}</p>;
+return (
+<div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+{items.map((a, i) => (
+<a key={i} href={a.url} target="_blank" rel="noopener noreferrer" style={{ display: "block", border: "1px solid #d9e2f0", borderRadius: 8, padding: "7px 10px", textDecoration: "none" }}>
+<span style={{ fontSize: "0.78rem", fontWeight: 600, color: "#2f6fb3" }}>{a.title}</span>
+<span style={{ display: "block", fontSize: "0.66rem", color: "#94a3b8", marginTop: 2 }}>{[a.domain, a.date, a.src].filter(Boolean).join(" · ")}</span>
+</a>
+))}
+</div>
+);
+}
+
+return (
+<div style={{ border: "1px solid #d9e2f0", borderRadius: 12, padding: "12px 14px", marginBottom: 14, background: "#f8fbfe" }}>
+<div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
+<p style={{ fontSize: "0.62rem", fontWeight: 700, letterSpacing: "0.14em", color: "#2f6fb3", margin: 0 }}>{pick(locale, "INTELIGENCIA · DUE DILIGENCE", "INTELLIGENCE · DUE DILIGENCE", "情报·尽职调查")}</p>
+<button type="button" disabled={loading} onClick={search} style={{ border: "none", background: "#2f6fb3", color: "#fff", fontSize: "0.74rem", fontWeight: 700, padding: "7px 13px", borderRadius: 999, cursor: loading ? "default" : "pointer", opacity: loading ? 0.6 : 1 }}>{loading ? pick(locale, "Buscando…", "Searching…", "搜索中…") : has ? pick(locale, "Actualizar", "Refresh", "刷新") : pick(locale, "Buscar inteligencia", "Run intelligence", "运行情报")}</button>
+</div>
+{err && <p style={{ fontSize: "0.72rem", color: RED.fg, marginTop: 6 }}>{err}</p>}
+{!has && !loading && !err && (
+<p style={{ fontSize: "0.72rem", color: "#94a3b8", marginTop: 8 }}>{pick(locale, "Genera un análisis de noticias, banderas rojas y resumen de due diligence para este asegurado.", "Generate a news analysis, red flags and due-diligence summary for this insured.", "为此被保险人生成新闻分析、风险提示与尽职调查摘要。")}</p>
+)}
+{ofacTone && (
+<span style={{ display: "inline-block", marginTop: 8, fontSize: "0.7rem", fontWeight: 600, padding: "3px 9px", borderRadius: 8, background: ofacTone.bg, color: ofacTone.fg }}>OFAC: {data.ofac.status}</span>
+)}
+{data?.summary && (
+<div style={{ marginTop: 10 }}>
+<p style={{ fontSize: "0.66rem", fontWeight: 700, letterSpacing: "0.08em", color: "#64748b", margin: 0 }}>{pick(locale, "RESUMEN IA", "AI SUMMARY", "AI 摘要")}</p>
+<p className="text-primary" style={{ fontSize: "0.82rem", lineHeight: 1.5, marginTop: 4 }}>{data.summary}</p>
+</div>
+)}
+{redFlags.length > 0 && (
+<div style={{ marginTop: 10 }}>
+<p style={{ fontSize: "0.66rem", fontWeight: 700, letterSpacing: "0.08em", color: "#64748b", margin: 0 }}>{pick(locale, "BANDERAS ROJAS", "RED FLAGS", "风险提示")}</p>
+<ul style={{ margin: "6px 0 0", padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 5 }}>
+{redFlags.map((f, i) => (
+<li key={i} className="text-primary" style={{ display: "flex", gap: 8, fontSize: "0.8rem", lineHeight: 1.4 }}>
+<span style={{ marginTop: 6, width: 6, height: 6, borderRadius: 999, background: RED.fg, flex: "0 0 auto" }} />
+<span>{f}</span>
+</li>
+))}
+</ul>
+</div>
+)}
+{company.length > 0 && (
+<div style={{ marginTop: 10 }}>
+<p style={{ fontSize: "0.66rem", fontWeight: 700, letterSpacing: "0.08em", color: "#64748b", margin: "0 0 6px" }}>{pick(locale, "NOTICIAS DE LA EMPRESA", "COMPANY NEWS", "公司新闻")}</p>
+{newsList(company)}
+</div>
+)}
+{unrest.length > 0 && (
+<div style={{ marginTop: 10 }}>
+<p style={{ fontSize: "0.66rem", fontWeight: 700, letterSpacing: "0.08em", color: "#64748b", margin: "0 0 6px" }}>{pick(locale, "COYUNTURA DEL PAÍS", "COUNTRY UNREST", "国别动态")}</p>
+{newsList(unrest)}
+</div>
+)}
+{data?.fetched_at && (
+<p style={{ fontSize: "0.64rem", color: "#94a3b8", marginTop: 10 }}>{pick(locale, "Actualizado", "Updated", "更新于")}: {String(data.fetched_at).slice(0, 10)}</p>
+)}
+</div>
+);
+}
+
 function CaseDetailPanel({ row, locale, busy, onSetLang }: { row: CaseRow | null; locale: string; busy: boolean; onSetLang: (id: string, lang: string) => void }) {
 if (!row) return <PanelCard><p className="text-secondary" style={{ fontSize: "0.85rem" }}>{pick(locale, "Selecciona un caso de la izquierda para ver su información.", "Select a case on the left to see its details.", "请在左侧选择一个案件查看详情。")}</p></PanelCard>;
 const pend = pick(locale, "Pendiente de captura", "Pending capture", "待采集");
@@ -223,6 +328,7 @@ return (
 <StatusRow label="OFAC" state={row.ofac} note={row.ofac === "clear" ? pick(locale, "Limpio", "Clear", "通过") : row.ofac === "review" ? pick(locale, "Revisar", "Review", "待审") : pick(locale, "Alerta", "Hit", "命中")} />
 <p className="text-secondary" style={{ fontSize: "0.72rem", marginTop: 10 }}>{pick(locale, "La extracción automática de campos del slip se conectará próximamente.", "Automatic slip field extraction will be connected soon.", "Slip 字段的自动提取即将接入。")}</p>
 </PanelCard>
+<IntelligencePanel submissionId={String(row.id)} locale={locale} />
 </div>
 );
 }
