@@ -770,6 +770,28 @@ return (
 );
 }
 
+function InsuredLogoBadge({ submissionId }: { submissionId: string }) {
+const [logo, setLogo] = useState<string | null>(null);
+const [failed, setFailed] = useState(false);
+useEffect(() => {
+let active = true;
+(async () => {
+try {
+const supabase = createSupabaseBrowserClient();
+const { data } = await supabase.from("submission_intelligence").select("logo").eq("submission_id", submissionId).maybeSingle();
+if (active && data?.logo) setLogo(data.logo as string);
+} catch { /* sin caché: el panel de inteligencia lo llenará al buscar */ }
+})();
+return () => { active = false; };
+}, [submissionId]);
+if (logo && !failed) return (
+<span style={{ width: 58, height: 58, borderRadius: 14, background: "#fff", border: "1px solid #e8eef6", display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "0 0 auto", overflow: "hidden" }}>
+<img src={logo} alt="" width={48} height={48} style={{ width: 48, height: 48, objectFit: "contain" }} onError={() => setFailed(true)} />
+</span>
+);
+return (<span style={{ width: 58, height: 58, borderRadius: 14, background: "#e3effb", color: "#2f6fb3", display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "0 0 auto" }}><Ic n="clipboard" s={28} c="#2f6fb3" /></span>);
+}
+
 function CaseDetailPanel({ row, locale, busy, onSetLang }: { row: CaseRow | null; locale: string; busy: boolean; onSetLang: (id: string, lang: string) => void }) {
 if (!row) return <PanelCard><p className="text-secondary" style={{ fontSize: "0.85rem" }}>{pick(locale, "Selecciona un caso de la izquierda para ver su información.", "Select a case on the left to see its details.", "请在左侧选择一个案件查看详情。")}</p></PanelCard>;
 const pend = pick(locale, "Pendiente de captura", "Pending capture", "待采集");
@@ -780,7 +802,7 @@ return (
 <div style={{ height: 4, background: "linear-gradient(90deg, #2f6fb3, #6aa8e6)" }} />
 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, padding: "18px 20px" }}>
 <div style={{ display: "flex", gap: 13, minWidth: 0 }}>
-<span style={{ width: 42, height: 42, borderRadius: 12, background: "#e3effb", color: "#2f6fb3", display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "0 0 auto" }}><Ic n="clipboard" s={22} c="#2f6fb3" /></span>
+<InsuredLogoBadge submissionId={String(row.id)} />
 <div style={{ minWidth: 0 }}>
 <p style={{ fontSize: "0.62rem", fontWeight: 700, letterSpacing: "0.16em", color: "#2f6fb3" }}>{pick(locale, "CAPTURA DEL SLIP", "SLIP CAPTURE", "SLIP 采集")}</p>
 <h2 className="text-primary" style={{ fontSize: "1.4rem", fontWeight: 700, marginTop: 4 }}>{row.insured}</h2>
