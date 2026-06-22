@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useI18n } from "@/components/providers/LanguageProvider";
 import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
@@ -418,6 +418,149 @@ return (
 );
 }
 
+let leafletPromise: Promise<any> | null = null;
+function loadLeaflet(): Promise<any> {
+if (typeof window === "undefined") return Promise.reject(new Error("no window"));
+if ((window as any).L) return Promise.resolve((window as any).L);
+if (leafletPromise) return leafletPromise;
+leafletPromise = new Promise((resolve, reject) => {
+const css = document.createElement("link");
+css.rel = "stylesheet";
+css.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
+document.head.appendChild(css);
+const s = document.createElement("script");
+s.src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
+s.async = true;
+s.onload = () => resolve((window as any).L);
+s.onerror = () => reject(new Error("leaflet failed"));
+document.body.appendChild(s);
+});
+return leafletPromise;
+}
+
+type SovLoc = { id: string; label: string; city: string | null; country: string | null; lat: number | null; lng: number | null; value_amount: number | null; value_currency: string | null };
+
+function sovColor(country: string | null | undefined, home: string | null | undefined) {
+if (!home || !country) return "#2f6fb3";
+return country.trim().toUpperCase() === home.trim().toUpperCase() ? "#2f6fb3" : "#e2453f";
+}
+function drawSov(L: any, map: any, pts: SovLoc[], home: string | null | undefined) {
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "© OpenStreetMap" }).addTo(map);
+pts.forEach((l) => {
+const c = sovColor(l.country, home);
+const safe = String(l.label).replace(/</g, "&lt;");
+const sub = [l.city, l.country].filter(Boolean).join(", ");
+L.circleMarker([l.lat as number, l.lng as number], { radius: 7, color: "#fff", weight: 2, fillColor: c, fillOpacity: 1 })
+.addTo(map)
+.bindPopup(`<strong>${safe}</strong>${sub ? `<br><span style="color:#64748b">${sub}</span>` : ""}`);
+});
+if (pts.length === 1) { map.setView([pts[0].lat as number, pts[0].lng as number], 12); }
+else { map.fitBounds(L.latLngBounds(pts.map((p) => [p.lat, p.lng])), { padding: [34, 34], maxZoom: 14 }); }
+}
+
+function SovMap({ submissionId, homeCountry, locale }: { submissionId: string; homeCountry?: string | null; locale: string }) {
+const [locs, setLocs] = useState<SovLoc[]>([]);
+const [expanded, setExpanded] = useState(false);
+const compactRef = useRef<HTMLDivElement | null>(null);
+const fullRef = useRef<HTMLDivElement | null>(null);
+
+useEffect(() => {
+let active = true;
+(async () => {
+try {
+const supabase = createSupabaseBrowserClient();
+const { data } = await supabase
+.from("sov_locations")
+.select("id,label,city,country,lat,lng,value_amount,value_currency")
+.eq("submission_id", submissionId);
+if (active && data) setLocs(data as any);
+} catch { /* tabla puede no tener filas todavía */ }
+})();
+return () => { active = false; };
+}, [submissionId]);
+
+const pts = locs.filter((l) => typeof l.lat === "number" && typeof l.lng === "number");
+const outside = homeCountry ? pts.filter((l) => sovColor(l.country, homeCountry) === "#e2453f").length : 0;
+
+useEffect(() => {
+if (!pts.length || !compactRef.current) return;
+let map: any; let cancelled = false;
+loadLeaflet().then((L) => {
+if (cancelled || !compactRef.current) return;
+map = L.map(compactRef.current, { scrollWheelZoom: false, zoomControl: false, attributionControl: true });
+drawSov(L, map, pts, homeCountry);
+}).catch(() => {});
+return () => { cancelled = true; if (map) map.remove(); };
+}, [pts.length, submissionId]);
+
+useEffect(() => {
+if (!expanded || !pts.length || !fullRef.current) return;
+let map: any; let cancelled = false;
+loadLeaflet().then((L) => {
+if (cancelled || !fullRef.current) return;
+map = L.map(fullRef.current, { scrollWheelZoom: true });
+drawSov(L, map, pts, homeCountry);
+setTimeout(() => { try { map.invalidateSize(); } catch {} }, 60);
+}).catch(() => {});
+return () => { cancelled = true; if (map) map.remove(); };
+}, [expanded, pts.length]);
+
+useEffect(() => {
+if (!expanded) return;
+const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setExpanded(false); };
+window.addEventListener("keydown", onKey);
+return () => window.removeEventListener("keydown", onKey);
+}, [expanded]);
+
+return (
+<div style={{ border: "1px solid #d9e2f0", borderRadius: 16, background: "#fff", overflow: "hidden", boxShadow: "0 1px 2px rgba(16,42,76,0.04)" }}>
+<div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, padding: "13px 16px", background: "#f8fbfe", borderBottom: "1px solid #eef2f8" }}>
+<div style={{ display: "flex", alignItems: "center", gap: 11, minWidth: 0 }}>
+<span style={{ width: 34, height: 34, borderRadius: 10, background: "#e3effb", color: "#2f6fb3", display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "0 0 auto" }}><Ic n="pin" s={19} c="#2f6fb3" /></span>
+<span style={{ minWidth: 0 }}>
+<span style={{ display: "block", fontSize: "0.6rem", fontWeight: 700, letterSpacing: "0.14em", color: "#94a3b8" }}>{pick(locale, "RELACIÓN DE VALORES", "STATEMENT OF VALUES", "标的清单")}</span>
+<span className="text-primary" style={{ display: "block", fontSize: "0.92rem", fontWeight: 700 }}>{pick(locale, "Ubicaciones del SOV", "SOV locations", "标的地点")}</span>
+</span>
+</div>
+{pts.length > 0 && (
+<button type="button" onClick={() => setExpanded(true)} style={{ display: "inline-flex", alignItems: "center", gap: 6, border: "1px solid #cfe0f4", background: "#fff", color: "#2f6fb3", fontSize: "0.74rem", fontWeight: 700, padding: "7px 13px", borderRadius: 999, cursor: "pointer", flex: "0 0 auto" }}><Ic n="world" s={14} c="#2f6fb3" />{pick(locale, "Mapa completo", "Full map", "完整地图")}</button>
+)}
+</div>
+{pts.length > 0 ? (
+<>
+<div ref={compactRef} style={{ width: "100%", height: 300, background: "#eef4fb" }} />
+<div style={{ display: "flex", flexWrap: "wrap", gap: 12, padding: "9px 16px", borderTop: "1px solid #eef2f8", fontSize: "0.68rem", color: "#64748b" }}>
+<span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}><span style={{ width: 9, height: 9, borderRadius: 999, background: "#2f6fb3" }} />{pick(locale, "Sedes", "Sites", "地点")}: {pts.length}</span>
+{outside > 0 && <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}><span style={{ width: 9, height: 9, borderRadius: 999, background: "#e2453f" }} />{pick(locale, "Fuera del país", "Outside country", "境外")}: {outside}</span>}
+</div>
+</>
+) : (
+<div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 8, padding: "34px 20px", textAlign: "center" }}>
+<span style={{ width: 40, height: 40, borderRadius: 12, background: "#eef4fb", color: "#94a3b8", display: "inline-flex", alignItems: "center", justifyContent: "center" }}><Ic n="pin" s={20} c="#94a3b8" /></span>
+<p className="text-secondary" style={{ fontSize: "0.78rem", maxWidth: 340 }}>{pick(locale, "Sin ubicaciones del SOV todavía. Se cargarán al procesar la relación de valores.", "No SOV locations yet. They will load once the statement of values is processed.", "暂无标的地点，处理标的清单后将自动加载。")}</p>
+</div>
+)}
+{expanded && (
+<div onClick={() => setExpanded(false)} style={{ position: "fixed", inset: 0, background: "rgba(15,23,42,0.55)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center", padding: "3vh 3vw" }}>
+<div onClick={(e) => e.stopPropagation()} style={{ width: "94vw", maxWidth: 1100, height: "86vh", background: "#fff", borderRadius: 18, overflow: "hidden", display: "flex", flexDirection: "column", boxShadow: "0 24px 60px rgba(15,23,42,0.35)" }}>
+<div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, padding: "14px 18px", background: "#f8fbfe", borderBottom: "1px solid #eef2f8" }}>
+<div style={{ display: "flex", alignItems: "center", gap: 11 }}>
+<span style={{ width: 34, height: 34, borderRadius: 10, background: "#e3effb", color: "#2f6fb3", display: "inline-flex", alignItems: "center", justifyContent: "center" }}><Ic n="world" s={19} c="#2f6fb3" /></span>
+<span>
+<span style={{ display: "block", fontSize: "0.6rem", fontWeight: 700, letterSpacing: "0.14em", color: "#94a3b8" }}>{pick(locale, "MAPA DE LA REGIÓN", "REGIONAL MAP", "区域地图")}</span>
+<span className="text-primary" style={{ display: "block", fontSize: "0.95rem", fontWeight: 700 }}>{pick(locale, "Ubicaciones del SOV", "SOV locations", "标的地点")}</span>
+</span>
+</div>
+<button type="button" onClick={() => setExpanded(false)} style={{ display: "inline-flex", alignItems: "center", gap: 6, border: "1px solid #d9e2f0", background: "#fff", color: "#1f2a44", fontSize: "0.76rem", fontWeight: 700, padding: "8px 14px", borderRadius: 999, cursor: "pointer" }}><Ic n="back" s={14} />{pick(locale, "Cerrar", "Close", "关闭")}</button>
+</div>
+<div ref={fullRef} style={{ flex: 1, minHeight: 0, width: "100%", background: "#eef4fb" }} />
+</div>
+</div>
+)}
+</div>
+);
+}
+
 function CaseDetailPanel({ row, locale, busy, onSetLang }: { row: CaseRow | null; locale: string; busy: boolean; onSetLang: (id: string, lang: string) => void }) {
 if (!row) return <PanelCard><p className="text-secondary" style={{ fontSize: "0.85rem" }}>{pick(locale, "Selecciona un caso de la izquierda para ver su información.", "Select a case on the left to see its details.", "请在左侧选择一个案件查看详情。")}</p></PanelCard>;
 const pend = pick(locale, "Pendiente de captura", "Pending capture", "待采集");
@@ -444,6 +587,7 @@ return (
 </div>
 </div>
 <IntelligencePanel submissionId={String(row.id)} locale={locale} />
+<SovMap submissionId={String(row.id)} homeCountry={row.country} locale={locale} />
 <PanelCard>
 <h3 className="text-primary" style={{ display: "flex", alignItems: "center", gap: 8, fontSize: "0.9rem", fontWeight: 700, marginBottom: 8 }}><span style={{ width: 26, height: 26, borderRadius: 8, background: "#e3effb", color: "#2f6fb3", display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "0 0 auto" }}><Ic n="file" s={15} c="#2f6fb3" /></span>{pick(locale, "Datos del riesgo", "Risk details", "风险信息")}</h3>
 <KV k={pick(locale, "Asegurado", "Insured", "被保险人")} v={row.insured} />
