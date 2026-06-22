@@ -492,7 +492,7 @@ ins.forEach((l, idx) => {
 if (conc && conc.insOnly.indexOf(idx) >= 0) L.circleMarker([l.lat as number, l.lng as number], { radius: 13, color: "#d9a400", weight: 2, fill: false }).addTo(map);
 L.circleMarker([l.lat as number, l.lng as number], { radius: 7, color: "#fff", weight: 2, fillColor: "#0f6e56", fillOpacity: 1 })
 .addTo(map)
-.bindPopup(`<strong>${esc(l.label)}</strong><br><span style="color:#0f6e56">${pick(locale, "Asegurado (My Maps)", "Insured (My Maps)", "被保险人 (My Maps)")}</span>`);
+.bindPopup(`<strong>${esc(l.label)}</strong><br><span style="color:#0f6e56">${pick(locale, "Asegurado (Excel)", "Insured (Excel)", "被保险人 (Excel)")}</span>`);
 all.push([l.lat as number, l.lng as number]);
 });
 if (all.length === 1) map.setView(all[0], 12);
@@ -552,7 +552,7 @@ conc.insOnly.forEach((j) => {
 const l = ins[j];
 const n = nearestOf(l.lat as number, l.lng as number, sov);
 rows.push({
-[H.tipo]: pick(locale, "Solo asegurado (My Maps)", "Insured only (My Maps)", "仅被保险人 (My Maps)"),
+[H.tipo]: pick(locale, "Solo asegurado (Excel)", "Insured only (Excel)", "仅被保险人 (Excel)"),
 [H.ubic]: l.label, [H.lat]: l.lat, [H.lng]: l.lng, [H.pais]: "",
 [H.cercano]: n ? n.label : "", [H.dist]: n ? Math.round(n.d) : "",
 [H.obs]: pick(locale, "Operado por el asegurado pero ausente del SOV — posible exposición no declarada.", "Operated by insured but missing from SOV — possible undeclared exposure.", "由被保险人运营但 SOV 中缺失 — 可能存在未申报风险。"),
@@ -582,12 +582,12 @@ function SovMap({ submissionId, homeCountry, insuredName, locale }: { submission
 const [locs, setLocs] = useState<SovLoc[]>([]);
 const [insAll, setInsAll] = useState<InsLoc[]>([]);
 const [expanded, setExpanded] = useState(false);
-const [importUrl, setImportUrl] = useState("");
 const [importing, setImporting] = useState(false);
 const [importMsg, setImportMsg] = useState<{ ok: boolean; text: string } | null>(null);
 const [downloading, setDownloading] = useState(false);
 const compactRef = useRef<HTMLDivElement | null>(null);
 const fullRef = useRef<HTMLDivElement | null>(null);
+const fileRef = useRef<HTMLInputElement | null>(null);
 
 useEffect(() => {
 let active = true;
@@ -612,20 +612,34 @@ const conc = insPts.length ? matchLocations(pts, insPts, MATCH_THRESHOLD_M) : nu
 const hasMap = pts.length > 0 || insPts.length > 0;
 const sig = `${pts.length}-${insPts.length}-${submissionId}`;
 
-async function importMap() {
-if (!importUrl.trim() || importing) return;
+async function importExcel(file: File) {
+if (!file || importing) return;
 setImporting(true); setImportMsg(null);
 try {
+const XLSX = await loadXlsx();
+const buf = await file.arrayBuffer();
+const wb = XLSX.read(buf, { type: "array" });
+const ws = wb.Sheets[wb.SheetNames[0]];
+const raw: any[] = XLSX.utils.sheet_to_json(ws, { defval: null });
+const norm = (s: any) => String(s ?? "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").trim();
+const grab = (obj: any, names: string[]) => { for (const k of Object.keys(obj)) { if (names.includes(norm(k))) { const v = obj[k]; if (v !== null && v !== undefined && String(v).trim() !== "") return v; } } return null; };
+const rows = raw.map((r) => ({
+label: grab(r, ["ubicacion", "ubicación", "label", "nombre", "name", "sede", "site", "planta", "location"]),
+address: grab(r, ["direccion", "dirección", "address", "domicilio", "ubicacion completa", "direccion completa"]),
+lat: grab(r, ["lat", "latitud", "latitude", "y"]),
+lng: grab(r, ["lng", "lon", "long", "longitud", "longitude", "x"]),
+})).filter((r) => r.label || r.address || (r.lat != null && r.lng != null));
+if (!rows.length) throw new Error(pick(locale, "No se reconocieron filas con ubicaciones en el Excel.", "No location rows recognized in the Excel.", "未在 Excel 中识别到地点行。"));
 const supabase = createSupabaseBrowserClient();
-const { data: res, error } = await supabase.functions.invoke("import-mymaps", { body: { submission_id: submissionId, map_url: importUrl.trim() } });
+const { data: res, error } = await supabase.functions.invoke("import-insured-locations", { body: { submission_id: submissionId, country: homeCountry ?? null, rows } });
 if (error) throw error;
 if (res && (res as any).ok) {
-const n = (res as any).imported;
-setImportMsg({ ok: true, text: pick(locale, `Importadas ${n} ubicaciones`, `Imported ${n} locations`, `已导入 ${n} 个地点`) });
+const n = (res as any).imported; const g = (res as any).geocoded;
+setImportMsg({ ok: true, text: pick(locale, `Importadas ${n} ubicaciones${g ? ` · ${g} geocodificadas` : ""}`, `Imported ${n} locations${g ? ` · ${g} geocoded` : ""}`, `已导入 ${n} 个地点${g ? `（${g} 个已地理编码）` : ""}`) });
 const { data } = await supabase.from("insured_locations").select("id,label,lat,lng").eq("submission_id", submissionId);
 if (data) setInsAll(data as any);
 } else { throw new Error((res as any)?.error || "Error"); }
-} catch (e: any) { setImportMsg({ ok: false, text: e?.message ?? "Error" }); } finally { setImporting(false); }
+} catch (e: any) { setImportMsg({ ok: false, text: e?.message ?? "Error" }); } finally { setImporting(false); if (fileRef.current) fileRef.current.value = ""; }
 }
 
 async function downloadDisc() {
@@ -729,9 +743,10 @@ return (
 </div>
 )}
 <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8, padding: "11px 16px", borderTop: "1px solid #eef2f8", background: "#fafcfe" }}>
-<span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: "0.7rem", color: "#64748b", flex: "0 0 auto" }}><Ic n="world" s={14} c="#64748b" />{pick(locale, "Mapa del asegurado (Google My Maps):", "Insured's map (Google My Maps):", "被保险人地图 (Google My Maps):")}</span>
-<input type="url" value={importUrl} onChange={(e) => setImportUrl(e.target.value)} placeholder="https://www.google.com/maps/d/…" style={{ flex: 1, minWidth: 180, border: "1px solid #d9e2f0", borderRadius: 8, padding: "7px 10px", fontSize: "0.74rem", color: "#1f2a44" }} />
-<button type="button" disabled={importing || !importUrl.trim()} onClick={importMap} style={{ display: "inline-flex", alignItems: "center", gap: 6, border: "none", background: "#2f6fb3", color: "#fff", fontSize: "0.74rem", fontWeight: 700, padding: "8px 14px", borderRadius: 999, cursor: importing || !importUrl.trim() ? "default" : "pointer", opacity: importing || !importUrl.trim() ? 0.6 : 1, flex: "0 0 auto" }}><Ic n={importing ? "refresh" : "filedown"} s={14} c="#fff" />{importing ? pick(locale, "Importando…", "Importing…", "导入中…") : pick(locale, "Importar", "Import", "导入")}</button>
+<span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: "0.7rem", color: "#64748b", flex: "0 0 auto" }}><Ic n="file" s={14} c="#64748b" />{pick(locale, "Excel del asegurado (lat/lng o direcciones):", "Insured's Excel (lat/lng or addresses):", "被保险人 Excel（经纬度或地址）:")}</span>
+<input ref={fileRef} type="file" accept=".xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" onChange={(e) => { const f = e.target.files?.[0]; if (f) importExcel(f); }} style={{ display: "none" }} />
+<button type="button" disabled={importing} onClick={() => fileRef.current?.click()} style={{ display: "inline-flex", alignItems: "center", gap: 6, border: "none", background: "#2f6fb3", color: "#fff", fontSize: "0.74rem", fontWeight: 700, padding: "8px 14px", borderRadius: 999, cursor: importing ? "default" : "pointer", opacity: importing ? 0.6 : 1, flex: "0 0 auto" }}><Ic n={importing ? "refresh" : "filedown"} s={14} c="#fff" />{importing ? pick(locale, "Importando…", "Importing…", "导入中…") : pick(locale, "Cargar Excel", "Upload Excel", "上传 Excel")}</button>
+<span style={{ width: "100%", fontSize: "0.66rem", color: "#94a3b8" }}>{pick(locale, "Columnas reconocidas: ubicación, dirección, lat, lng. Si solo hay dirección, se geocodifica.", "Recognized columns: location, address, lat, lng. Address-only rows are geocoded.", "可识别列：地点、地址、lat、lng。仅有地址的行将自动地理编码。")}</span>
 {importMsg && <span style={{ width: "100%", fontSize: "0.7rem", color: importMsg.ok ? "#0f6e56" : "#b42318" }}>{importMsg.text}</span>}
 </div>
 {expanded && (
