@@ -128,6 +128,40 @@ Heath Underwriting`);
 return { subject, body };
 }
 
+function Ic({ n, s = 16, c }: { n: string; s?: number; c?: string }) {
+const common = { width: s, height: s, viewBox: "0 0 24 24", style: { color: c, flex: "0 0 auto" as const, display: "block" }, "aria-hidden": true } as const;
+if (n === "youtube") return (<svg {...common} fill="none"><rect x="2.5" y="5.5" width="19" height="13" rx="4" fill="currentColor" /><path d="M10 9.2l5.2 2.8L10 14.8z" fill="#fff" /></svg>);
+if (n === "play") return (<svg {...common} fill="currentColor" stroke="none"><path d="M8 5.5v13l11-6.5z" /></svg>);
+const paths: Record<string, string[]> = {
+scope: ["M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18", "M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7", "M12 12l7-4.5"],
+refresh: ["M3.5 12a8.5 8.5 0 0 1 14.4-6.1L20.5 8", "M20.5 3.5V8h-4.5", "M20.5 12a8.5 8.5 0 0 1-14.4 6.1L3.5 16", "M3.5 20.5V16H8"],
+world: ["M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18", "M3.5 12h17", "M12 3c2.5 2.4 3.8 5.6 3.8 9s-1.3 6.6-3.8 9c-2.5-2.4-3.8-5.6-3.8-9S9.5 5.4 12 3"],
+shield: ["M12 3l7 2.7v5.8c0 4.2-3 7.3-7 8.5-4-1.2-7-4.3-7-8.5V5.7z", "M9 12l2 2 4-4.2"],
+gauge: ["M4 16a8 8 0 1 1 16 0", "M12 13l3.5-3.5"],
+news: ["M4.5 5.5h11.5v13H6.5a2 2 0 0 1-2-2z", "M16 8.5h2a1.5 1.5 0 0 1 1.5 1.5v7a2 2 0 0 1-2 2", "M7 9h6.5", "M7 12h6.5", "M7 15h4"],
+sparkles: ["M12 4l1.6 4.4L18 10l-4.4 1.6L12 16l-1.6-4.4L6 10l4.4-1.6z", "M18 15l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z"],
+flag: ["M5.5 21V4", "M5.5 4.5h10.5l-2 3.75 2 3.75H5.5"],
+alert: ["M12 4.5l8.5 15h-17z", "M12 10.5v4", "M12 17.2h.01"],
+pin: ["M12 21s6.5-5.6 6.5-10.5a6.5 6.5 0 1 0-13 0C5.5 15.4 12 21 12 21z", "M12 8a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5"],
+ext: ["M14 4.5h5.5V10", "M19.5 4.5l-8 8", "M18 13.5V18a1.5 1.5 0 0 1-1.5 1.5h-10A1.5 1.5 0 0 1 5 18V8a1.5 1.5 0 0 1 1.5-1.5H11"],
+clock: ["M12 3.5a8.5 8.5 0 1 0 0 17 8.5 8.5 0 0 0 0-17", "M12 7.5V12l3 1.8"],
+file: ["M14 3.5v5h5", "M14 3.5H7.5A1.5 1.5 0 0 0 6 5v14a1.5 1.5 0 0 0 1.5 1.5h9A1.5 1.5 0 0 0 18 19V8.5z", "M9 13h6", "M9 16h6"],
+clipboard: ["M9 5H7.5A1.5 1.5 0 0 0 6 6.5v12.5A1.5 1.5 0 0 0 7.5 20.5h9A1.5 1.5 0 0 0 18 19V6.5A1.5 1.5 0 0 0 16.5 5H15", "M9.5 3.5h5a1 1 0 0 1 1 1V6a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1V4.5a1 1 0 0 1 1-1z", "M9 14l2 2 4-4"],
+check: ["M5 12.5l4.5 4.5L19 7"],
+minus: ["M5.5 12h13"],
+calc: ["M6.5 3.5h11A1.5 1.5 0 0 1 19 5v14a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 5 19V5a1.5 1.5 0 0 1 1.5-1.5z", "M8.5 7.5h7", "M9 12h.01M12 12h.01M15 12h.01M9 15.5h.01M12 15.5h.01M15 15.5h.01"],
+bolt: ["M13 3L5 13.5h6l-1 7.5L18 10.5h-6z"],
+chevronr: ["M9.5 6.5l5.5 5.5-5.5 5.5"],
+filedown: ["M14 3.5v5h5", "M14 3.5H7.5A1.5 1.5 0 0 0 6 5v14a1.5 1.5 0 0 0 1.5 1.5h9A1.5 1.5 0 0 0 18 19V8.5z", "M12 11.5v5", "M9.5 14.5l2.5 2.5 2.5-2.5"],
+back: ["M19 12H5.5", "M11.5 18.5L5 12l6.5-6.5"],
+save: ["M6.5 4.5h10l3.5 3.5V19a1.5 1.5 0 0 1-1.5 1.5h-12A1.5 1.5 0 0 1 5 19V6A1.5 1.5 0 0 1 6.5 4.5z", "M8.5 4.5v4h7v-4", "M12 11.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5"],
+send: ["M21 3.5L10.5 14", "M21 3.5l-6.8 17-3.7-7.5L3 9.3z"],
+circlecheck: ["M12 3.5a8.5 8.5 0 1 0 0 17 8.5 8.5 0 0 0 0-17", "M8 12l3 3 5-5"],
+coin: ["M12 3.5a8.5 8.5 0 1 0 0 17 8.5 8.5 0 0 0 0-17", "M12 7v10", "M14.7 9.3c0-1.2-1.2-1.8-2.7-1.8s-2.7.6-2.7 1.8 1.2 1.6 2.7 1.8 2.7.6 2.7 1.8-1.2 1.8-2.7 1.8-2.7-.6-2.7-1.8"],
+};
+return (<svg {...common} fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">{(paths[n] || []).map((d, i) => (<path key={i} d={d} />))}</svg>);
+}
+
 function KV({ k, v, muted }: { k: string; v: string; muted?: boolean }) {
 return (
 <div style={{ display: "flex", justifyContent: "space-between", gap: 12, padding: "7px 0", borderBottom: "1px solid #eef2f8" }}>
@@ -238,107 +272,148 @@ const confTone = confidence >= 70 ? GREEN : confidence >= 40 ? AMBER : RED;
 function newsList(items: any[]) {
 if (!items.length) return <p style={{ fontSize: "0.72rem", color: "#94a3b8", margin: 0 }}>{pick(locale, "Sin noticias recientes.", "No recent news.", "暂无近期新闻。")}</p>;
 return (
-<div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+<div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
 {items.map((a, i) => (
-<a key={i} href={a.url} target="_blank" rel="noopener noreferrer" style={{ display: "block", border: "1px solid #d9e2f0", borderRadius: 8, padding: "7px 10px", textDecoration: "none" }}>
-<span style={{ fontSize: "0.78rem", fontWeight: 600, color: "#2f6fb3" }}>{a.title}</span>
-<span style={{ display: "block", fontSize: "0.66rem", color: "#94a3b8", marginTop: 2 }}>{[a.domain, a.date, a.src].filter(Boolean).join(" · ")}</span>
+<a key={i} href={a.url} target="_blank" rel="noopener noreferrer" style={{ display: "flex", gap: 10, alignItems: "flex-start", border: "1px solid #e6edf6", borderRadius: 10, padding: "9px 11px", textDecoration: "none", background: "#fff" }}>
+<img src={`https://www.google.com/s2/favicons?domain=${a.domain || ""}&sz=64`} alt="" width={18} height={18} style={{ width: 18, height: 18, borderRadius: 4, marginTop: 1, flex: "0 0 auto" }} onError={(e) => { (e.currentTarget as HTMLImageElement).style.visibility = "hidden"; }} />
+<span style={{ flex: 1, minWidth: 0 }}>
+<span style={{ display: "block", fontSize: "0.79rem", fontWeight: 600, color: "#1f2a44", lineHeight: 1.3 }}>{a.title}</span>
+<span style={{ display: "block", fontSize: "0.66rem", color: "#94a3b8", marginTop: 3 }}>{[a.domain, a.date, a.src].filter(Boolean).join(" · ")}</span>
+</span>
+<span style={{ color: "#c2cede", marginTop: 1, flex: "0 0 auto" }}><Ic n="ext" s={14} /></span>
 </a>
 ))}
 </div>
 );
 }
 
+const newsCount = company.length + unrest.length;
+const ofacShort = ofacTone ? (ofacStatus.includes("clear") || ofacStatus.includes("limpio") ? pick(locale, "Limpio", "Clear", "通过") : ofacStatus.includes("hit") || ofacStatus.includes("coincid") ? pick(locale, "Alerta", "Hit", "命中") : pick(locale, "Revisar", "Review", "待审")) : "—";
+const metrics: { ic: string; label: string; val: string; t: { bg: string; fg: string } }[] = [
+{ ic: "gauge", label: pick(locale, "Confianza", "Confidence", "置信度"), val: `${confidence}%`, t: confTone },
+{ ic: "shield", label: "OFAC", val: ofacShort, t: ofacTone || BLUE },
+{ ic: "news", label: pick(locale, "Noticias", "News", "新闻"), val: String(newsCount), t: BLUE },
+{ ic: "youtube", label: "Videos", val: String(videos.length), t: { bg: "#fdeceb", fg: "#e2453f" } },
+];
+
 return (
-<div style={{ border: "1px solid #d9e2f0", borderRadius: 12, padding: "12px 14px", marginBottom: 14, background: "#f8fbfe" }}>
-<div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
-<p style={{ fontSize: "0.62rem", fontWeight: 700, letterSpacing: "0.14em", color: "#2f6fb3", margin: 0 }}>{pick(locale, "INTELIGENCIA · DUE DILIGENCE", "INTELLIGENCE · DUE DILIGENCE", "情报·尽职调查")}</p>
-<button type="button" disabled={loading} onClick={search} style={{ border: "none", background: "#2f6fb3", color: "#fff", fontSize: "0.74rem", fontWeight: 700, padding: "7px 13px", borderRadius: 999, cursor: loading ? "default" : "pointer", opacity: loading ? 0.6 : 1 }}>{loading ? pick(locale, "Buscando…", "Searching…", "搜索中…") : has ? pick(locale, "Actualizar", "Refresh", "刷新") : pick(locale, "Buscar inteligencia", "Run intelligence", "运行情报")}</button>
+<div style={{ border: "1px solid #d9e2f0", borderRadius: 16, marginBottom: 14, background: "#fff", overflow: "hidden", boxShadow: "0 1px 2px rgba(16,42,76,0.04)" }}>
+<div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 10, padding: "13px 16px", background: "#f8fbfe", borderBottom: "1px solid #eef2f8" }}>
+<div style={{ display: "flex", alignItems: "center", gap: 11, minWidth: 0 }}>
+<span style={{ width: 34, height: 34, borderRadius: 10, background: "#e3effb", color: "#2f6fb3", display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "0 0 auto" }}><Ic n="scope" s={19} c="#2f6fb3" /></span>
+<span style={{ minWidth: 0 }}>
+<span style={{ display: "block", fontSize: "0.6rem", fontWeight: 700, letterSpacing: "0.14em", color: "#94a3b8" }}>{pick(locale, "DUE DILIGENCE", "DUE DILIGENCE", "尽职调查")}</span>
+<span className="text-primary" style={{ display: "block", fontSize: "0.92rem", fontWeight: 700 }}>{pick(locale, "Inteligencia del caso", "Case intelligence", "案件情报")}</span>
+</span>
 </div>
-{(logo || website) && (
-<div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 10 }}>
-{logo && (
-<img src={logo} alt="" width={36} height={36} style={{ width: 36, height: 36, borderRadius: 8, objectFit: "contain", border: "1px solid #e8eef6", background: "#fff" }} onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }} />
-)}
-{website && (
-<a href={website} target="_blank" rel="noopener noreferrer" style={{ fontSize: "0.8rem", fontWeight: 600, color: "#2f6fb3", textDecoration: "none", wordBreak: "break-all" }}>{website.replace(/^https?:\/\//, "")}</a>
-)}
+<button type="button" disabled={loading} onClick={search} style={{ display: "inline-flex", alignItems: "center", gap: 6, border: "none", background: "#2f6fb3", color: "#fff", fontSize: "0.74rem", fontWeight: 700, padding: "8px 14px", borderRadius: 999, cursor: loading ? "default" : "pointer", opacity: loading ? 0.6 : 1, flex: "0 0 auto" }}><Ic n={has ? "refresh" : "sparkles"} s={14} c="#fff" />{loading ? pick(locale, "Buscando…", "Searching…", "搜索中…") : has ? pick(locale, "Actualizar", "Refresh", "刷新") : pick(locale, "Buscar", "Run", "运行")}</button>
 </div>
-)}
-{err && <p style={{ fontSize: "0.72rem", color: RED.fg, marginTop: 6 }}>{err}</p>}
+
+<div style={{ padding: "14px 16px" }}>
+{err && <p style={{ fontSize: "0.72rem", color: RED.fg, margin: "0 0 8px" }}>{err}</p>}
 {!has && !loading && !err && (
-<p style={{ fontSize: "0.72rem", color: "#94a3b8", marginTop: 8 }}>{pick(locale, "Genera un análisis de noticias, banderas rojas y resumen de due diligence para este asegurado.", "Generate a news analysis, red flags and due-diligence summary for this insured.", "为此被保险人生成新闻分析、风险提示与尽职调查摘要。")}</p>
+<p style={{ fontSize: "0.78rem", color: "#94a3b8", margin: 0, lineHeight: 1.5 }}>{pick(locale, "Genera un análisis de noticias, banderas rojas y resumen de due diligence para este asegurado.", "Generate a news analysis, red flags and due-diligence summary for this insured.", "为此被保险人生成新闻分析、风险提示与尽职调查摘要。")}</p>
 )}
-{ofacTone && (
-<span style={{ display: "inline-block", marginTop: 8, fontSize: "0.7rem", fontWeight: 600, padding: "3px 9px", borderRadius: 8, background: ofacTone.bg, color: ofacTone.fg }}>OFAC: {data.ofac.status}</span>
-)}
+
 {has && (
-<div style={{ marginTop: 10 }}>
-<div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-<span style={{ fontSize: "0.66rem", fontWeight: 700, letterSpacing: "0.08em", color: "#64748b" }}>{pick(locale, "CONFIANZA DE LA INFORMACIÓN", "INFORMATION CONFIDENCE", "信息置信度")}</span>
-<span style={{ fontSize: "0.95rem", fontWeight: 700, color: confTone.fg }}>{confidence}%</span>
+<>
+<div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8, marginBottom: 14 }}>
+{metrics.map((m, i) => (
+<div key={i} style={{ border: "1px solid #eef2f8", borderRadius: 12, padding: "9px 10px", background: "#fbfdff" }}>
+<span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 24, height: 24, borderRadius: 7, background: m.t.bg, color: m.t.fg }}><Ic n={m.ic} s={14} c={m.t.fg} /></span>
+<span style={{ display: "block", fontSize: "1.05rem", fontWeight: 700, color: "#1f2a44", marginTop: 6, lineHeight: 1 }}>{m.val}</span>
+<span style={{ display: "block", fontSize: "0.62rem", color: "#94a3b8", marginTop: 3, fontWeight: 600 }}>{m.label}</span>
 </div>
-<div style={{ marginTop: 5, height: 7, borderRadius: 999, background: "#e8eef6", overflow: "hidden" }}>
-<div style={{ width: `${confidence}%`, height: "100%", background: confTone.fg, borderRadius: 999, transition: "width .45s ease" }} />
-</div>
-<p style={{ fontSize: "0.64rem", color: "#94a3b8", marginTop: 4 }}>{pick(locale, "Según cobertura de noticias, sitio web, resumen y verificación OFAC.", "Based on news coverage, website, summary and OFAC check.", "基于被保险人新闻覆盖、摘要与 OFAC 核查。")}</p>
-</div>
-)}
-{cover && (
-<div style={{ marginTop: 10 }}>
-<img src={cover} alt="" style={{ width: "100%", maxHeight: 160, objectFit: "cover", borderRadius: 10, border: "1px solid #e8eef6", display: "block" }} onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }} />
-</div>
-)}
-{data?.summary && (
-<div style={{ marginTop: 10 }}>
-<p style={{ fontSize: "0.66rem", fontWeight: 700, letterSpacing: "0.08em", color: "#64748b", margin: 0 }}>{pick(locale, "RESUMEN IA", "AI SUMMARY", "AI 摘要")}</p>
-<p className="text-primary" style={{ fontSize: "0.82rem", lineHeight: 1.5, marginTop: 4 }}>{data.summary}</p>
-</div>
-)}
-{redFlags.length > 0 && (
-<div style={{ marginTop: 10 }}>
-<p style={{ fontSize: "0.66rem", fontWeight: 700, letterSpacing: "0.08em", color: "#64748b", margin: 0 }}>{pick(locale, "BANDERAS ROJAS", "RED FLAGS", "风险提示")}</p>
-<ul style={{ margin: "6px 0 0", padding: 0, listStyle: "none", display: "flex", flexDirection: "column", gap: 5 }}>
-{redFlags.map((f, i) => (
-<li key={i} className="text-primary" style={{ display: "flex", gap: 8, fontSize: "0.8rem", lineHeight: 1.4 }}>
-<span style={{ marginTop: 6, width: 6, height: 6, borderRadius: 999, background: RED.fg, flex: "0 0 auto" }} />
-<span>{f}</span>
-</li>
 ))}
-</ul>
+</div>
+
+{(logo || website) && (
+<div style={{ display: "flex", alignItems: "center", gap: 11, padding: "10px 12px", border: "1px solid #eef2f8", borderRadius: 12, marginBottom: 12, background: "#fbfdff" }}>
+{logo && (
+<img src={logo} alt="" width={40} height={40} style={{ width: 40, height: 40, borderRadius: 9, objectFit: "contain", border: "1px solid #e8eef6", background: "#fff", flex: "0 0 auto" }} onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }} />
+)}
+<span style={{ flex: 1, minWidth: 0 }}>
+{website && (
+<a href={website} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: "0.82rem", fontWeight: 600, color: "#2f6fb3", textDecoration: "none", wordBreak: "break-all" }}>{website.replace(/^https?:\/\//, "").replace(/\/$/, "")}<Ic n="ext" s={13} /></a>
+)}
+{data?.domain && <span style={{ display: "block", fontSize: "0.66rem", color: "#94a3b8", marginTop: 2 }}>{data.domain}</span>}
+</span>
+{ofacTone && (
+<span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: "0.68rem", fontWeight: 700, padding: "4px 10px", borderRadius: 999, background: ofacTone.bg, color: ofacTone.fg, flex: "0 0 auto" }}><Ic n="shield" s={12} c={ofacTone.fg} />OFAC: {data.ofac.status}</span>
+)}
 </div>
 )}
+
+{cover && (
+<div style={{ marginBottom: 12 }}>
+<img src={cover} alt="" style={{ width: "100%", maxHeight: 160, objectFit: "cover", borderRadius: 12, border: "1px solid #e8eef6", display: "block" }} onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }} />
+</div>
+)}
+
+{data?.summary && (
+<div style={{ marginBottom: 12 }}>
+<p style={{ display: "flex", alignItems: "center", gap: 6, fontSize: "0.64rem", fontWeight: 700, letterSpacing: "0.08em", color: "#64748b", margin: "0 0 5px" }}><Ic n="sparkles" s={13} c="#2f6fb3" />{pick(locale, "RESUMEN IA", "AI SUMMARY", "AI 摘要")}</p>
+<p className="text-primary" style={{ fontSize: "0.82rem", lineHeight: 1.55, margin: 0 }}>{data.summary}</p>
+</div>
+)}
+
+{redFlags.length > 0 && (
+<div style={{ marginBottom: 12 }}>
+<p style={{ display: "flex", alignItems: "center", gap: 6, fontSize: "0.64rem", fontWeight: 700, letterSpacing: "0.08em", color: RED.fg, margin: "0 0 6px" }}><Ic n="alert" s={13} c={RED.fg} />{pick(locale, "BANDERAS ROJAS", "RED FLAGS", "风险提示")}</p>
+<div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+{redFlags.map((f, i) => (
+<div key={i} style={{ display: "flex", gap: 8, alignItems: "flex-start", border: `1px solid ${RED.bg}`, background: "#fef6f5", borderRadius: 10, padding: "8px 11px" }}>
+<span style={{ color: RED.fg, marginTop: 1, flex: "0 0 auto" }}><Ic n="flag" s={14} c={RED.fg} /></span>
+<span className="text-primary" style={{ fontSize: "0.8rem", lineHeight: 1.4 }}>{f}</span>
+</div>
+))}
+</div>
+</div>
+)}
+
 {company.length > 0 && (
-<div style={{ marginTop: 10 }}>
-<p style={{ fontSize: "0.66rem", fontWeight: 700, letterSpacing: "0.08em", color: "#64748b", margin: "0 0 6px" }}>{pick(locale, "NOTICIAS DE LA EMPRESA", "COMPANY NEWS", "公司新闻")}</p>
+<div style={{ marginBottom: 12 }}>
+<p style={{ display: "flex", alignItems: "center", gap: 6, fontSize: "0.64rem", fontWeight: 700, letterSpacing: "0.08em", color: "#64748b", margin: "0 0 7px" }}><Ic n="news" s={13} c="#2f6fb3" />{pick(locale, "NOTICIAS DE LA EMPRESA", "COMPANY NEWS", "公司新闻")}</p>
 {newsList(company)}
 </div>
 )}
+
 {unrest.length > 0 && (
-<div style={{ marginTop: 10 }}>
-<p style={{ fontSize: "0.66rem", fontWeight: 700, letterSpacing: "0.08em", color: "#64748b", margin: "0 0 6px" }}>{pick(locale, "COYUNTURA DEL PAÍS", "COUNTRY UNREST", "国别动态")}</p>
+<div style={{ marginBottom: 12 }}>
+<p style={{ display: "flex", alignItems: "center", gap: 6, fontSize: "0.64rem", fontWeight: 700, letterSpacing: "0.08em", color: "#64748b", margin: "0 0 7px" }}><Ic n="world" s={13} c="#2f6fb3" />{pick(locale, "COYUNTURA DEL PAÍS", "COUNTRY UNREST", "国别动态")}</p>
 {newsList(unrest)}
 </div>
 )}
+
 {videos.length > 0 && (
-<div style={{ marginTop: 10 }}>
-<p style={{ fontSize: "0.66rem", fontWeight: 700, letterSpacing: "0.08em", color: "#64748b", margin: "0 0 6px" }}>{pick(locale, "VIDEOS (YOUTUBE)", "VIDEOS (YOUTUBE)", "视频 (YOUTUBE)")}</p>
-<div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+<div style={{ marginBottom: 2 }}>
+<p style={{ display: "flex", alignItems: "center", gap: 6, fontSize: "0.64rem", fontWeight: 700, letterSpacing: "0.08em", color: "#64748b", margin: "0 0 7px" }}><Ic n="youtube" s={15} c="#e2453f" />{pick(locale, "VIDEOS (YOUTUBE)", "VIDEOS (YOUTUBE)", "视频 (YOUTUBE)")}</p>
+<div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 9 }}>
 {videos.map((v, i) => (
-<a key={i} href={v.url} target="_blank" rel="noopener noreferrer" style={{ display: "block", border: "1px solid #d9e2f0", borderRadius: 8, overflow: "hidden", textDecoration: "none", background: "#fff" }}>
-{v.thumbnail && <img src={v.thumbnail} alt="" style={{ width: "100%", height: 84, objectFit: "cover", display: "block" }} />}
-<div style={{ padding: "5px 7px" }}>
-<span style={{ display: "block", fontSize: "0.68rem", fontWeight: 600, color: "#1f2a44", lineHeight: 1.25, maxHeight: "2.5em", overflow: "hidden" }}>{v.title}</span>
-<span style={{ display: "block", fontSize: "0.6rem", color: "#94a3b8", marginTop: 2 }}>{v.channel}</span>
-</div>
+<a key={i} href={v.url} target="_blank" rel="noopener noreferrer" style={{ display: "block", border: "1px solid #e6edf6", borderRadius: 11, overflow: "hidden", textDecoration: "none", background: "#fff" }}>
+<span style={{ position: "relative", display: "block" }}>
+{v.thumbnail && <img src={v.thumbnail} alt="" style={{ width: "100%", height: 88, objectFit: "cover", display: "block" }} />}
+<span style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+<span style={{ width: 30, height: 30, borderRadius: 999, background: "rgba(226,69,63,0.92)", display: "inline-flex", alignItems: "center", justifyContent: "center", boxShadow: "0 1px 4px rgba(0,0,0,0.3)" }}><Ic n="play" s={14} c="#fff" /></span>
+</span>
+{v.duration && <span style={{ position: "absolute", right: 5, bottom: 5, fontSize: "0.58rem", fontWeight: 700, color: "#fff", background: "rgba(0,0,0,0.75)", padding: "1px 5px", borderRadius: 4 }}>{v.duration}</span>}
+</span>
+<span style={{ display: "block", padding: "6px 8px" }}>
+<span style={{ display: "block", fontSize: "0.68rem", fontWeight: 600, color: "#1f2a44", lineHeight: 1.3, maxHeight: "2.6em", overflow: "hidden" }}>{v.title}</span>
+<span style={{ display: "flex", alignItems: "center", gap: 4, fontSize: "0.6rem", color: "#94a3b8", marginTop: 3 }}><Ic n="youtube" s={11} c="#e2453f" />{v.channel}</span>
+</span>
 </a>
 ))}
 </div>
 </div>
 )}
+
 {data?.fetched_at && (
-<p style={{ fontSize: "0.64rem", color: "#94a3b8", marginTop: 10 }}>{pick(locale, "Actualizado", "Updated", "更新于")}: {String(data.fetched_at).slice(0, 10)}</p>
+<p style={{ display: "flex", alignItems: "center", gap: 5, fontSize: "0.64rem", color: "#94a3b8", margin: "12px 0 0" }}><Ic n="clock" s={12} />{pick(locale, "Actualizado", "Updated", "更新于")}: {String(data.fetched_at).slice(0, 10)}</p>
 )}
+</>
+)}
+</div>
 </div>
 );
 }
@@ -349,8 +424,11 @@ const pend = pick(locale, "Pendiente de captura", "Pending capture", "待采集"
 const limit = fmtMoney(row.insured_limit, row.currency);
 return (
 <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-<PanelCard>
-<div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12 }}>
+<div className="bg-card" style={{ border: "1px solid #d9e2f0", borderRadius: 16, overflow: "hidden", boxShadow: "0 1px 2px rgba(16,42,76,0.04)" }}>
+<div style={{ height: 4, background: "linear-gradient(90deg, #2f6fb3, #6aa8e6)" }} />
+<div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 12, padding: "18px 20px" }}>
+<div style={{ display: "flex", gap: 13, minWidth: 0 }}>
+<span style={{ width: 42, height: 42, borderRadius: 12, background: "#e3effb", color: "#2f6fb3", display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "0 0 auto" }}><Ic n="clipboard" s={22} c="#2f6fb3" /></span>
 <div style={{ minWidth: 0 }}>
 <p style={{ fontSize: "0.62rem", fontWeight: 700, letterSpacing: "0.16em", color: "#2f6fb3" }}>{pick(locale, "CAPTURA DEL SLIP", "SLIP CAPTURE", "SLIP 采集")}</p>
 <h2 className="text-primary" style={{ fontSize: "1.4rem", fontWeight: 700, marginTop: 4 }}>{row.insured}</h2>
@@ -358,15 +436,16 @@ return (
 <StageBadge stage={row.uw_stage} assigned={row.assigned_to} locale={locale} />
 <LangToggle value={row.correspondence_lang ?? "es"} locale={locale} busy={busy} onChange={(lang) => onSetLang(row.id, lang)} />
 </div>
-<div style={{ textAlign: "right" }}>
+</div>
+<div style={{ textAlign: "right", flex: "0 0 auto" }}>
 <p style={{ fontSize: "0.66rem", color: "#94a3b8" }}>{pick(locale, "Límite", "Limit", "保额")}</p>
-<p className="text-primary" style={{ fontSize: "0.95rem", fontWeight: 700 }}>{limit ?? "—"}</p>
+<p className="text-primary" style={{ fontSize: "1.05rem", fontWeight: 700 }}>{limit ?? "—"}</p>
 </div>
 </div>
-</PanelCard>
+</div>
 <IntelligencePanel submissionId={String(row.id)} locale={locale} />
 <PanelCard>
-<h3 className="text-primary" style={{ fontSize: "0.9rem", fontWeight: 700, marginBottom: 6 }}>{pick(locale, "Datos del riesgo", "Risk details", "风险信息")}</h3>
+<h3 className="text-primary" style={{ display: "flex", alignItems: "center", gap: 8, fontSize: "0.9rem", fontWeight: 700, marginBottom: 8 }}><span style={{ width: 26, height: 26, borderRadius: 8, background: "#e3effb", color: "#2f6fb3", display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "0 0 auto" }}><Ic n="file" s={15} c="#2f6fb3" /></span>{pick(locale, "Datos del riesgo", "Risk details", "风险信息")}</h3>
 <KV k={pick(locale, "Asegurado", "Insured", "被保险人")} v={row.insured} />
 <KV k={pick(locale, "Broker", "Broker", "经纪人")} v={row.broker_name ?? "—"} />
 <KV k={pick(locale, "Línea", "Line", "险种")} v={row.line_of_business ?? "—"} />
@@ -377,7 +456,7 @@ return (
 <KV k={pick(locale, "Prima", "Premium", "保费")} v={pend} muted />
 </PanelCard>
 <PanelCard>
-<h3 className="text-primary" style={{ fontSize: "0.9rem", fontWeight: 700, marginBottom: 6 }}>{pick(locale, "Información capturada del slip", "Captured from slip", "从 Slip 采集")}</h3>
+<h3 className="text-primary" style={{ display: "flex", alignItems: "center", gap: 8, fontSize: "0.9rem", fontWeight: 700, marginBottom: 8 }}><span style={{ width: 26, height: 26, borderRadius: 8, background: "#e3effb", color: "#2f6fb3", display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "0 0 auto" }}><Ic n="circlecheck" s={15} c="#2f6fb3" /></span>{pick(locale, "Información capturada del slip", "Captured from slip", "从 Slip 采集")}</h3>
 <StatusRow label={pick(locale, "Slip recibido", "Slip received", "已收到 Slip")} state={row.slip} note={row.slip === "met" ? pick(locale, "Sí", "Yes", "是") : pick(locale, "Falta", "Missing", "缺失")} />
 <StatusRow label={pick(locale, "SOV / relación de valores", "SOV / statement of values", "标的清单")} state={row.sov ?? "missing"} note={row.sov === "met" ? pick(locale, "Sí", "Yes", "是") : pick(locale, "Falta", "Missing", "缺失")} />
 <StatusRow label={pick(locale, "Siniestralidad", "Loss data", "理赔数据")} state={row.loss} note={row.loss === "met" ? pick(locale, "Sí", "Yes", "是") : pick(locale, "Falta", "Missing", "缺失")} />
@@ -513,38 +592,58 @@ const adq = res?.adequacy != null ? Number(res.adequacy) : null;
 const adqTone = adq == null ? BLUE : adq > 1.15 ? RED : adq < 0.9 ? AMBER : GREEN;
 
 return (
-<div style={{ border: "1px solid #d9e2f0", borderRadius: 12, padding: "12px 14px", marginBottom: 14, background: "#f8fbfe" }}>
-<p style={{ fontSize: "0.62rem", fontWeight: 700, letterSpacing: "0.14em", color: "#2f6fb3", margin: 0 }}>{pick(locale, "NOTA TÉCNICA · TASA ACTUARIAL", "TECHNICAL NOTE · ACTUARIAL RATE", "技术费率")}</p>
-<div style={{ display: "flex", gap: 8, alignItems: "flex-end", margin: "8px 0" }}>
+<div style={{ border: "1px solid #d9e2f0", borderRadius: 16, marginBottom: 14, background: "#fff", overflow: "hidden", boxShadow: "0 1px 2px rgba(16,42,76,0.04)" }}>
+<div style={{ display: "flex", alignItems: "center", gap: 11, padding: "12px 16px", background: "#f8fbfe", borderBottom: "1px solid #eef2f8" }}>
+<span style={{ width: 32, height: 32, borderRadius: 9, background: "#e3effb", color: "#2f6fb3", display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "0 0 auto" }}><Ic n="calc" s={17} c="#2f6fb3" /></span>
+<span style={{ minWidth: 0 }}>
+<span style={{ display: "block", fontSize: "0.58rem", fontWeight: 700, letterSpacing: "0.14em", color: "#94a3b8" }}>{pick(locale, "NOTA TÉCNICA", "TECHNICAL NOTE", "技术说明")}</span>
+<span className="text-primary" style={{ display: "block", fontSize: "0.88rem", fontWeight: 700 }}>{pick(locale, "Tasa actuarial", "Actuarial rate", "精算费率")}</span>
+</span>
+</div>
+<div style={{ padding: "14px 16px" }}>
+<div style={{ display: "flex", gap: 8, alignItems: "flex-end" }}>
 <div style={{ flex: 1 }}>
 <label style={{ fontSize: "0.7rem", color: "#64748b", fontWeight: 600 }}>{pick(locale, "Tipo de inmueble / ocupación", "Occupancy / target type", "标的类型")}</label>
-<select value={occ} onChange={(e) => setOcc(e.target.value)} className="bg-card text-primary" style={{ width: "100%", border: "1px solid #d9e2f0", borderRadius: 8, padding: "7px 10px", fontSize: "0.8rem" }}>
+<select value={occ} onChange={(e) => setOcc(e.target.value)} className="bg-card text-primary" style={{ width: "100%", border: "1px solid #d9e2f0", borderRadius: 8, padding: "7px 10px", fontSize: "0.8rem", marginTop: 4 }}>
 <option value="">{pick(locale, "— selecciona —", "— select —", "— 选择 —")}</option>
 {opts.map((o) => (<option key={o.occupancy} value={o.occupancy}>{o.label}</option>))}
 </select>
 </div>
-<button type="button" disabled={loading} onClick={compute} style={{ border: "none", background: "#2f6fb3", color: "#fff", fontSize: "0.76rem", fontWeight: 700, padding: "8px 14px", borderRadius: 999, cursor: loading ? "default" : "pointer", opacity: loading ? 0.6 : 1 }}>{loading ? pick(locale, "Calculando…", "Computing…", "计算中…") : pick(locale, "Calcular tasa técnica", "Compute technical rate", "计算费率")}</button>
+<button type="button" disabled={loading} onClick={compute} style={{ display: "inline-flex", alignItems: "center", gap: 6, border: "none", background: "#2f6fb3", color: "#fff", fontSize: "0.76rem", fontWeight: 700, padding: "8px 14px", borderRadius: 999, cursor: loading ? "default" : "pointer", opacity: loading ? 0.6 : 1, flex: "0 0 auto" }}><Ic n="bolt" s={14} c="#fff" />{loading ? pick(locale, "Calculando…", "Computing…", "计算中…") : pick(locale, "Calcular", "Compute", "计算")}</button>
 </div>
-{err && <p style={{ fontSize: "0.72rem", color: RED.fg }}>{err}</p>}
+{err && <p style={{ fontSize: "0.72rem", color: RED.fg, marginTop: 8 }}>{err}</p>}
 {res && (
-<div style={{ marginTop: 6 }}>
-<div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.74rem", padding: "2px 0", color: "#64748b" }}><span>{pick(locale, "Pérdida esperada E[L]", "Expected loss E[L]", "预期损失")}</span><span>{fmtMoney(Math.round(res.expected_loss), "USD")}</span></div>
-<div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.74rem", padding: "2px 0", color: "#64748b" }}><span>{pick(locale, "Margen de capital (SII 6%)", "Capital margin (SII 6%)", "资本边际")}</span><span>{fmtMoney(Math.round(res.capital_margin), "USD")}</span></div>
-<div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.74rem", padding: "2px 0" }}><span style={{ color: "#64748b" }}>{pick(locale, "Prima técnica bruta", "Gross technical premium", "技术毛保费")}</span><span style={{ fontWeight: 600 }}>{fmtMoney(Math.round(res.gross_premium), "USD")}</span></div>
-<div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 8, padding: "8px 10px", borderRadius: 8, background: BLUE.bg }}>
-<span style={{ fontSize: "0.78rem", fontWeight: 700, color: BLUE.fg }}>{pick(locale, "Tasa técnica", "Technical rate", "技术费率")}</span>
-<span style={{ fontSize: "1rem", fontWeight: 700, color: BLUE.fg }}>{ratePct}%</span>
+<div style={{ marginTop: 12 }}>
+<div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.74rem", padding: "3px 0", color: "#64748b" }}><span>{pick(locale, "Pérdida esperada E[L]", "Expected loss E[L]", "预期损失")}</span><span>{fmtMoney(Math.round(res.expected_loss), "USD")}</span></div>
+<div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.74rem", padding: "3px 0", color: "#64748b" }}><span>{pick(locale, "Margen de capital (SII 6%)", "Capital margin (SII 6%)", "资本边际")}</span><span>{fmtMoney(Math.round(res.capital_margin), "USD")}</span></div>
+<div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.74rem", padding: "3px 0 8px", borderBottom: "1px solid #eef2f8" }}><span style={{ color: "#64748b" }}>{pick(locale, "Prima técnica bruta", "Gross technical premium", "技术毛保费")}</span><span style={{ fontWeight: 600, color: "#1f2a44" }}>{fmtMoney(Math.round(res.gross_premium), "USD")}</span></div>
+<div style={{ display: "grid", gridTemplateColumns: adq != null ? "1fr 1fr" : "1fr", gap: 8, marginTop: 10 }}>
+<div style={{ padding: "11px 13px", borderRadius: 12, background: BLUE.bg, border: `1px solid ${BLUE.bg}` }}>
+<span style={{ display: "flex", alignItems: "center", gap: 5, fontSize: "0.62rem", fontWeight: 700, letterSpacing: "0.06em", color: BLUE.fg }}><Ic n="gauge" s={13} c={BLUE.fg} />{pick(locale, "TASA TÉCNICA", "TECHNICAL RATE", "技术费率")}</span>
+<span style={{ display: "block", fontSize: "1.4rem", fontWeight: 700, color: BLUE.fg, marginTop: 4, lineHeight: 1 }}>{ratePct}%</span>
 </div>
 {adq != null && (
-<div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 6, padding: "6px 10px", borderRadius: 8, background: adqTone.bg, color: adqTone.fg, fontSize: "0.74rem", fontWeight: 600 }}>
-<span>Slip: {slipPct}% · {pick(locale, "técnica", "technical", "技术")}: {ratePct}%</span>
-<span>{adq.toFixed(2)}× {adq > 1.15 ? pick(locale, "subtasado", "under-priced", "偏低") : adq < 0.9 ? pick(locale, "holgado", "ample", "充裕") : pick(locale, "adecuado", "adequate", "充足")}</span>
+<div style={{ padding: "11px 13px", borderRadius: 12, background: adqTone.bg, border: `1px solid ${adqTone.bg}` }}>
+<span style={{ display: "flex", alignItems: "center", gap: 5, fontSize: "0.62rem", fontWeight: 700, letterSpacing: "0.06em", color: adqTone.fg }}><Ic n="coin" s={13} c={adqTone.fg} />{pick(locale, "ADECUACIÓN", "ADEQUACY", "充足度")}</span>
+<span style={{ display: "block", fontSize: "1.4rem", fontWeight: 700, color: adqTone.fg, marginTop: 4, lineHeight: 1 }}>{adq.toFixed(2)}×</span>
+<span style={{ display: "block", fontSize: "0.62rem", fontWeight: 600, color: adqTone.fg, marginTop: 3 }}>{pick(locale, "slip", "slip", "slip")} {slipPct}% · {adq > 1.15 ? pick(locale, "subtasado", "under-priced", "偏低") : adq < 0.9 ? pick(locale, "holgado", "ample", "充裕") : pick(locale, "adecuado", "adequate", "充足")}</span>
 </div>
 )}
-<p style={{ fontSize: "0.66rem", color: "#94a3b8", marginTop: 6 }}>λ {Number(res.lambda).toFixed(4)} · {pick(locale, "país", "country", "国家")} {res.inputs?.country_factor} · {pick(locale, "ocupación", "occupancy", "标的")} {res.inputs?.occupancy_freq_rel} · SRCC {res.inputs?.srcc_modifier}</p>
-<button type="button" disabled={noteBusy} onClick={genNote} style={{ marginTop: 8, border: `1px solid ${BLUE.fg}`, background: "transparent", color: BLUE.fg, fontSize: "0.74rem", fontWeight: 700, padding: "7px 12px", borderRadius: 999, cursor: noteBusy ? "default" : "pointer" }}>{noteBusy ? pick(locale, "Generando…", "Generating…", "生成中…") : pick(locale, "Generar nota técnica (PDF)", "Generate technical note (PDF)", "生成技术说明 (PDF)")}</button>
+</div>
+<div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 10 }}>
+{[
+{ k: "λ", v: Number(res.lambda).toFixed(4) },
+{ k: pick(locale, "país", "country", "国家"), v: res.inputs?.country_factor },
+{ k: pick(locale, "ocupación", "occupancy", "标的"), v: res.inputs?.occupancy_freq_rel },
+{ k: "SRCC", v: res.inputs?.srcc_modifier },
+].map((c, i) => (
+<span key={i} style={{ display: "inline-flex", alignItems: "baseline", gap: 4, fontSize: "0.66rem", fontWeight: 600, padding: "4px 9px", borderRadius: 999, background: "#f1f5fb", border: "1px solid #e6edf6", color: "#64748b" }}>{c.k}<span style={{ color: "#1f2a44", fontWeight: 700 }}>{c.v}</span></span>
+))}
+</div>
+<button type="button" disabled={noteBusy} onClick={genNote} style={{ display: "inline-flex", alignItems: "center", gap: 6, marginTop: 12, border: `1px solid ${BLUE.fg}`, background: "transparent", color: BLUE.fg, fontSize: "0.74rem", fontWeight: 700, padding: "8px 14px", borderRadius: 999, cursor: noteBusy ? "default" : "pointer" }}><Ic n="filedown" s={14} c={BLUE.fg} />{noteBusy ? pick(locale, "Generando…", "Generating…", "生成中…") : pick(locale, "Generar nota técnica (PDF)", "Generate technical note (PDF)", "生成技术说明 (PDF)")}</button>
 </div>
 )}
+</div>
 </div>
 );
 }
@@ -573,12 +672,14 @@ return (
 const n = i + 1; const active = n === step; const done = n < step;
 return (
 <span key={n} style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-{i > 0 && <span style={{ color: "#cbd5e1", fontSize: "0.8rem" }}>›</span>}
+{i > 0 && <span style={{ color: done ? BLUE.fg : "#cbd5e1", display: "inline-flex" }}><Ic n="chevronr" s={14} c={done ? BLUE.fg : "#cbd5e1"} /></span>}
 <button type="button" onClick={() => setStep(n)}
-style={{ fontSize: "0.74rem", fontWeight: active ? 700 : 600, padding: "6px 12px", borderRadius: 999, cursor: "pointer",
-border: active ? "none" : "1px solid #d9e2f0",
-background: active ? BLUE.bg : "transparent", color: active ? BLUE.fg : "#64748b" }}>
-{done ? "✓ " : ""}{n} · {s}
+style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: "0.74rem", fontWeight: active ? 700 : 600, padding: "6px 13px", borderRadius: 999, cursor: "pointer",
+border: active ? "none" : done ? `1px solid ${BLUE.bg}` : "1px solid #d9e2f0",
+boxShadow: active ? "0 1px 3px rgba(47,111,179,0.25)" : "none",
+background: active ? BLUE.fg : done ? BLUE.bg : "transparent", color: active ? "#fff" : done ? BLUE.fg : "#64748b" }}>
+<span style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 17, height: 17, borderRadius: 999, fontSize: "0.62rem", fontWeight: 700, background: active ? "rgba(255,255,255,0.25)" : done ? BLUE.fg : "#e2e8f0", color: active ? "#fff" : done ? "#fff" : "#94a3b8" }}>{done ? <Ic n="check" s={11} c="#fff" /> : n}</span>
+{s}
 </button>
 </span>
 );
