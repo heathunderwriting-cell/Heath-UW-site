@@ -439,28 +439,86 @@ return leafletPromise;
 }
 
 type SovLoc = { id: string; label: string; city: string | null; country: string | null; lat: number | null; lng: number | null; value_amount: number | null; value_currency: string | null };
+type InsLoc = { id: string; label: string; lat: number | null; lng: number | null };
+type Conc = { matches: { i: number; j: number; d: number }[]; sovOnly: number[]; insOnly: number[]; avg: number; score: number };
+
+const MATCH_THRESHOLD_M = 400;
 
 function sovColor(country: string | null | undefined, home: string | null | undefined) {
 if (!home || !country) return "#2f6fb3";
 return country.trim().toUpperCase() === home.trim().toUpperCase() ? "#2f6fb3" : "#e2453f";
 }
-function drawSov(L: any, map: any, pts: SovLoc[], home: string | null | undefined) {
+function haversine(aLat: number, aLng: number, bLat: number, bLng: number) {
+const R = 6371000;
+const dLat = (bLat - aLat) * Math.PI / 180;
+const dLng = (bLng - aLng) * Math.PI / 180;
+const la1 = aLat * Math.PI / 180, la2 = bLat * Math.PI / 180;
+const x = Math.sin(dLat / 2) ** 2 + Math.cos(la1) * Math.cos(la2) * Math.sin(dLng / 2) ** 2;
+return 2 * R * Math.asin(Math.sqrt(x));
+}
+function matchLocations(sov: SovLoc[], ins: InsLoc[], thresh: number): Conc {
+const pairs: { i: number; j: number; d: number }[] = [];
+for (let i = 0; i < sov.length; i++) for (let j = 0; j < ins.length; j++) {
+const d = haversine(sov[i].lat as number, sov[i].lng as number, ins[j].lat as number, ins[j].lng as number);
+if (d <= thresh) pairs.push({ i, j, d });
+}
+pairs.sort((a, b) => a.d - b.d);
+const usedS = new Set<number>(), usedI = new Set<number>(); const matches: { i: number; j: number; d: number }[] = [];
+for (const p of pairs) { if (usedS.has(p.i) || usedI.has(p.j)) continue; usedS.add(p.i); usedI.add(p.j); matches.push(p); }
+const sovOnly: number[] = []; for (let i = 0; i < sov.length; i++) if (!usedS.has(i)) sovOnly.push(i);
+const insOnly: number[] = []; for (let j = 0; j < ins.length; j++) if (!usedI.has(j)) insOnly.push(j);
+const avg = matches.length ? matches.reduce((s, m) => s + m.d, 0) / matches.length : 0;
+const total = sov.length + ins.length;
+const score = total ? Math.round((matches.length * 2 / total) * 100) : 0;
+return { matches, sovOnly, insOnly, avg, score };
+}
+function esc(s: string) { return String(s).replace(/</g, "&lt;"); }
+function drawSovMap(L: any, map: any, sov: SovLoc[], ins: InsLoc[], conc: Conc | null, home: string | null | undefined, locale: string) {
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "© OpenStreetMap" }).addTo(map);
-pts.forEach((l) => {
+const all: [number, number][] = [];
+if (conc) conc.matches.forEach((m) => {
+L.polyline([[sov[m.i].lat as number, sov[m.i].lng as number], [ins[m.j].lat as number, ins[m.j].lng as number]], { color: "#94a3b8", weight: 1.5, dashArray: "5 4" }).addTo(map);
+});
+sov.forEach((l, idx) => {
 const c = sovColor(l.country, home);
-const safe = String(l.label).replace(/</g, "&lt;");
+if (conc && conc.sovOnly.indexOf(idx) >= 0) L.circleMarker([l.lat as number, l.lng as number], { radius: 13, color: "#e2453f", weight: 2, fill: false }).addTo(map);
 const sub = [l.city, l.country].filter(Boolean).join(", ");
 L.circleMarker([l.lat as number, l.lng as number], { radius: 7, color: "#fff", weight: 2, fillColor: c, fillOpacity: 1 })
 .addTo(map)
-.bindPopup(`<strong>${safe}</strong>${sub ? `<br><span style="color:#64748b">${sub}</span>` : ""}`);
+.bindPopup(`<strong>${esc(l.label)}</strong><br><span style="color:#2f6fb3">${pick(locale, "SOV", "SOV", "标的")}</span>${sub ? ` · <span style="color:#64748b">${esc(sub)}</span>` : ""}`);
+all.push([l.lat as number, l.lng as number]);
 });
-if (pts.length === 1) { map.setView([pts[0].lat as number, pts[0].lng as number], 12); }
-else { map.fitBounds(L.latLngBounds(pts.map((p) => [p.lat, p.lng])), { padding: [34, 34], maxZoom: 14 }); }
+ins.forEach((l, idx) => {
+if (conc && conc.insOnly.indexOf(idx) >= 0) L.circleMarker([l.lat as number, l.lng as number], { radius: 13, color: "#d9a400", weight: 2, fill: false }).addTo(map);
+L.circleMarker([l.lat as number, l.lng as number], { radius: 7, color: "#fff", weight: 2, fillColor: "#0f6e56", fillOpacity: 1 })
+.addTo(map)
+.bindPopup(`<strong>${esc(l.label)}</strong><br><span style="color:#0f6e56">${pick(locale, "Asegurado (My Maps)", "Insured (My Maps)", "被保险人 (My Maps)")}</span>`);
+all.push([l.lat as number, l.lng as number]);
+});
+if (all.length === 1) map.setView(all[0], 12);
+else if (all.length) map.fitBounds(L.latLngBounds(all), { padding: [34, 34], maxZoom: 14 });
+}
+
+function ConcGauge({ score, locale }: { score: number; locale: string }) {
+const tone = score >= 80 ? "#0f6e56" : score >= 50 ? "#8a5a00" : "#b42318";
+const circ = 2 * Math.PI * 32;
+const off = circ * (1 - score / 100);
+return (
+<svg width={78} height={78} viewBox="0 0 78 78" role="img" aria-label={`${pick(locale, "Concordancia", "Concordance", "一致度")} ${score}%`}>
+<circle cx={39} cy={39} r={32} fill="none" stroke="#eef2f8" strokeWidth={8} />
+<circle cx={39} cy={39} r={32} fill="none" stroke={tone} strokeWidth={8} strokeLinecap="round" strokeDasharray={circ} strokeDashoffset={off} transform="rotate(-90 39 39)" />
+<text x={39} y={44} textAnchor="middle" fontSize={18} fontWeight={700} fill="#1f2a44">{score}%</text>
+</svg>
+);
 }
 
 function SovMap({ submissionId, homeCountry, locale }: { submissionId: string; homeCountry?: string | null; locale: string }) {
 const [locs, setLocs] = useState<SovLoc[]>([]);
+const [insAll, setInsAll] = useState<InsLoc[]>([]);
 const [expanded, setExpanded] = useState(false);
+const [importUrl, setImportUrl] = useState("");
+const [importing, setImporting] = useState(false);
+const [importMsg, setImportMsg] = useState<{ ok: boolean; text: string } | null>(null);
 const compactRef = useRef<HTMLDivElement | null>(null);
 const fullRef = useRef<HTMLDivElement | null>(null);
 
@@ -469,41 +527,62 @@ let active = true;
 (async () => {
 try {
 const supabase = createSupabaseBrowserClient();
-const { data } = await supabase
-.from("sov_locations")
-.select("id,label,city,country,lat,lng,value_amount,value_currency")
-.eq("submission_id", submissionId);
-if (active && data) setLocs(data as any);
-} catch { /* tabla puede no tener filas todavía */ }
+const [sovRes, insRes] = await Promise.all([
+supabase.from("sov_locations").select("id,label,city,country,lat,lng,value_amount,value_currency").eq("submission_id", submissionId),
+supabase.from("insured_locations").select("id,label,lat,lng").eq("submission_id", submissionId),
+]);
+if (active && sovRes.data) setLocs(sovRes.data as any);
+if (active && insRes.data) setInsAll(insRes.data as any);
+} catch { /* tablas pueden no tener filas todavía */ }
 })();
 return () => { active = false; };
 }, [submissionId]);
 
 const pts = locs.filter((l) => typeof l.lat === "number" && typeof l.lng === "number");
+const insPts = insAll.filter((l) => typeof l.lat === "number" && typeof l.lng === "number");
 const outside = homeCountry ? pts.filter((l) => sovColor(l.country, homeCountry) === "#e2453f").length : 0;
+const conc = insPts.length ? matchLocations(pts, insPts, MATCH_THRESHOLD_M) : null;
+const hasMap = pts.length > 0 || insPts.length > 0;
+const sig = `${pts.length}-${insPts.length}-${submissionId}`;
+
+async function importMap() {
+if (!importUrl.trim() || importing) return;
+setImporting(true); setImportMsg(null);
+try {
+const supabase = createSupabaseBrowserClient();
+const { data: res, error } = await supabase.functions.invoke("import-mymaps", { body: { submission_id: submissionId, map_url: importUrl.trim() } });
+if (error) throw error;
+if (res && (res as any).ok) {
+const n = (res as any).imported;
+setImportMsg({ ok: true, text: pick(locale, `Importadas ${n} ubicaciones`, `Imported ${n} locations`, `已导入 ${n} 个地点`) });
+const { data } = await supabase.from("insured_locations").select("id,label,lat,lng").eq("submission_id", submissionId);
+if (data) setInsAll(data as any);
+} else { throw new Error((res as any)?.error || "Error"); }
+} catch (e: any) { setImportMsg({ ok: false, text: e?.message ?? "Error" }); } finally { setImporting(false); }
+}
 
 useEffect(() => {
-if (!pts.length || !compactRef.current) return;
+if (!hasMap || !compactRef.current) return;
 let map: any; let cancelled = false;
 loadLeaflet().then((L) => {
 if (cancelled || !compactRef.current) return;
 map = L.map(compactRef.current, { scrollWheelZoom: false, zoomControl: false, attributionControl: true });
-drawSov(L, map, pts, homeCountry);
+drawSovMap(L, map, pts, insPts, conc, homeCountry, locale);
 }).catch(() => {});
 return () => { cancelled = true; if (map) map.remove(); };
-}, [pts.length, submissionId]);
+}, [sig]);
 
 useEffect(() => {
-if (!expanded || !pts.length || !fullRef.current) return;
+if (!expanded || !hasMap || !fullRef.current) return;
 let map: any; let cancelled = false;
 loadLeaflet().then((L) => {
 if (cancelled || !fullRef.current) return;
 map = L.map(fullRef.current, { scrollWheelZoom: true });
-drawSov(L, map, pts, homeCountry);
+drawSovMap(L, map, pts, insPts, conc, homeCountry, locale);
 setTimeout(() => { try { map.invalidateSize(); } catch {} }, 60);
 }).catch(() => {});
 return () => { cancelled = true; if (map) map.remove(); };
-}, [expanded, pts.length]);
+}, [expanded, sig]);
 
 useEffect(() => {
 if (!expanded) return;
@@ -522,24 +601,60 @@ return (
 <span className="text-primary" style={{ display: "block", fontSize: "0.92rem", fontWeight: 700 }}>{pick(locale, "Ubicaciones del SOV", "SOV locations", "标的地点")}</span>
 </span>
 </div>
-{pts.length > 0 && (
+{hasMap && (
 <button type="button" onClick={() => setExpanded(true)} style={{ display: "inline-flex", alignItems: "center", gap: 6, border: "1px solid #cfe0f4", background: "#fff", color: "#2f6fb3", fontSize: "0.74rem", fontWeight: 700, padding: "7px 13px", borderRadius: 999, cursor: "pointer", flex: "0 0 auto" }}><Ic n="world" s={14} c="#2f6fb3" />{pick(locale, "Mapa completo", "Full map", "完整地图")}</button>
 )}
 </div>
-{pts.length > 0 ? (
-<>
+{hasMap ? (
 <div ref={compactRef} style={{ width: "100%", height: 300, background: "#eef4fb" }} />
-<div style={{ display: "flex", flexWrap: "wrap", gap: 12, padding: "9px 16px", borderTop: "1px solid #eef2f8", fontSize: "0.68rem", color: "#64748b" }}>
-<span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}><span style={{ width: 9, height: 9, borderRadius: 999, background: "#2f6fb3" }} />{pick(locale, "Sedes", "Sites", "地点")}: {pts.length}</span>
-{outside > 0 && <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}><span style={{ width: 9, height: 9, borderRadius: 999, background: "#e2453f" }} />{pick(locale, "Fuera del país", "Outside country", "境外")}: {outside}</span>}
-</div>
-</>
 ) : (
 <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 8, padding: "34px 20px", textAlign: "center" }}>
 <span style={{ width: 40, height: 40, borderRadius: 12, background: "#eef4fb", color: "#94a3b8", display: "inline-flex", alignItems: "center", justifyContent: "center" }}><Ic n="pin" s={20} c="#94a3b8" /></span>
 <p className="text-secondary" style={{ fontSize: "0.78rem", maxWidth: 340 }}>{pick(locale, "Sin ubicaciones del SOV todavía. Se cargarán al procesar la relación de valores.", "No SOV locations yet. They will load once the statement of values is processed.", "暂无标的地点，处理标的清单后将自动加载。")}</p>
 </div>
 )}
+{hasMap && (
+<div style={{ display: "flex", flexWrap: "wrap", gap: 12, padding: "9px 16px", borderTop: "1px solid #eef2f8", fontSize: "0.68rem", color: "#64748b" }}>
+<span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}><span style={{ width: 9, height: 9, borderRadius: 999, background: "#2f6fb3" }} />{pick(locale, "SOV", "SOV", "标的")}: {pts.length}</span>
+{insPts.length > 0 && <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}><span style={{ width: 9, height: 9, borderRadius: 999, background: "#0f6e56" }} />{pick(locale, "Asegurado", "Insured", "被保险人")}: {insPts.length}</span>}
+{outside > 0 && <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}><span style={{ width: 9, height: 9, borderRadius: 999, background: "#e2453f" }} />{pick(locale, "Fuera del país", "Outside country", "境外")}: {outside}</span>}
+{conc && <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}><span style={{ width: 14, borderTop: "2px dashed #94a3b8" }} />{pick(locale, "Par emparejado", "Matched pair", "匹配对")}</span>}
+</div>
+)}
+{conc && (
+<div style={{ borderTop: "1px solid #eef2f8" }}>
+<div style={{ display: "flex", flexWrap: "wrap", gap: 14, padding: "13px 16px", alignItems: "center" }}>
+<div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+<ConcGauge score={conc.score} locale={locale} />
+<div>
+<div className="text-primary" style={{ fontSize: "0.82rem", fontWeight: 700 }}>{pick(locale, "Concordancia SOV ↔ asegurado", "SOV ↔ insured concordance", "SOV ↔ 被保险人一致度")}</div>
+<div style={{ fontSize: "0.72rem", color: "#64748b", maxWidth: 230 }}>{pick(locale, `${conc.matches.length} de ${pts.length + insPts.length - conc.matches.length} sedes emparejadas; distancia media ${Math.round(conc.avg)} m.`, `${conc.matches.length} of ${pts.length + insPts.length - conc.matches.length} unique sites matched; avg distance ${Math.round(conc.avg)} m.`, `${conc.matches.length} 处匹配；平均距离 ${Math.round(conc.avg)} 米。`)}</div>
+</div>
+</div>
+<div style={{ display: "flex", gap: 8, flex: 1, minWidth: 220 }}>
+<div style={{ flex: 1, background: "#eaf6f0", borderRadius: 8, padding: "9px 10px" }}><div style={{ fontSize: "0.66rem", color: "#0f6e56" }}>{pick(locale, "Emparejadas", "Matched", "匹配")}</div><div style={{ fontSize: "1.2rem", fontWeight: 700, color: "#0f6e56" }}>{conc.matches.length}</div></div>
+<div style={{ flex: 1, background: "#fdecea", borderRadius: 8, padding: "9px 10px" }}><div style={{ fontSize: "0.66rem", color: "#b42318" }}>{pick(locale, "Solo en SOV", "SOV only", "仅 SOV")}</div><div style={{ fontSize: "1.2rem", fontWeight: 700, color: "#b42318" }}>{conc.sovOnly.length}</div></div>
+<div style={{ flex: 1, background: "#fbf1da", borderRadius: 8, padding: "9px 10px" }}><div style={{ fontSize: "0.66rem", color: "#8a5a00" }}>{pick(locale, "Solo asegurado", "Insured only", "仅被保险人")}</div><div style={{ fontSize: "1.2rem", fontWeight: 700, color: "#8a5a00" }}>{conc.insOnly.length}</div></div>
+</div>
+</div>
+{(conc.sovOnly.length > 0 || conc.insOnly.length > 0) && (
+<div style={{ display: "flex", flexDirection: "column", gap: 6, padding: "0 16px 13px" }}>
+{conc.sovOnly.map((i) => (
+<div key={`s${i}`} style={{ display: "flex", alignItems: "flex-start", gap: 8, padding: "8px 10px", background: "#fdecea", borderRadius: 8, fontSize: "0.72rem", color: "#7a1d12" }}><Ic n="alert" s={14} c="#b42318" /><span>{pick(locale, `“${pts[i].label}” está en el SOV pero no en el mapa del asegurado — verificar dirección o posible sobre-declaración.`, `“${pts[i].label}” is in the SOV but not on the insured's map — verify address or possible over-declaration.`, `“${pts[i].label}” 在 SOV 中但不在被保险人地图上 — 请核实地址或可能存在虚报。`)}</span></div>
+))}
+{conc.insOnly.map((j) => (
+<div key={`i${j}`} style={{ display: "flex", alignItems: "flex-start", gap: 8, padding: "8px 10px", background: "#fbf1da", borderRadius: 8, fontSize: "0.72rem", color: "#6b4600" }}><Ic n="pin" s={14} c="#8a5a00" /><span>{pick(locale, `“${insPts[j].label}” lo opera el asegurado pero falta en el SOV — posible exposición no declarada.`, `“${insPts[j].label}” is operated by the insured but missing from the SOV — possible undeclared exposure.`, `“${insPts[j].label}” 由被保险人运营但 SOV 中缺失 — 可能存在未申报风险。`)}</span></div>
+))}
+</div>
+)}
+</div>
+)}
+<div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 8, padding: "11px 16px", borderTop: "1px solid #eef2f8", background: "#fafcfe" }}>
+<span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: "0.7rem", color: "#64748b", flex: "0 0 auto" }}><Ic n="world" s={14} c="#64748b" />{pick(locale, "Mapa del asegurado (Google My Maps):", "Insured's map (Google My Maps):", "被保险人地图 (Google My Maps):")}</span>
+<input type="url" value={importUrl} onChange={(e) => setImportUrl(e.target.value)} placeholder="https://www.google.com/maps/d/…" style={{ flex: 1, minWidth: 180, border: "1px solid #d9e2f0", borderRadius: 8, padding: "7px 10px", fontSize: "0.74rem", color: "#1f2a44" }} />
+<button type="button" disabled={importing || !importUrl.trim()} onClick={importMap} style={{ display: "inline-flex", alignItems: "center", gap: 6, border: "none", background: "#2f6fb3", color: "#fff", fontSize: "0.74rem", fontWeight: 700, padding: "8px 14px", borderRadius: 999, cursor: importing || !importUrl.trim() ? "default" : "pointer", opacity: importing || !importUrl.trim() ? 0.6 : 1, flex: "0 0 auto" }}><Ic n={importing ? "refresh" : "filedown"} s={14} c="#fff" />{importing ? pick(locale, "Importando…", "Importing…", "导入中…") : pick(locale, "Importar", "Import", "导入")}</button>
+{importMsg && <span style={{ width: "100%", fontSize: "0.7rem", color: importMsg.ok ? "#0f6e56" : "#b42318" }}>{importMsg.text}</span>}
+</div>
 {expanded && (
 <div onClick={() => setExpanded(false)} style={{ position: "fixed", inset: 0, background: "rgba(15,23,42,0.55)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center", padding: "3vh 3vw" }}>
 <div onClick={(e) => e.stopPropagation()} style={{ width: "94vw", maxWidth: 1100, height: "86vh", background: "#fff", borderRadius: 18, overflow: "hidden", display: "flex", flexDirection: "column", boxShadow: "0 24px 60px rgba(15,23,42,0.35)" }}>
