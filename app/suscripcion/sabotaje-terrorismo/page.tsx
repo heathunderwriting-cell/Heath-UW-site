@@ -1106,6 +1106,189 @@ return (
 );
 }
 
+// Plantilla única del correo de cotización (la usan el workbench manual y el autopiloto).
+type QuoteFields = { participation?: any; premium?: any; rate?: any; commission?: any; deductible?: any; capacity?: any; validity?: any; terms?: any };
+function buildQuoteEmail(mailLocale: string, insured: string, line: string | null, cur: string, q: QuoteFields) {
+const subject = `${pick(mailLocale, "Cotización", "Quote", "报价")} – ${insured}`;
+const blank = (x: any) => x == null || x === "";
+const body =
+`${pick(mailLocale, "Estimados,", "Dear team,", "您好，")}
+
+${pick(mailLocale, "En relación con", "Regarding", "关于")} ${insured} (${line ?? "S&T"}), ${pick(mailLocale, "nos complace compartir nuestra cotización:", "we are pleased to share our quote:", "我们很高兴提供报价：")}
+
+- ${pick(mailLocale, "Participación", "Participation", "参与比例")}: ${blank(q.participation) ? "—" : q.participation}%
+- ${pick(mailLocale, "Prima", "Premium", "保费")}: ${blank(q.premium) ? "—" : `${cur} ${q.premium}`}
+- ${pick(mailLocale, "Tasa", "Rate", "费率")}: ${blank(q.rate) ? "—" : q.rate}%
+- ${pick(mailLocale, "Comisión", "Commission", "佣金")}: ${blank(q.commission) ? "—" : q.commission}%
+- ${pick(mailLocale, "Deducible", "Deductible", "免赔额")}: ${blank(q.deductible) ? "—" : q.deductible}
+- ${pick(mailLocale, "Capacidad", "Capacity", "承保能力")}: ${blank(q.capacity) ? "—" : `${cur} ${q.capacity}`}
+- ${pick(mailLocale, "Vigencia", "Validity", "有效期")}: ${blank(q.validity) ? "—" : q.validity}
+${q.terms ? `\n${pick(mailLocale, "Condiciones:", "Conditions:", "条件：")} ${q.terms}` : ""}
+
+${pick(mailLocale, "Quedamos atentos a sus comentarios.", "We remain at your disposal.", "期待您的回复。")}
+Heath Underwriting`;
+return { subject, body };
+}
+
+// PROTOTIPO de suscripción automática (autopiloto). Encadena due diligence (OFAC + banderas),
+// tarifa técnica, completitud, territorio y autoridad de binder; evalúa "puertas". Si todas quedan
+// en verde, propone la cotización a tasa técnica, redacta el correo y lo deja LISTO PARA ENVIAR.
+// Nunca envía ni declina por sí solo: el envío al broker queda detrás de un click humano.
+type Gate = { key: string; label: string; tone: "green" | "amber" | "red"; detail: string };
+function AutopilotPanel({ row, locale }: { row: CaseRow; locale: string }) {
+const mailLocale = row.correspondence_lang ?? "es";
+const cur = row.currency || "USD";
+const [busy, setBusy] = useState(false);
+const [run, setRun] = useState<{ outcome: "ready" | "review" | "blocked"; gates: Gate[]; email?: { subject: string; body: string }; saved?: boolean } | null>(null);
+const [sent, setSent] = useState(false);
+const [err, setErr] = useState<string | null>(null);
+useEffect(() => { setRun(null); setSent(false); setErr(null); }, [row.id]);
+
+const Dot = ({ t }: { t: Gate["tone"] }) => {
+const c = t === "green" ? GREEN.fg : t === "amber" ? AMBER.fg : RED.fg;
+return <span style={{ width: 9, height: 9, borderRadius: 999, background: c, flex: "0 0 auto", display: "inline-block" }} />;
+};
+
+async function execute() {
+setBusy(true); setErr(null); setSent(false); setRun(null);
+try {
+const supabase = createSupabaseBrowserClient();
+// 1) Autoridad de binder (territorio + tope país/moneda)
+let cap: number | null = null, capCur: string | null = null, allowed = false;
+try {
+const { data } = await supabase.from("binder_authority_rules").select("currency,max_insured_limit,is_allowed").eq("line_of_business", "S&T").ilike("country", row.country || "");
+const ok = ((data ?? []) as any[]).filter((r) => r.is_allowed);
+allowed = ok.length > 0;
+const m = ok.find((r) => r.currency === cur) ?? ok.find((r) => r.currency === "USD");
+if (m) { cap = Number(m.max_insured_limit); capCur = m.currency; }
+} catch { /* tratado como no permitido abajo */ }
+// 2) Due diligence: OFAC + banderas rojas
+let ofacStatus: string | null = null, redFlags: string[] = [];
+try {
+const { data } = await supabase.functions.invoke("business-intelligence", { body: { submission_id: row.id } });
+if (data && (data as any).ok) { ofacStatus = (data as any).ofac?.status ?? null; redFlags = (data as any).red_flags ?? []; }
+} catch { /* se usa el estado de compliance almacenado */ }
+if (!ofacStatus) ofacStatus = row.ofac === "clear" ? "clear" : row.ofac === "hit" ? "hit" : "review";
+// 3) Tarifa técnica
+let pricing: any = null;
+try {
+const { data } = await supabase.functions.invoke("compute-technical-rate", { body: { submission_id: row.id } });
+if (data && (data as any).ok) pricing = data;
+} catch { /* gate de pricing en rojo abajo */ }
+
+const gates: Gate[] = [];
+const readyOk = row.slip === "met" && row.sov === "met" && row.loss === "met";
+gates.push({ key: "readiness", label: pick(locale, "Completitud (slip/SOV/siniestros)", "Readiness (slip/SOV/loss)", "齐备度"), tone: readyOk ? "green" : "amber", detail: readyOk ? pick(locale, "Documentación completa", "All docs present", "齐全") : pick(locale, "Faltan documentos", "Missing documents", "缺少文件") });
+const os = (ofacStatus || "").toLowerCase();
+const ofacClear = os.includes("clear") || os.includes("limpio") || os.includes("通过");
+const ofacHit = os.includes("hit") || os.includes("match") || os.includes("命中");
+gates.push({ key: "ofac", label: pick(locale, "OFAC / sanciones", "OFAC / sanctions", "OFAC/制裁"), tone: ofacClear ? "green" : ofacHit ? "red" : "amber", detail: ofacStatus ?? "—" });
+gates.push({ key: "flags", label: pick(locale, "Banderas rojas (inteligencia)", "Red flags (intelligence)", "风险信号"), tone: redFlags.length === 0 ? "green" : "amber", detail: redFlags.length === 0 ? pick(locale, "Sin alertas", "None", "无") : `${redFlags.length} ${pick(locale, "alerta(s)", "flag(s)", "条")}` });
+gates.push({ key: "territory", label: pick(locale, "Territorio del binder", "Binder territory", "承保区域"), tone: allowed ? "green" : "red", detail: allowed ? (row.country || "—") : pick(locale, "Fuera de binder", "Out of binder", "区域外") });
+const capOk = cap != null;
+const withinCap = capOk && row.insured_limit != null ? (row.insured_limit as number) <= (cap as number) : false;
+gates.push({ key: "authority", label: pick(locale, "Autoridad (tope país/moneda)", "Authority (country/currency cap)", "承保授权"), tone: !capOk ? "amber" : withinCap ? "green" : "red", detail: capOk ? `${capCur} ${fmtMoney(cap, capCur)}` : pick(locale, "Sin tope en la moneda", "No cap in currency", "无该币种限额") });
+const priceOk = !!(pricing && pricing.technical_rate != null);
+gates.push({ key: "pricing", label: pick(locale, "Tarifa técnica (suficiencia)", "Technical rate (sufficiency)", "技术费率"), tone: priceOk ? "green" : "red", detail: priceOk ? `${(pricing.technical_rate * 100).toFixed(3)}%` : pick(locale, "No calculable", "Not computable", "无法计算") });
+
+const anyRed = gates.some((g) => g.tone === "red");
+const anyAmber = gates.some((g) => g.tone === "amber");
+
+if (!anyRed && !anyAmber && priceOk && row.insured_limit != null) {
+const ratePct = Number((pricing.technical_rate * 100).toFixed(3));
+const premium = Math.round((row.insured_limit as number) * pricing.technical_rate);
+const commissionPct = pricing.inputs?.commission != null ? Number((pricing.inputs.commission * 100).toFixed(2)) : null;
+const participation = 100;
+const capacity = row.insured_limit as number;
+const validity = pick(mailLocale, "12 meses", "12 months", "12 个月");
+const terms = pick(mailLocale, "Sujeto a las cláusulas y exclusiones estándar S&T del binder.", "Subject to the binder's standard S&T clauses and exclusions.", "受承保标准 S&T 条款及除外责任约束。");
+const email = buildQuoteEmail(mailLocale, row.insured ?? "—", row.line_of_business, cur, { participation, premium, rate: ratePct, commission: commissionPct, deductible: null, capacity, validity, terms });
+let saved = false;
+try {
+let r = await supabase.rpc("case_action", { p_id: row.id, p_stage: "cotizacion" });
+if (r.error) throw r.error;
+r = await supabase.rpc("save_quote", { p_id: row.id, p_participation: participation, p_premium: premium, p_rate: ratePct, p_commission: commissionPct, p_deductible: null, p_capacity: capacity, p_validity: validity, p_terms: terms });
+if (r.error) throw r.error;
+saved = true;
+} catch (e: any) { setErr(e?.message ?? "Error guardando la cotización"); }
+setRun({ outcome: "ready", gates, email, saved });
+} else {
+setRun({ outcome: anyRed ? "blocked" : "review", gates });
+}
+} catch (e: any) { setErr(e?.message ?? "Error"); } finally { setBusy(false); }
+}
+
+async function release() {
+if (!run?.email) return;
+setBusy(true); setErr(null);
+try {
+const supabase = createSupabaseBrowserClient();
+const { error } = await supabase.rpc("enqueue_broker_email", { p_submission_id: row.id, p_kind: "quote", p_subject: run.email.subject, p_body: run.email.body });
+if (error) throw error;
+setSent(true);
+} catch (e: any) { setErr(e?.message ?? "Error enviando"); } finally { setBusy(false); }
+}
+
+const banner = run?.outcome === "ready"
+? { bg: GREEN.bg, fg: GREEN.fg, t: pick(locale, "Listo para enviar — falta tu click", "Ready to send — one click left", "已就绪 — 等待点击") }
+: run?.outcome === "review"
+? { bg: AMBER.bg, fg: AMBER.fg, t: pick(locale, "Requiere revisión humana", "Needs human review", "需人工复核") }
+: run?.outcome === "blocked"
+? { bg: RED.bg, fg: RED.fg, t: pick(locale, "No apto para automático", "Not eligible for auto", "不适用自动核保") }
+: null;
+
+return (
+<PanelCard>
+<div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+<span style={{ width: 28, height: 28, borderRadius: 8, background: BLUE.bg, color: BLUE.fg, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "0 0 auto" }}><Ic n="calc" s={16} c={BLUE.fg} /></span>
+<div>
+<p style={{ fontSize: "0.62rem", fontWeight: 700, letterSpacing: "0.16em", color: "#2f6fb3" }}>{pick(locale, "AUTOPILOTO", "AUTOPILOT", "自动核保")}</p>
+<h3 className="text-primary" style={{ fontSize: "0.98rem", fontWeight: 700 }}>{pick(locale, "Suscripción automática", "Automatic underwriting", "自动核保")}</h3>
+</div>
+</div>
+<p className="text-secondary" style={{ fontSize: "0.74rem", marginTop: 8 }}>{pick(locale, "Corre due diligence, OFAC, tarifa técnica y autoridad de binder; si todo queda en verde, redacta la cotización y la deja lista. El envío al broker siempre requiere tu click.", "Runs due diligence, OFAC, technical rate and binder authority; if all green, it drafts the quote and leaves it ready. Sending to the broker always needs your click.", "运行尽职调查、OFAC、技术费率与承保授权；若全部通过，自动起草报价并待发送。发送给经纪人始终需要您点击。")}</p>
+
+<button type="button" disabled={busy} onClick={execute} style={{ marginTop: 12, width: "100%", border: "none", background: busy ? "#9bbbe0" : BLUE.fg, color: "#fff", fontSize: "0.8rem", fontWeight: 700, padding: "10px 14px", borderRadius: 999, cursor: busy ? "default" : "pointer" }}>
+{busy ? pick(locale, "Procesando…", "Processing…", "处理中…") : run ? pick(locale, "Volver a ejecutar", "Run again", "重新运行") : pick(locale, "Ejecutar suscripción automática", "Run automatic underwriting", "运行自动核保")}
+</button>
+
+{err && <p style={{ fontSize: "0.74rem", color: RED.fg, marginTop: 8 }}>{err}</p>}
+
+{run && (
+<div style={{ marginTop: 12 }}>
+{banner && <div style={{ background: banner.bg, color: banner.fg, borderRadius: 10, padding: "8px 11px", fontSize: "0.78rem", fontWeight: 700, marginBottom: 10 }}>{banner.t}</div>}
+<div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+{run.gates.map((g) => (
+<div key={g.key} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: "0.76rem" }}>
+<Dot t={g.tone} />
+<span className="text-primary" style={{ fontWeight: 600, flex: 1, minWidth: 0 }}>{g.label}</span>
+<span className="text-secondary" style={{ fontSize: "0.72rem", textAlign: "right" }}>{g.detail}</span>
+</div>
+))}
+</div>
+
+{run.outcome === "ready" && run.email && (
+<div style={{ marginTop: 12 }}>
+<p className="text-secondary" style={{ fontSize: "0.7rem", marginBottom: 6 }}>{pick(locale, "Correo redactado", "Drafted email", "已起草邮件")} · {mailLocale.toUpperCase()}{run.saved ? ` · ✓ ${pick(locale, "cotización guardada", "quote saved", "报价已保存")}` : ""}</p>
+<div style={{ border: "1px solid #d9e2f0", borderRadius: 12, padding: 11, maxHeight: 220, overflow: "auto" }}>
+<p className="text-primary" style={{ fontSize: "0.76rem", fontWeight: 600 }}>{run.email.subject}</p>
+<pre className="text-secondary" style={{ whiteSpace: "pre-wrap", fontSize: "0.72rem", marginTop: 6, fontFamily: "inherit" }}>{run.email.body}</pre>
+</div>
+<button type="button" disabled={busy || sent} onClick={release} style={{ marginTop: 10, width: "100%", border: "none", background: sent ? GREEN.fg : "#0f6e56", color: "#fff", fontSize: "0.82rem", fontWeight: 700, padding: "11px 14px", borderRadius: 999, cursor: busy || sent ? "default" : "pointer", opacity: busy ? 0.7 : 1 }}>
+{sent ? `✓ ${pick(locale, "Correo en cola para envío", "Email queued to send", "邮件已加入队列")}` : `${pick(locale, "Enviar al broker", "Send to broker", "发送给经纪人")} · 1 ${pick(locale, "clic", "click", "击")}`}
+</button>
+</div>
+)}
+
+{run.outcome !== "ready" && (
+<p className="text-secondary" style={{ fontSize: "0.72rem", marginTop: 10 }}>{pick(locale, "Usa el panel de decisión para resolver los puntos marcados (pedir info, abrir workbench o declinar).", "Use the decision panel to resolve the flagged items (request info, open workbench or decline).", "请用决策面板处理标记项（索取信息、打开工作台或拒绝）。")}</p>
+)}
+</div>
+)}
+</PanelCard>
+);
+}
+
 function SlipWorkbench({ row, locale, mailLocale, busy, onBack, onSetLang, onSaveQuote, onSendEmail }: {
 row: CaseRow; locale: string; mailLocale: string; busy: boolean;
 onBack: () => void;
@@ -1141,23 +1324,7 @@ p_deductible: deductible || null, p_capacity: num(capacity), p_validity: validit
 setQSaved(true);
 }
 
-const emailSubject = `${pick(mailLocale, "Cotización", "Quote", "报价")} – ${row.insured}`;
-const emailBody =
-`${pick(mailLocale, "Estimados,", "Dear team,", "您好，")}
-
-${pick(mailLocale, "En relación con", "Regarding", "关于")} ${row.insured} (${row.line_of_business ?? "S&T"}), ${pick(mailLocale, "nos complace compartir nuestra cotización:", "we are pleased to share our quote:", "我们很高兴提供报价：")}
-
-- ${pick(mailLocale, "Participación", "Participation", "参与比例")}: ${participation || "—"}%
-- ${pick(mailLocale, "Prima", "Premium", "保费")}: ${premium ? `${cur} ${premium}` : "—"}
-- ${pick(mailLocale, "Tasa", "Rate", "费率")}: ${rate || "—"}%
-- ${pick(mailLocale, "Comisión", "Commission", "佣金")}: ${commission || "—"}%
-- ${pick(mailLocale, "Deducible", "Deductible", "免赔额")}: ${deductible || "—"}
-- ${pick(mailLocale, "Capacidad", "Capacity", "承保能力")}: ${capacity ? `${cur} ${capacity}` : "—"}
-- ${pick(mailLocale, "Vigencia", "Validity", "有效期")}: ${validity || "—"}
-${terms ? `\n${pick(mailLocale, "Condiciones:", "Conditions:", "条件：")} ${terms}` : ""}
-
-${pick(mailLocale, "Quedamos atentos a sus comentarios.", "We remain at your disposal.", "期待您的回复。")}
-Heath Underwriting`;
+const { subject: emailSubject, body: emailBody } = buildQuoteEmail(mailLocale, row.insured ?? "—", row.line_of_business, cur, { participation, premium, rate, commission, deductible, capacity, validity, terms });
 
 const slipRow = { insured: row.insured ?? "—", broker_name: row.broker_name, line_of_business: row.line_of_business, country: row.country, currency: row.currency, insured_limit: row.insured_limit };
 
@@ -1454,6 +1621,7 @@ return (
 <div style={{ display: "flex", gap: 18, alignItems: "flex-start", flexWrap: "wrap" }}>
 <InboxReviewPanel rows={cases as ReviewRow[]} selectedId={selected?.id} onSelect={(r) => setSelected(cases.find((c) => c.id === r.id) ?? null)} />
 <div style={{ flex: 1, minWidth: 320, display: "flex", flexDirection: "column", gap: 14 }}>
+{selected && <AutopilotPanel row={selected} locale={locale} />}
 <CaseDetailPanel row={selected} locale={locale} busy={busy} onSetLang={onSetLang} />
 </div>
 <div style={{ width: 320, minWidth: 300, display: "flex", flexDirection: "column", gap: 14 }}>
