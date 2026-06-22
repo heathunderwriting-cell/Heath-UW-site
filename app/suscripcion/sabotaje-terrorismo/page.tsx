@@ -327,9 +327,9 @@ return (
 ))}
 </div>
 
-{(logoCandidates(data?.domain ?? null, logo).length > 0 || website) && (
+{website && (
 <div style={{ display: "flex", alignItems: "center", gap: 11, padding: "10px 12px", border: "1px solid #eef2f8", borderRadius: 12, marginBottom: 12, background: "#fbfdff" }}>
-<LogoImg domain={data?.domain ?? null} stored={logo} size={40} rounded={9} box />
+<SiteLogo domain={data?.domain ?? null} size={40} rounded={9} />
 <span style={{ flex: 1, minWidth: 0 }}>
 {website && (
 <a href={website} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: "0.82rem", fontWeight: 600, color: "#2f6fb3", textDecoration: "none", wordBreak: "break-all" }}>{website.replace(/^https?:\/\//, "").replace(/\/$/, "")}<Ic n="ext" s={13} /></a>
@@ -768,52 +768,62 @@ return (
 );
 }
 
-function logoCandidates(domain: string | null, stored: string | null): string[] {
-const list: string[] = [];
+// Solo intentamos el ícono propio del sitio: estas rutas dan 404 limpio cuando no existen,
+// a diferencia de favicone/DuckDuckGo/Google que devuelven un placeholder gris que "carga bien".
+// Clearbit quedó descontinuado, así que cualquier URL stored de clearbit.com se ignora.
+function logoCandidates(domain: string | null): string[] {
 const d = String(domain || "").trim().toLowerCase().replace(/^https?:\/\//, "").replace(/\/.*$/, "");
-if (d) {
-list.push("https://favicone.com/" + d + "?s=128");
-list.push("https://icons.duckduckgo.com/ip3/" + d + ".ico");
-list.push("https://www.google.com/s2/favicons?domain=" + d + "&sz=128");
-}
-// El logo histórico de Clearbit ya no resuelve (API descontinuada); se ignora.
-if (stored && stored.indexOf("clearbit.com") === -1) list.push(stored);
-return list;
+if (!d) return [];
+return [
+"https://" + d + "/apple-touch-icon.png",
+"https://" + d + "/apple-touch-icon-precomposed.png",
+"https://" + d + "/favicon.ico",
+];
 }
 
-function LogoImg({ domain, stored, size, rounded, box, onGone }: { domain: string | null; stored: string | null; size: number; rounded: number; box?: boolean; onGone?: () => void }) {
-const cands = logoCandidates(domain, stored);
+// Renderiza el ícono propio del sitio cuando carga de verdad; mientras tanto está oculto.
+// onLoaded avisa al padre para revelar el marco; onGone avisa cuando se agotan los candidatos.
+function LogoImg({ domain, size, rounded, onLoaded, onGone }: { domain: string | null; size: number; rounded: number; onLoaded?: () => void; onGone?: () => void }) {
+const cands = logoCandidates(domain);
 const key = cands.join("|");
 const [idx, setIdx] = useState(0);
 useEffect(() => { setIdx(0); }, [key]);
 if (!cands.length || idx >= cands.length) return null;
-const st: any = { width: size, height: size, borderRadius: rounded, objectFit: "contain" };
-if (box) { st.border = "1px solid #e8eef6"; st.background = "#fff"; st.flex = "0 0 auto"; }
-return <img src={cands[idx]} alt="" width={size} height={size} style={st} onError={() => { const n = idx + 1; setIdx(n); if (n >= cands.length && onGone) onGone(); }} />;
+return <img src={cands[idx]} alt="" width={size} height={size} style={{ width: size, height: size, borderRadius: rounded, objectFit: "contain" }} onLoad={() => { if (onLoaded) onLoaded(); }} onError={() => { const n = idx + 1; setIdx(n); if (n >= cands.length && onGone) onGone(); }} />;
+}
+
+// Marco con el ícono propio del sitio; se revela solo cuando la imagen carga de verdad, si no devuelve null.
+function SiteLogo({ domain, size, rounded }: { domain: string | null; size: number; rounded: number }) {
+const [loaded, setLoaded] = useState(false);
+if (logoCandidates(domain).length === 0) return null;
+return (
+<span style={{ display: loaded ? "inline-flex" : "none", alignItems: "center", justifyContent: "center", width: size + 10, height: size + 10, borderRadius: rounded + 2, border: "1px solid #e8eef6", background: "#fff", flex: "0 0 auto", overflow: "hidden" }}>
+<LogoImg domain={domain} size={size} rounded={rounded} onLoaded={() => setLoaded(true)} />
+</span>
+);
 }
 
 function InsuredLogoBadge({ submissionId }: { submissionId: string }) {
-const [logo, setLogo] = useState<string | null>(null);
 const [domain, setDomain] = useState<string | null>(null);
-const [gone, setGone] = useState(false);
+const [loaded, setLoaded] = useState(false);
 useEffect(() => {
 let active = true;
 (async () => {
 try {
 const supabase = createSupabaseBrowserClient();
-const { data } = await supabase.from("submission_intelligence").select("logo,domain").eq("submission_id", submissionId).maybeSingle();
-if (active && data) { setGone(false); setLogo((data.logo as string) ?? null); setDomain((data.domain as string) ?? null); }
+const { data } = await supabase.from("submission_intelligence").select("domain").eq("submission_id", submissionId).maybeSingle();
+if (active && data) { setLoaded(false); setDomain((data.domain as string) ?? null); }
 } catch { /* sin caché: el panel de inteligencia lo llenará al buscar */ }
 })();
 return () => { active = false; };
 }, [submissionId]);
-const hasCands = logoCandidates(domain, logo).length > 0;
-if (hasCands && !gone) return (
-<span style={{ width: 58, height: 58, borderRadius: 14, background: "#fff", border: "1px solid #e8eef6", display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "0 0 auto", overflow: "hidden" }}>
-<LogoImg domain={domain} stored={logo} size={48} rounded={10} onGone={() => setGone(true)} />
+const hasCands = logoCandidates(domain).length > 0;
+return (
+<span style={{ width: 58, height: 58, borderRadius: 14, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "0 0 auto", overflow: "hidden", background: loaded ? "#fff" : "#e3effb", border: loaded ? "1px solid #e8eef6" : "none", position: "relative" }}>
+{!loaded && <Ic n="clipboard" s={28} c="#2f6fb3" />}
+{hasCands && <span style={{ position: loaded ? "static" : "absolute", opacity: loaded ? 1 : 0, width: 0, height: 0, overflow: "hidden" }}><LogoImg domain={domain} size={48} rounded={10} onLoaded={() => setLoaded(true)} /></span>}
 </span>
 );
-return (<span style={{ width: 58, height: 58, borderRadius: 14, background: "#e3effb", color: "#2f6fb3", display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "0 0 auto" }}><Ic n="clipboard" s={28} c="#2f6fb3" /></span>);
 }
 
 function CaseDetailPanel({ row, locale, busy, onSetLang }: { row: CaseRow | null; locale: string; busy: boolean; onSetLang: (id: string, lang: string) => void }) {
