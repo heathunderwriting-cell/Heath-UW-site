@@ -1144,13 +1144,29 @@ const [loading, setLoading] = useState(true);
 const [run, setRun] = useState<AutopilotRun | null>(null);
 const [sent, setSent] = useState(false);
 const [err, setErr] = useState<string | null>(null);
+const [enabled, setEnabled] = useState(true);
 
 async function loadLatest() {
 const supabase = createSupabaseBrowserClient();
-const { data } = await supabase.from("auto_underwrite_runs").select(AUTOPILOT_COLS).eq("submission_id", row.id).order("created_at", { ascending: false }).limit(1);
+const [{ data }, { data: subData }] = await Promise.all([
+supabase.from("auto_underwrite_runs").select(AUTOPILOT_COLS).eq("submission_id", row.id).order("created_at", { ascending: false }).limit(1),
+supabase.from("submissions").select("autopilot_enabled").eq("id", row.id).single(),
+]);
 const r = (data && (data[0] as AutopilotRun)) || null;
 setRun(r); setSent(!!r?.released);
+if (subData) setEnabled((subData as any).autopilot_enabled !== false);
 return r;
+}
+
+// Per-case power switch — flips submissions.autopilot_enabled (the trigger and edge fn both respect it).
+async function toggleEnabled() {
+const next = !enabled;
+setEnabled(next); setErr(null);
+try {
+const supabase = createSupabaseBrowserClient();
+const { error } = await supabase.rpc("set_autopilot_enabled", { p_id: row.id, p_enabled: next });
+if (error) throw error;
+} catch (e: any) { setEnabled(!next); setErr(e?.message ?? "Error"); }
 }
 useEffect(() => {
 let active = true;
@@ -1204,9 +1220,15 @@ return (
 <PanelCard>
 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
 <span style={{ width: 28, height: 28, borderRadius: 8, background: BLUE.bg, color: BLUE.fg, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "0 0 auto" }}><Ic n="calc" s={16} c={BLUE.fg} /></span>
-<div>
+<div style={{ minWidth: 0 }}>
 <p style={{ fontSize: "0.62rem", fontWeight: 700, letterSpacing: "0.16em", color: "#2f6fb3" }}>{pick(locale, "AUTOPILOTO", "AUTOPILOT", "自动核保")}</p>
 <h3 className="text-primary" style={{ fontSize: "0.98rem", fontWeight: 700 }}>{pick(locale, "Suscripción automática", "Automatic underwriting", "自动核保")}</h3>
+</div>
+<div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 8, flex: "0 0 auto" }}>
+<span style={{ fontSize: "0.66rem", fontWeight: 700, color: enabled ? GREEN.fg : "#8b95a3" }}>{enabled ? pick(locale, "Encendido", "On", "开") : pick(locale, "Apagado", "Off", "关")}</span>
+<button type="button" role="switch" aria-checked={enabled} onClick={toggleEnabled} title={enabled ? pick(locale, "Autopiloto encendido para este caso", "Autopilot on for this case", "本案例自动核保已开启") : pick(locale, "Autopiloto apagado para este caso", "Autopilot off for this case", "本案例自动核保已关闭")} style={{ width: 42, height: 24, borderRadius: 999, border: "none", padding: 2, cursor: "pointer", background: enabled ? GREEN.fg : "#c9d2dd", transition: "background .15s", flex: "0 0 auto" }}>
+<span style={{ display: "block", width: 20, height: 20, borderRadius: 999, background: "#fff", boxShadow: "0 1px 2px rgba(0,0,0,0.25)", transform: enabled ? "translateX(18px)" : "translateX(0)", transition: "transform .15s" }} />
+</button>
 </div>
 </div>
 <p className="text-secondary" style={{ fontSize: "0.74rem", marginTop: 8 }}>{pick(locale, "Al llegar el correo del broker, el sistema corre due diligence, OFAC, tarifa técnica y autoridad de binder; si todo queda en verde, redacta la cotización y la deja lista. El envío al broker siempre requiere tu click.", "When the broker email arrives, the system runs due diligence, OFAC, technical rate and binder authority; if all green, it drafts the quote and leaves it ready. Sending to the broker always needs your click.", "经纪人邮件到达时，系统自动运行尽职调查、OFAC、技术费率与承保授权；若全部通过，自动起草报价并待发送。发送给经纪人始终需要您点击。")}</p>
@@ -1215,9 +1237,11 @@ return (
 <p className="text-secondary" style={{ fontSize: "0.68rem", marginTop: 8 }}>{autoRun ? pick(locale, "Ejecutado automáticamente al recibir el correo", "Run automatically when the email arrived", "邮件到达时自动运行") : pick(locale, "Ejecución manual", "Manual run", "手动运行")} · {ranAt}</p>
 )}
 
-<button type="button" disabled={busy || loading} onClick={execute} style={{ marginTop: 12, width: "100%", border: "none", background: busy || loading ? "#9bbbe0" : BLUE.fg, color: "#fff", fontSize: "0.8rem", fontWeight: 700, padding: "10px 14px", borderRadius: 999, cursor: busy || loading ? "default" : "pointer" }}>
+<button type="button" disabled={busy || loading || !enabled} onClick={execute} style={{ marginTop: 12, width: "100%", border: "none", background: (busy || loading || !enabled) ? "#9bbbe0" : BLUE.fg, color: "#fff", fontSize: "0.8rem", fontWeight: 700, padding: "10px 14px", borderRadius: 999, cursor: (busy || loading || !enabled) ? "default" : "pointer", opacity: !enabled ? 0.6 : 1 }}>
 {busy ? pick(locale, "Procesando…", "Processing…", "处理中…") : loading ? pick(locale, "Cargando…", "Loading…", "加载中…") : run ? pick(locale, "Volver a ejecutar", "Run again", "重新运行") : pick(locale, "Ejecutar suscripción automática", "Run automatic underwriting", "运行自动核保")}
 </button>
+
+{!enabled && <p className="text-secondary" style={{ fontSize: "0.72rem", marginTop: 8 }}>{pick(locale, "Autopiloto apagado para este caso: no se ejecuta al recibir el correo ni manualmente. Enciéndelo con el interruptor.", "Autopilot is off for this case: it won't run on email arrival or manually. Turn it on with the switch.", "本案例自动核保已关闭：邮件到达或手动均不会运行。请用开关开启。")}</p>}
 
 {err && <p style={{ fontSize: "0.74rem", color: RED.fg, marginTop: 8 }}>{err}</p>}
 
@@ -1236,21 +1260,23 @@ return (
 ))}
 </div>
 
-{run.outcome === "ready" && run.email_subject && (
+{run.email_subject && (
 <div style={{ marginTop: 12 }}>
 <p className="text-secondary" style={{ fontSize: "0.7rem", marginBottom: 6 }}>{pick(locale, "Correo redactado", "Drafted email", "已起草邮件")} · {mailLocale.toUpperCase()}{run.proposed?.saved ? ` · ✓ ${pick(locale, "cotización guardada", "quote saved", "报价已保存")}` : ""}</p>
 <div style={{ border: "1px solid #d9e2f0", borderRadius: 12, padding: 11, maxHeight: 220, overflow: "auto" }}>
 <p className="text-primary" style={{ fontSize: "0.76rem", fontWeight: 600 }}>{run.email_subject}</p>
 <pre className="text-secondary" style={{ whiteSpace: "pre-wrap", fontSize: "0.72rem", marginTop: 6, fontFamily: "inherit" }}>{run.email_body}</pre>
 </div>
+{run.outcome !== "ready" && (
+<div style={{ marginTop: 10, background: AMBER.bg, color: AMBER.fg, borderRadius: 10, padding: "8px 11px", fontSize: "0.72rem", fontWeight: 600 }}>{pick(locale, "Esta cotización no pasó todas las puertas en verde. Revisa los puntos marcados arriba antes de enviarla.", "This quote did not clear every gate green. Review the flagged items above before sending.", "此报价未全部通过绿色检查。发送前请复核上方标记项。")}</div>
+)}
 <button type="button" disabled={busy || sent} onClick={release} style={{ marginTop: 10, width: "100%", border: "none", background: sent ? GREEN.fg : "#0f6e56", color: "#fff", fontSize: "0.82rem", fontWeight: 700, padding: "11px 14px", borderRadius: 999, cursor: busy || sent ? "default" : "pointer", opacity: busy ? 0.7 : 1 }}>
 {sent ? `✓ ${pick(locale, "Correo en cola para envío", "Email queued to send", "邮件已加入队列")}` : `${pick(locale, "Enviar al broker", "Send to broker", "发送给经纪人")} · 1 ${pick(locale, "clic", "click", "击")}`}
 </button>
-</div>
-)}
-
 {run.outcome !== "ready" && (
-<p className="text-secondary" style={{ fontSize: "0.72rem", marginTop: 10 }}>{pick(locale, "Usa el panel de decisión para resolver los puntos marcados (pedir info, abrir workbench o declinar).", "Use the decision panel to resolve the flagged items (request info, open workbench or decline).", "请用决策面板处理标记项（索取信息、打开工作台或拒绝）。")}</p>
+<p className="text-secondary" style={{ fontSize: "0.72rem", marginTop: 8 }}>{pick(locale, "También puedes usar el panel de decisión para pedir info, abrir el workbench o declinar.", "You can also use the decision panel to request info, open the workbench or decline.", "您也可使用决策面板索取信息、打开工作台或拒绝。")}</p>
+)}
+</div>
 )}
 </div>
 )}
