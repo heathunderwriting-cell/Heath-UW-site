@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { ChipBackground } from "@/components/ChipBackground";
+import "@/styles/workbench-product.css";
 
 export const dynamic = "force-dynamic";
 

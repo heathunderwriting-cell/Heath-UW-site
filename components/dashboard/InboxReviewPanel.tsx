@@ -191,7 +191,8 @@ function Card({
 
   return (
     <div
-      className="bg-card"
+      className="bg-card wb-inbox-card"
+      data-selected={selected ? "true" : "false"}
       onClick={() => onSelect?.(row)}
       style={{
         border: `1px solid ${selected ? "#4a9eff" : "#d9e2f0"}`,

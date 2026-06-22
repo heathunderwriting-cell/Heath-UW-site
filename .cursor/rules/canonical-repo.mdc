@@ -1,0 +1,20 @@
+---
+description: Canonical repo and deployment target for heathuw.com
+alwaysApply: true
+---
+
+# Heath-UW-site is the production repo
+
+- All changes for **heathuw.com** must land in this repository (`heathunderwriting-cell/Heath-UW-site`).
+- Local path: `~/Documents/GitHub/Heath-UW-site`
+- Do **not** implement production work in `~/Documents/Claude/Projects/Heath-UW` (`juanpablo-maker/Heath-UW`) — that fork is not deployed.
+
+## Architecture notes
+
+- **S&T module** (`/suscripcion/sabotaje-terrorismo`): custom page with Autopilot, InboxReviewPanel, Slip workbench — not the generic `ProductWorkbench` flow.
+- **Marketing pages**: use `components/marketing/Cinematic` — do not replace with the navy-neon shell from the other fork.
+- **Suscripción layout**: light blue dashboard shell (`#eaf1fb`) with `ChipBackground`.
+
+## Visual-only changes
+
+When improving UI, preserve auth, RPC calls, autopilot logic, broker email flows, and decision handlers.

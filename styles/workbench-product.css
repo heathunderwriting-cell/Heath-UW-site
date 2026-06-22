@@ -1,0 +1,43 @@
+/* Product-line workbench (/suscripcion/*) — visual depth only */
+
+.product-workbench {
+  --wb-panel-bg: linear-gradient(145deg, rgba(255, 255, 255, 0.96) 0%, rgba(248, 250, 252, 0.88) 100%);
+  --wb-panel-border: rgba(74, 158, 255, 0.22);
+  --wb-panel-shadow: 0 10px 28px rgba(15, 23, 42, 0.07), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  --wb-accent-soft: rgba(74, 158, 255, 0.1);
+}
+
+.product-workbench [data-wb-panel] {
+  background: var(--wb-panel-bg) !important;
+  border-color: var(--wb-panel-border) !important;
+  box-shadow: var(--wb-panel-shadow);
+  backdrop-filter: blur(10px);
+}
+
+.product-workbench [data-wb-panel="hero"] {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(232, 241, 255, 0.92) 48%,
+    rgba(255, 255, 255, 0.9) 100%
+  ) !important;
+  border-color: rgba(74, 158, 255, 0.28) !important;
+}
+
+.product-workbench [data-wb-panel="actions"] {
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.97), rgba(241, 247, 255, 0.9)) !important;
+  border-color: rgba(74, 158, 255, 0.26) !important;
+}
+
+.product-workbench .wb-inbox-card[data-selected="true"] {
+  border-color: rgba(74, 158, 255, 0.42) !important;
+  box-shadow: 0 12px 28px rgba(37, 99, 235, 0.12);
+}
+
+.product-workbench .wb-inbox-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.product-workbench .wb-inbox-card:hover {
+  transform: translateY(-1px);
+}
