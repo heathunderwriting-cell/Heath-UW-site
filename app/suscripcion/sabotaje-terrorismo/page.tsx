@@ -512,13 +512,80 @@ return (
 );
 }
 
-function SovMap({ submissionId, homeCountry, locale }: { submissionId: string; homeCountry?: string | null; locale: string }) {
+let xlsxPromise: Promise<any> | null = null;
+function loadXlsx(): Promise<any> {
+if (typeof window === "undefined") return Promise.reject(new Error("no window"));
+if ((window as any).XLSX) return Promise.resolve((window as any).XLSX);
+if (xlsxPromise) return xlsxPromise;
+xlsxPromise = new Promise((resolve, reject) => {
+const s = document.createElement("script");
+s.src = "https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js";
+s.async = true;
+s.onload = () => resolve((window as any).XLSX);
+s.onerror = () => reject(new Error("xlsx failed"));
+document.body.appendChild(s);
+});
+return xlsxPromise;
+}
+function nearestOf(lat: number, lng: number, set: { label: string; lat: number | null; lng: number | null }[]) {
+let best: { label: string; d: number } | null = null;
+for (const o of set) {
+if (typeof o.lat !== "number" || typeof o.lng !== "number") continue;
+const d = haversine(lat, lng, o.lat, o.lng);
+if (!best || d < best.d) best = { label: o.label, d };
+}
+return best;
+}
+async function downloadDiscrepancies(conc: Conc, sov: SovLoc[], ins: InsLoc[], locale: string, insuredName: string) {
+const XLSX = await loadXlsx();
+const H = {
+tipo: pick(locale, "Tipo", "Type", "类型"),
+ubic: pick(locale, "Ubicación", "Location", "地点"),
+lat: "Lat", lng: "Lng",
+pais: pick(locale, "País", "Country", "国家"),
+cercano: pick(locale, "Punto SOV/asegurado más cercano", "Nearest SOV/insured point", "最近点"),
+dist: pick(locale, "Distancia al más cercano (m)", "Distance to nearest (m)", "到最近点距离 (米)"),
+obs: pick(locale, "Observación", "Note", "备注"),
+};
+const rows: Record<string, any>[] = [];
+conc.insOnly.forEach((j) => {
+const l = ins[j];
+const n = nearestOf(l.lat as number, l.lng as number, sov);
+rows.push({
+[H.tipo]: pick(locale, "Solo asegurado (My Maps)", "Insured only (My Maps)", "仅被保险人 (My Maps)"),
+[H.ubic]: l.label, [H.lat]: l.lat, [H.lng]: l.lng, [H.pais]: "",
+[H.cercano]: n ? n.label : "", [H.dist]: n ? Math.round(n.d) : "",
+[H.obs]: pick(locale, "Operado por el asegurado pero ausente del SOV — posible exposición no declarada.", "Operated by insured but missing from SOV — possible undeclared exposure.", "由被保险人运营但 SOV 中缺失 — 可能存在未申报风险。"),
+});
+});
+conc.sovOnly.forEach((i) => {
+const l = sov[i];
+const n = nearestOf(l.lat as number, l.lng as number, ins);
+rows.push({
+[H.tipo]: pick(locale, "Solo en SOV", "SOV only", "仅 SOV"),
+[H.ubic]: l.label, [H.lat]: l.lat, [H.lng]: l.lng, [H.pais]: l.country || "",
+[H.cercano]: n ? n.label : "", [H.dist]: n ? Math.round(n.d) : "",
+[H.obs]: pick(locale, "En el SOV pero no en el mapa del asegurado — verificar dirección o posible sobre-declaración.", "In SOV but not on insured's map — verify address or possible over-declaration.", "在 SOV 中但不在被保险人地图上 — 请核实地址或可能存在虚报。"),
+});
+});
+const header = [H.tipo, H.ubic, H.lat, H.lng, H.pais, H.cercano, H.dist, H.obs];
+const ws = XLSX.utils.json_to_sheet(rows.length ? rows : [{ [H.tipo]: pick(locale, "Sin discrepancias", "No discrepancies", "无差异") }], { header });
+ws["!cols"] = [{ wch: 24 }, { wch: 40 }, { wch: 11 }, { wch: 11 }, { wch: 14 }, { wch: 34 }, { wch: 22 }, { wch: 64 }];
+const wb = XLSX.utils.book_new();
+XLSX.utils.book_append_sheet(wb, ws, pick(locale, "Discrepancias", "Discrepancies", "差异"));
+const safe = (insuredName || "asegurado").replace(/[^\w\- ]+/g, "").trim().replace(/\s+/g, "_").slice(0, 40) || "asegurado";
+const date = new Date().toISOString().slice(0, 10);
+XLSX.writeFile(wb, `concordancia_discrepancias_${safe}_${date}.xlsx`);
+}
+
+function SovMap({ submissionId, homeCountry, insuredName, locale }: { submissionId: string; homeCountry?: string | null; insuredName?: string | null; locale: string }) {
 const [locs, setLocs] = useState<SovLoc[]>([]);
 const [insAll, setInsAll] = useState<InsLoc[]>([]);
 const [expanded, setExpanded] = useState(false);
 const [importUrl, setImportUrl] = useState("");
 const [importing, setImporting] = useState(false);
 const [importMsg, setImportMsg] = useState<{ ok: boolean; text: string } | null>(null);
+const [downloading, setDownloading] = useState(false);
 const compactRef = useRef<HTMLDivElement | null>(null);
 const fullRef = useRef<HTMLDivElement | null>(null);
 
@@ -559,6 +626,14 @@ const { data } = await supabase.from("insured_locations").select("id,label,lat,l
 if (data) setInsAll(data as any);
 } else { throw new Error((res as any)?.error || "Error"); }
 } catch (e: any) { setImportMsg({ ok: false, text: e?.message ?? "Error" }); } finally { setImporting(false); }
+}
+
+async function downloadDisc() {
+if (!conc || downloading) return;
+setDownloading(true);
+try { await downloadDiscrepancies(conc, pts, insPts, locale, insuredName ?? ""); }
+catch { setImportMsg({ ok: false, text: pick(locale, "No se pudo generar el Excel.", "Could not generate the Excel.", "无法生成 Excel。") }); }
+finally { setDownloading(false); }
 }
 
 useEffect(() => {
@@ -639,6 +714,10 @@ return (
 </div>
 {(conc.sovOnly.length > 0 || conc.insOnly.length > 0) && (
 <div style={{ display: "flex", flexDirection: "column", gap: 6, padding: "0 16px 13px" }}>
+<div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, marginBottom: 2 }}>
+<span style={{ fontSize: "0.66rem", fontWeight: 700, letterSpacing: "0.1em", color: "#94a3b8" }}>{pick(locale, "DISCREPANCIAS", "DISCREPANCIES", "差异")} · {conc.sovOnly.length + conc.insOnly.length}</span>
+<button type="button" disabled={downloading} onClick={downloadDisc} style={{ display: "inline-flex", alignItems: "center", gap: 6, border: "1px solid #cfe0f4", background: "#fff", color: "#2f6fb3", fontSize: "0.72rem", fontWeight: 700, padding: "6px 12px", borderRadius: 999, cursor: downloading ? "default" : "pointer", opacity: downloading ? 0.6 : 1, flex: "0 0 auto" }}><Ic n={downloading ? "refresh" : "filedown"} s={13} c="#2f6fb3" />{downloading ? pick(locale, "Generando…", "Generating…", "生成中…") : pick(locale, "Descargar Excel", "Download Excel", "下载 Excel")}</button>
+</div>
 {conc.sovOnly.map((i) => (
 <div key={`s${i}`} style={{ display: "flex", alignItems: "flex-start", gap: 8, padding: "8px 10px", background: "#fdecea", borderRadius: 8, fontSize: "0.72rem", color: "#7a1d12" }}><Ic n="alert" s={14} c="#b42318" /><span>{pick(locale, `“${pts[i].label}” está en el SOV pero no en el mapa del asegurado — verificar dirección o posible sobre-declaración.`, `“${pts[i].label}” is in the SOV but not on the insured's map — verify address or possible over-declaration.`, `“${pts[i].label}” 在 SOV 中但不在被保险人地图上 — 请核实地址或可能存在虚报。`)}</span></div>
 ))}
@@ -702,7 +781,7 @@ return (
 </div>
 </div>
 <IntelligencePanel submissionId={String(row.id)} locale={locale} />
-<SovMap submissionId={String(row.id)} homeCountry={row.country} locale={locale} />
+<SovMap submissionId={String(row.id)} homeCountry={row.country} insuredName={row.insured} locale={locale} />
 <PanelCard>
 <h3 className="text-primary" style={{ display: "flex", alignItems: "center", gap: 8, fontSize: "0.9rem", fontWeight: 700, marginBottom: 8 }}><span style={{ width: 26, height: 26, borderRadius: 8, background: "#e3effb", color: "#2f6fb3", display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "0 0 auto" }}><Ic n="file" s={15} c="#2f6fb3" /></span>{pick(locale, "Datos del riesgo", "Risk details", "风险信息")}</h3>
 <KV k={pick(locale, "Asegurado", "Insured", "被保险人")} v={row.insured} />
