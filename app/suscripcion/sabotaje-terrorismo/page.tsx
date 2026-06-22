@@ -1433,7 +1433,11 @@ return (
 <p className="mt-1 max-w-2xl text-sm leading-snug text-secondary">{subtitle}</p>
 </div>
 <div className="flex shrink-0 flex-wrap items-center gap-2">
+{inWorkbench ? (
+<button type="button" onClick={() => setWorkbenchId(null)} className="inline-flex items-center justify-center rounded-full border border-border bg-card px-5 py-2 text-sm font-semibold text-primary transition-colors hover:border-[#4a9eff]">← {pick(locale, "Volver a casos", "Back to cases", "返回列表")}</button>
+) : (
 <Link href="/suscripcion" className="inline-flex items-center justify-center rounded-full border border-border bg-card px-5 py-2 text-sm font-semibold text-primary transition-colors hover:border-[#4a9eff]">← {back}</Link>
+)}
 <LanguageSwitcher />
 </div>
 </header>
