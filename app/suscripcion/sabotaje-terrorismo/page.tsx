@@ -327,11 +327,9 @@ return (
 ))}
 </div>
 
-{(logo || website) && (
+{(logoCandidates(data?.domain ?? null, logo).length > 0 || website) && (
 <div style={{ display: "flex", alignItems: "center", gap: 11, padding: "10px 12px", border: "1px solid #eef2f8", borderRadius: 12, marginBottom: 12, background: "#fbfdff" }}>
-{logo && (
-<img src={logo} alt="" width={40} height={40} style={{ width: 40, height: 40, borderRadius: 9, objectFit: "contain", border: "1px solid #e8eef6", background: "#fff", flex: "0 0 auto" }} onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }} />
-)}
+<LogoImg domain={data?.domain ?? null} stored={logo} size={40} rounded={9} box />
 <span style={{ flex: 1, minWidth: 0 }}>
 {website && (
 <a href={website} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: "0.82rem", fontWeight: 600, color: "#2f6fb3", textDecoration: "none", wordBreak: "break-all" }}>{website.replace(/^https?:\/\//, "").replace(/\/$/, "")}<Ic n="ext" s={13} /></a>
@@ -770,23 +768,49 @@ return (
 );
 }
 
+function logoCandidates(domain: string | null, stored: string | null): string[] {
+const list: string[] = [];
+const d = String(domain || "").trim().toLowerCase().replace(/^https?:\/\//, "").replace(/\/.*$/, "");
+if (d) {
+list.push("https://favicone.com/" + d + "?s=128");
+list.push("https://icons.duckduckgo.com/ip3/" + d + ".ico");
+list.push("https://www.google.com/s2/favicons?domain=" + d + "&sz=128");
+}
+// El logo histórico de Clearbit ya no resuelve (API descontinuada); se ignora.
+if (stored && stored.indexOf("clearbit.com") === -1) list.push(stored);
+return list;
+}
+
+function LogoImg({ domain, stored, size, rounded, box, onGone }: { domain: string | null; stored: string | null; size: number; rounded: number; box?: boolean; onGone?: () => void }) {
+const cands = logoCandidates(domain, stored);
+const key = cands.join("|");
+const [idx, setIdx] = useState(0);
+useEffect(() => { setIdx(0); }, [key]);
+if (!cands.length || idx >= cands.length) return null;
+const st: any = { width: size, height: size, borderRadius: rounded, objectFit: "contain" };
+if (box) { st.border = "1px solid #e8eef6"; st.background = "#fff"; st.flex = "0 0 auto"; }
+return <img src={cands[idx]} alt="" width={size} height={size} style={st} onError={() => { const n = idx + 1; setIdx(n); if (n >= cands.length && onGone) onGone(); }} />;
+}
+
 function InsuredLogoBadge({ submissionId }: { submissionId: string }) {
 const [logo, setLogo] = useState<string | null>(null);
-const [failed, setFailed] = useState(false);
+const [domain, setDomain] = useState<string | null>(null);
+const [gone, setGone] = useState(false);
 useEffect(() => {
 let active = true;
 (async () => {
 try {
 const supabase = createSupabaseBrowserClient();
-const { data } = await supabase.from("submission_intelligence").select("logo").eq("submission_id", submissionId).maybeSingle();
-if (active && data?.logo) setLogo(data.logo as string);
+const { data } = await supabase.from("submission_intelligence").select("logo,domain").eq("submission_id", submissionId).maybeSingle();
+if (active && data) { setGone(false); setLogo((data.logo as string) ?? null); setDomain((data.domain as string) ?? null); }
 } catch { /* sin caché: el panel de inteligencia lo llenará al buscar */ }
 })();
 return () => { active = false; };
 }, [submissionId]);
-if (logo && !failed) return (
+const hasCands = logoCandidates(domain, logo).length > 0;
+if (hasCands && !gone) return (
 <span style={{ width: 58, height: 58, borderRadius: 14, background: "#fff", border: "1px solid #e8eef6", display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "0 0 auto", overflow: "hidden" }}>
-<img src={logo} alt="" width={48} height={48} style={{ width: 48, height: 48, objectFit: "contain" }} onError={() => setFailed(true)} />
+<LogoImg domain={domain} stored={logo} size={48} rounded={10} onGone={() => setGone(true)} />
 </span>
 );
 return (<span style={{ width: 58, height: 58, borderRadius: 14, background: "#e3effb", color: "#2f6fb3", display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "0 0 auto" }}><Ic n="clipboard" s={28} c="#2f6fb3" /></span>);
